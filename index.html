@@ -58,9 +58,9 @@
         #homeView {
             width: 100%; height: 100%; height: -webkit-fill-available;
             overflow-y: auto;
-            padding: 12px 14px 12px;
-            padding-top: max(12px, env(safe-area-inset-top, 12px));
-            padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+            padding: 16px 20px 16px;
+            padding-top: max(16px, env(safe-area-inset-top, 16px));
+            padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
             display: flex; flex-direction: column;
             position: relative; z-index: 2;
             -webkit-overflow-scrolling: touch;
@@ -70,15 +70,17 @@
         /* ===== 顶部栏 ===== */
         .top-bar {
             display: flex; align-items: center; justify-content: flex-end;
-            gap: 12px; margin-bottom: 8px; padding-top: 2px;
+            gap: 16px; margin-bottom: 12px; padding-top: 4px;
             flex-shrink: 0; position: relative; z-index: 3;
         }
-        /* 品牌标识 */
+        /* 品牌标识 — 放大2倍 */
         .brand-logo {
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
             flex-shrink: 0;
             background: rgba(255,255,255,0.20);
-            border: 1.5px solid rgba(255,255,255,0.20);
+            border: 2px solid rgba(255,255,255,0.20);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: flex;
@@ -93,12 +95,11 @@
             width: 100%; height: 100%; object-fit: cover;
             display: block;
         }
-        /* 图片加载失败时显示文字占位 */
         .brand-logo .logo-text {
-            font-size: 16px;
+            font-size: 28px;
             font-weight: 600;
             color: rgba(0,0,0,0.20);
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             display: none;
             position: absolute;
             top: 50%;
@@ -113,22 +114,26 @@
         }
 
         .theme-dots {
-            display: flex; gap: 8px; flex-shrink: 0;
-            padding: 3px 8px;
+            display: flex; gap: 12px; flex-shrink: 0;
+            padding: 6px 14px;
             background: rgba(255,255,255,0.20);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .theme-dots .dot {
-            width: 14px; height: 14px; border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.4);
-            cursor: pointer; transition: all 0.3s ease;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
             flex-shrink: 0;
         }
         .theme-dots .dot:active { transform: scale(0.85); }
         .theme-dots .dot.active {
             border-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
             transform: scale(1.12);
         }
         .theme-dots .dot.d1 { background: #7fc1c5; }
@@ -136,15 +141,21 @@
         .theme-dots .dot.d3 { background: #6e9bb5; }
 
         /* ===== 头部 ===== */
-        .home-header { margin-bottom: 10px; flex-shrink: 0; }
+        .home-header { margin-bottom: 14px; flex-shrink: 0; }
         .home-header .brand {
-            font-size: 11px; font-weight: 500; letter-spacing: 2px;
-            text-transform: uppercase; transition: color 0.6s ease;
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: color 0.6s ease;
             color: rgba(0,0,0,0.20);
         }
         .home-header h1 {
-            font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
-            line-height: 1.15; margin-top: 2px;
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            margin-top: 4px;
             background: linear-gradient(90deg, #4a8c8a, #7fc1c5, #4a8c8a, #7fc1c5);
             background-size: 300% 100%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -164,8 +175,10 @@
             animation: shimmerTitle 5s ease-in-out infinite;
         }
         .home-header .sub {
-            font-size: 13px; color: rgba(0,0,0,0.25);
-            margin-top: 2px; letter-spacing: 0.3px;
+            font-size: 20px;
+            color: rgba(0,0,0,0.25);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
             transition: color 0.6s ease;
         }
         .home-header .sub strong { color: rgba(0,0,0,0.40); font-weight: 500; }
@@ -174,13 +187,13 @@
         .card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 12px;
             flex: 1;
             align-content: start;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
         }
         .card-item {
-            padding: 14px 14px 12px;
+            padding: 20px 18px 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
@@ -190,13 +203,13 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 18px;
+            border-radius: 20px;
             box-shadow: 0 2px 16px rgba(0,0,0,0.01);
             transition: background 0.4s ease, transform 0.3s ease, border-color 0.4s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 72px;
+            min-height: 100px;
         }
         .card-item:active { transform: scale(0.96); background: rgba(255,255,255,0.55); }
         .card-item .glow {
@@ -206,32 +219,32 @@
         .card-item:hover .glow { opacity: 1; }
         .theme-mint .card-item .glow { background: linear-gradient(90deg, transparent, rgba(127,193,197,0.30), transparent); }
         .card-item .title {
-            font-size: 15px;
+            font-size: 22px;
             font-weight: 600;
             color: #1c2e2a;
             letter-spacing: 0.1px;
             line-height: 1.2;
         }
         .card-item .desc {
-            font-size: 11px;
+            font-size: 16px;
             color: rgba(0,0,0,0.30);
-            line-height: 1.3;
-            margin-top: 1px;
+            line-height: 1.4;
+            margin-top: 2px;
         }
         .card-item .meta {
             display: inline-block;
-            font-size: 10px;
+            font-size: 14px;
             font-weight: 500;
-            padding: 1px 10px;
+            padding: 2px 14px;
             border-radius: 30px;
-            margin-top: 5px;
+            margin-top: 8px;
             letter-spacing: 0.4px;
             transition: background 0.4s ease, color 0.4s ease;
             align-self: flex-start;
         }
         .theme-mint .card-item .meta { color: #5fa8a6; background: rgba(95,168,166,0.06); }
         .card-item .card-number {
-            font-size: 10px;
+            font-size: 14px;
             font-weight: 500;
             color: rgba(0,0,0,0.06);
             letter-spacing: 0.4px;
@@ -242,13 +255,15 @@
         }
 
         .home-footer {
-            margin-top: 6px; padding-top: 8px;
+            margin-top: 10px; padding-top: 12px;
             border-top: 1px solid rgba(0,0,0,0.02);
             text-align: center; flex-shrink: 0;
         }
         .home-footer .copyright {
-            font-size: 10px; color: rgba(0,0,0,0.10);
-            letter-spacing: 0.6px; line-height: 1.5;
+            font-size: 16px;
+            color: rgba(0,0,0,0.10);
+            letter-spacing: 0.6px;
+            line-height: 1.6;
         }
         .home-footer .copyright strong { color: rgba(0,0,0,0.18); font-weight: 500; }
 
@@ -273,39 +288,49 @@
 
         .module-header {
             flex-shrink: 0;
-            padding: 10px 14px 10px;
+            padding: 14px 18px 14px;
             background: rgba(255,255,255,0.30);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,0.20);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 14px;
             position: sticky; top: 0; z-index: 10;
-            min-height: 50px;
+            min-height: 64px;
             flex-wrap: wrap;
         }
         .module-header .back-btn {
             display: flex; align-items: center; justify-content: center;
-            width: 34px; height: 34px; border-radius: 50%;
+            width: 44px; height: 44px; border-radius: 50%;
             border: 1px solid rgba(0,0,0,0.04);
             background: rgba(255,255,255,0.30);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            font-size: 18px; color: #555;
+            font-size: 24px;
+            color: #555;
             cursor: pointer; transition: all 0.2s;
             flex-shrink: 0; font-weight: 300; line-height: 1;
             -webkit-tap-highlight-color: transparent;
         }
         .module-header .back-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.50); }
         .module-header .title {
-            font-size: 16px; font-weight: 600; color: #1c2e2a;
-            flex: 0 1 auto; letter-spacing: -0.2px;
+            font-size: 22px;
+            font-weight: 600;
+            color: #1c2e2a;
+            flex: 0 1 auto;
+            letter-spacing: -0.2px;
         }
         .module-header .sub {
-            font-size: 11px; color: rgba(0,0,0,0.25);
-            letter-spacing: 0.4px; flex-shrink: 0;
+            font-size: 16px;
+            color: rgba(0,0,0,0.25);
+            letter-spacing: 0.4px;
+            flex-shrink: 0;
         }
         .module-header .breadcrumb {
-            font-size: 11px; color: rgba(0,0,0,0.25);
-            flex: 1; min-width: 40px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 16px;
+            color: rgba(0,0,0,0.25);
+            flex: 1;
+            min-width: 60px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .module-header .breadcrumb span { cursor: pointer; transition: color 0.2s; }
         .module-header .breadcrumb span:hover { color: #3a7a78; }
@@ -313,8 +338,9 @@
         .module-header .breadcrumb .current { color: #3a7a78; font-weight: 500; cursor: default; }
 
         .module-scroll {
-            flex: 1; overflow-y: auto;
-            padding: 12px 14px 16px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 20px;
             -webkit-overflow-scrolling: touch;
         }
         .module-scroll::-webkit-scrollbar { width: 3px; }
@@ -323,175 +349,478 @@
         /* ===== 列表项 ===== */
         .list-item {
             background: rgba(255,255,255,0.30);
-            border-radius: 14px; padding: 12px 16px;
+            border-radius: 16px;
+            padding: 16px 20px;
             border: 1px solid rgba(255,255,255,0.15);
-            cursor: pointer; transition: all 0.2s;
-            margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             backdrop-filter: blur(4px);
         }
         .list-item:active { transform: scale(0.97); background: rgba(255,255,255,0.50); }
-        .list-item .left .title { font-weight: 500; color: #1c2e2a; font-size: 14px; }
-        .list-item .left .sub { font-size: 11px; color: rgba(0,0,0,0.30); }
-        .list-item .arrow { color: rgba(0,0,0,0.12); font-size: 16px; }
+        .list-item .left .title {
+            font-weight: 500;
+            color: #1c2e2a;
+            font-size: 20px;
+        }
+        .list-item .left .sub {
+            font-size: 16px;
+            color: rgba(0,0,0,0.30);
+        }
+        .list-item .arrow {
+            color: rgba(0,0,0,0.12);
+            font-size: 22px;
+        }
 
         /* ===== 网格卡片 ===== */
         .grid-cards {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
-            margin-top: 6px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
         }
         .grid-card {
             background: rgba(255,255,255,0.30);
-            border-radius: 14px; padding: 14px 10px;
+            border-radius: 16px;
+            padding: 18px 14px;
             border: 1px solid rgba(255,255,255,0.10);
-            cursor: pointer; transition: all 0.2s;
-            text-align: center; backdrop-filter: blur(4px);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            backdrop-filter: blur(4px);
         }
         .grid-card:active { transform: scale(0.95); background: rgba(255,255,255,0.50); }
-        .grid-card .num { font-size: 18px; font-weight: 700; color: #3a7a78; display: block; line-height: 1.2; }
-        .grid-card .name { font-size: 13px; font-weight: 500; color: #1c2e2a; margin-top: 3px; }
-        .grid-card .sub { font-size: 10px; color: rgba(0,0,0,0.25); margin-top: 1px; }
+        .grid-card .num {
+            font-size: 26px;
+            font-weight: 700;
+            color: #3a7a78;
+            display: block;
+            line-height: 1.2;
+        }
+        .grid-card .name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1c2e2a;
+            margin-top: 4px;
+        }
+        .grid-card .sub {
+            font-size: 14px;
+            color: rgba(0,0,0,0.25);
+            margin-top: 2px;
+        }
 
         /* ===== 节点列表 ===== */
         .node-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 10px 14px;
+            border-radius: 14px;
+            padding: 14px 18px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 6px;
-            cursor: pointer; transition: all 0.2s;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         .node-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .node-item .id { font-weight: 700; color: #3a7a78; font-size: 12px; }
-        .node-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
-        .node-item .desc { font-size: 12px; color: rgba(0,0,0,0.40); margin-top: 1px; }
+        .node-item .id {
+            font-weight: 700;
+            color: #3a7a78;
+            font-size: 16px;
+        }
+        .node-item .name {
+            font-weight: 500;
+            color: #1c2e2a;
+            font-size: 18px;
+        }
+        .node-item .desc {
+            font-size: 15px;
+            color: rgba(0,0,0,0.40);
+            margin-top: 2px;
+        }
 
         /* ===== 品种列表 ===== */
         .variety-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 10px 14px;
+            border-radius: 14px;
+            padding: 14px 18px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 6px;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .variety-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .variety-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
-        .variety-item .latin { font-size: 11px; color: rgba(0,0,0,0.25); font-style: italic; }
+        .variety-item .name {
+            font-weight: 500;
+            color: #1c2e2a;
+            font-size: 18px;
+        }
+        .variety-item .latin {
+            font-size: 15px;
+            color: rgba(0,0,0,0.25);
+            font-style: italic;
+        }
 
         /* ===== 话术列表 ===== */
         .script-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 12px 14px;
+            border-radius: 14px;
+            padding: 16px 18px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 6px;
-            cursor: pointer; transition: all 0.2s;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         .script-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .script-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
-        .script-item .desc { font-size: 12px; color: rgba(0,0,0,0.35); margin-top: 1px; }
+        .script-item .name {
+            font-weight: 500;
+            color: #1c2e2a;
+            font-size: 18px;
+        }
+        .script-item .desc {
+            font-size: 15px;
+            color: rgba(0,0,0,0.35);
+            margin-top: 2px;
+        }
 
         /* ===== iframe 文件视图 ===== */
         .file-view {
-            flex: 1; position: relative;
+            flex: 1;
+            position: relative;
             background: rgba(255,255,255,0.10);
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
-            margin-top: 2px;
-            min-height: 300px;
+            margin-top: 4px;
+            min-height: 400px;
         }
         .file-view iframe {
-            width: 100%; height: 100%;
-            border: none; display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
             background: transparent;
-            min-height: 300px;
+            min-height: 400px;
         }
         .file-view .file-placeholder {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            height: 100%; min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 300px;
             color: rgba(0,0,0,0.20);
-            font-size: 14px; text-align: center;
-            padding: 30px 20px;
+            font-size: 18px;
+            text-align: center;
+            padding: 40px 20px;
         }
-        .file-view .file-placeholder .big { font-size: 32px; margin-bottom: 8px; opacity: 0.2; }
+        .file-view .file-placeholder .big {
+            font-size: 44px;
+            margin-bottom: 12px;
+            opacity: 0.2;
+        }
 
         /* ===== 响应式 ===== */
         @media (max-width: 640px) {
-            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-            .grid-card { padding: 10px 6px; }
-            .grid-card .num { font-size: 16px; }
-            .grid-card .name { font-size: 12px; }
+            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .grid-card { padding: 12px 8px; }
+            .grid-card .num { font-size: 20px; }
+            .grid-card .name { font-size: 15px; }
         }
         @media (max-width: 480px) {
-            #homeView { padding: 10px 12px 10px; padding-top: max(10px, env(safe-area-inset-top,10px)); padding-bottom: max(10px, env(safe-area-inset-bottom,10px)); }
-            .top-bar { gap: 10px; margin-bottom: 6px; }
-            .brand-logo { width: 40px; height: 40px; }
-            .theme-dots { gap: 6px; padding: 2px 6px; }
-            .theme-dots .dot { width: 12px; height: 12px; }
-            .home-header h1 { font-size: 20px; }
-            .home-header .sub { font-size: 12px; }
-            .home-header { margin-bottom: 6px; }
-            .card-grid { gap: 6px; }
-            .card-item { padding: 10px 10px 8px; border-radius: 14px; min-height: 60px; }
-            .card-item .title { font-size: 13px; }
-            .card-item .desc { font-size: 10px; }
-            .card-item .meta { font-size: 9px; padding: 1px 8px; margin-top: 3px; }
-            .card-item .card-number { font-size: 9px; }
-            .home-footer { margin-top: 4px; padding-top: 6px; }
-            .home-footer .copyright { font-size: 9px; }
-            .module-header { padding: 8px 12px 8px; min-height: 44px; }
-            .module-header .title { font-size: 14px; }
-            .module-header .back-btn { width: 30px; height: 30px; font-size: 16px; }
-            .module-scroll { padding: 10px 12px 12px; }
-            .list-item { padding: 10px 12px; margin-bottom: 6px; }
-            .list-item .left .title { font-size: 13px; }
-            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
-            .grid-card { padding: 8px 4px; border-radius: 12px; }
-            .grid-card .num { font-size: 14px; }
-            .grid-card .name { font-size: 11px; }
-            .grid-card .sub { font-size: 9px; }
-            .node-item { padding: 8px 12px; }
-            .node-item .name { font-size: 13px; }
-            .variety-item { padding: 8px 12px; }
-            .variety-item .name { font-size: 13px; }
-            .script-item { padding: 10px 12px; }
-            .script-item .name { font-size: 13px; }
+            #homeView {
+                padding: 12px 14px 12px;
+                padding-top: max(12px, env(safe-area-inset-top, 12px));
+                padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+            }
+            .top-bar {
+                gap: 12px;
+                margin-bottom: 8px;
+            }
+            .brand-logo {
+                width: 80px;
+                height: 80px;
+            }
+            .brand-logo .logo-text {
+                font-size: 22px;
+            }
+            .theme-dots {
+                gap: 8px;
+                padding: 4px 10px;
+            }
+            .theme-dots .dot {
+                width: 16px;
+                height: 16px;
+            }
+            .home-header .brand {
+                font-size: 14px;
+                letter-spacing: 2px;
+            }
+            .home-header h1 {
+                font-size: 28px;
+            }
+            .home-header .sub {
+                font-size: 16px;
+            }
+            .home-header {
+                margin-bottom: 10px;
+            }
+            .card-grid {
+                gap: 8px;
+            }
+            .card-item {
+                padding: 14px 14px 12px;
+                border-radius: 16px;
+                min-height: 76px;
+            }
+            .card-item .title {
+                font-size: 17px;
+            }
+            .card-item .desc {
+                font-size: 13px;
+            }
+            .card-item .meta {
+                font-size: 12px;
+                padding: 1px 12px;
+                margin-top: 6px;
+            }
+            .card-item .card-number {
+                font-size: 12px;
+            }
+            .home-footer {
+                margin-top: 6px;
+                padding-top: 8px;
+            }
+            .home-footer .copyright {
+                font-size: 13px;
+            }
+            .module-header {
+                padding: 10px 14px 10px;
+                min-height: 54px;
+            }
+            .module-header .title {
+                font-size: 17px;
+            }
+            .module-header .sub {
+                font-size: 13px;
+            }
+            .module-header .breadcrumb {
+                font-size: 13px;
+            }
+            .module-header .back-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+            .module-scroll {
+                padding: 12px 14px 16px;
+            }
+            .list-item {
+                padding: 12px 16px;
+                margin-bottom: 8px;
+            }
+            .list-item .left .title {
+                font-size: 16px;
+            }
+            .list-item .left .sub {
+                font-size: 13px;
+            }
+            .list-item .arrow {
+                font-size: 18px;
+            }
+            .grid-cards {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+            .grid-card {
+                padding: 10px 6px;
+                border-radius: 12px;
+            }
+            .grid-card .num {
+                font-size: 18px;
+            }
+            .grid-card .name {
+                font-size: 13px;
+            }
+            .grid-card .sub {
+                font-size: 11px;
+            }
+            .node-item {
+                padding: 10px 14px;
+                margin-bottom: 8px;
+            }
+            .node-item .id {
+                font-size: 14px;
+            }
+            .node-item .name {
+                font-size: 15px;
+            }
+            .node-item .desc {
+                font-size: 13px;
+            }
+            .variety-item {
+                padding: 10px 14px;
+                margin-bottom: 8px;
+            }
+            .variety-item .name {
+                font-size: 15px;
+            }
+            .variety-item .latin {
+                font-size: 13px;
+            }
+            .script-item {
+                padding: 12px 14px;
+                margin-bottom: 8px;
+            }
+            .script-item .name {
+                font-size: 15px;
+            }
+            .script-item .desc {
+                font-size: 13px;
+            }
+            .file-view {
+                min-height: 300px;
+            }
+            .file-view iframe {
+                min-height: 300px;
+            }
         }
         @media (max-width: 380px) {
-            .home-header h1 { font-size: 18px; }
-            .card-item { padding: 8px 8px 6px; min-height: 52px; }
-            .card-item .title { font-size: 12px; }
-            .card-item .desc { font-size: 9px; }
-            .card-item .meta { font-size: 8px; padding: 1px 6px; }
-            .brand-logo { width: 36px; height: 36px; }
-            .grid-cards { grid-template-columns: 1fr 1fr; }
+            .home-header h1 {
+                font-size: 24px;
+            }
+            .home-header .sub {
+                font-size: 14px;
+            }
+            .card-item {
+                padding: 10px 10px 8px;
+                min-height: 64px;
+            }
+            .card-item .title {
+                font-size: 15px;
+            }
+            .card-item .desc {
+                font-size: 12px;
+            }
+            .card-item .meta {
+                font-size: 10px;
+                padding: 1px 8px;
+            }
+            .brand-logo {
+                width: 64px;
+                height: 64px;
+            }
+            .brand-logo .logo-text {
+                font-size: 18px;
+            }
+            .grid-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            .top-bar {
+                gap: 8px;
+            }
+            .theme-dots .dot {
+                width: 14px;
+                height: 14px;
+            }
+            .module-header .title {
+                font-size: 15px;
+            }
         }
         @media (min-width: 800px) {
-            #homeView { padding: 24px 60px 24px; max-width: 780px; margin: 0 auto; }
-            .card-grid { gap: 12px; }
-            .card-item { padding: 20px 22px; border-radius: 22px; min-height: 90px; }
-            .card-item .title { font-size: 18px; }
-            .card-item .desc { font-size: 13px; }
-            .home-header h1 { font-size: 32px; }
-            .brand-logo { width: 64px; height: 64px; }
-            .grid-cards { gap: 12px; }
-            .grid-card { padding: 18px 14px; }
-            .grid-card .num { font-size: 22px; }
+            #homeView {
+                padding: 28px 60px 28px;
+                max-width: 820px;
+                margin: 0 auto;
+            }
+            .card-grid {
+                gap: 16px;
+            }
+            .card-item {
+                padding: 28px 28px 24px;
+                border-radius: 24px;
+                min-height: 120px;
+            }
+            .card-item .title {
+                font-size: 24px;
+            }
+            .card-item .desc {
+                font-size: 17px;
+            }
+            .home-header h1 {
+                font-size: 44px;
+            }
+            .brand-logo {
+                width: 96px;
+                height: 96px;
+            }
+            .grid-cards {
+                gap: 14px;
+            }
+            .grid-card {
+                padding: 20px 16px;
+            }
+            .grid-card .num {
+                font-size: 28px;
+            }
+            .grid-card .name {
+                font-size: 18px;
+            }
+            .module-scroll {
+                padding: 20px 32px 28px;
+            }
         }
         @media (max-height: 650px) {
-            .home-header h1 { font-size: 18px; }
-            .home-header .sub { font-size: 11px; }
-            .home-header { margin-bottom: 4px; }
-            .card-item { padding: 8px 10px 6px; min-height: 50px; }
-            .card-item .title { font-size: 12px; }
-            .card-item .desc { font-size: 9px; }
-            .card-item .meta { font-size: 8px; padding: 1px 6px; margin-top: 2px; }
-            .card-item .card-number { font-size: 8px; margin-bottom: 1px; }
-            .card-grid { gap: 5px; }
-            .top-bar { margin-bottom: 4px; }
-            .brand-logo { width: 36px; height: 36px; }
-            .home-footer { margin-top: 2px; padding-top: 4px; }
-            .home-footer .copyright { font-size: 8px; }
+            .home-header h1 {
+                font-size: 26px;
+            }
+            .home-header .sub {
+                font-size: 15px;
+            }
+            .home-header {
+                margin-bottom: 6px;
+            }
+            .card-item {
+                padding: 10px 14px 10px;
+                min-height: 60px;
+            }
+            .card-item .title {
+                font-size: 16px;
+            }
+            .card-item .desc {
+                font-size: 12px;
+            }
+            .card-item .meta {
+                font-size: 11px;
+                padding: 1px 10px;
+                margin-top: 4px;
+            }
+            .card-item .card-number {
+                font-size: 11px;
+                margin-bottom: 1px;
+            }
+            .card-grid {
+                gap: 6px;
+            }
+            .top-bar {
+                margin-bottom: 4px;
+            }
+            .brand-logo {
+                width: 64px;
+                height: 64px;
+            }
+            .brand-logo .logo-text {
+                font-size: 18px;
+            }
+            .home-footer {
+                margin-top: 2px;
+                padding-top: 4px;
+            }
+            .home-footer .copyright {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -509,7 +838,7 @@
         <!-- ===== 首页 ===== -->
         <div id="homeView">
             <div class="top-bar">
-                <!-- 品牌标识：直接调用同目录下的 shanqiu_logo.png -->
+                <!-- 品牌标识：放大2倍，直接调用同目录下的 shanqiu_logo.png -->
                 <div class="brand-logo" id="brandLogo">
                     <img id="brandImage" src="shanqiu_logo.png" alt="山秋枫树园" />
                     <span class="logo-text">山秋</span>
@@ -612,20 +941,16 @@
         const brandLogo = document.getElementById('brandLogo');
         const brandImage = document.getElementById('brandImage');
 
-        // 图片加载成功
         brandImage.onload = function() {
             brandLogo.classList.remove('fallback');
             console.log('✅ 品牌图标加载成功: shanqiu_logo.png');
         };
 
-        // 图片加载失败 → 显示文字占位
         brandImage.onerror = function() {
             brandLogo.classList.add('fallback');
             console.warn('⚠️ 品牌图标加载失败，已切换为文字占位。请确认 shanqiu_logo.png 与 index.html 在同一目录，且文件名大小写正确。');
         };
 
-        // 额外检查：如果图片已经缓存，可能不会触发 onload/onerror
-        // 手动检查图片是否已加载
         if (brandImage.complete && brandImage.naturalWidth > 0) {
             brandLogo.classList.remove('fallback');
             console.log('✅ 品牌图标已加载（缓存）: shanqiu_logo.png');
@@ -869,7 +1194,7 @@
                 moduleTitle.textContent = '日本枫树入门课程';
                 moduleSub.textContent = '7门课程';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
                 html += `<div class="list-view">`;
                 COURSES.forEach(c => {
                     html += `
@@ -898,7 +1223,7 @@
                 moduleSub.textContent = '树形 · 叶色 · 叶形';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 moduleScroll.innerHTML = `
-                    <div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">选择分类</div>
+                    <div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择分类</div>
                     <div class="list-view">
                         <div class="list-item" onclick="openPart2A()">
                             <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
@@ -922,7 +1247,7 @@
             moduleTitle.textContent = '树形分类';
             moduleSub.textContent = '12种树形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
             html += `<div class="grid-cards">`;
             TREE_TYPES.forEach(t => {
                 html += `
@@ -948,7 +1273,7 @@
             moduleTitle.textContent = '叶色分类';
             moduleSub.textContent = '7个色系';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
             html += `<div class="grid-cards">`;
             COLOR_SERIES.forEach(c => {
                 html += `
@@ -973,7 +1298,7 @@
             moduleTitle.textContent = '叶形分类';
             moduleSub.textContent = '6种叶形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
             html += `<div class="grid-cards">`;
             LEAF_TYPES.forEach(l => {
                 html += `
@@ -1000,12 +1325,12 @@
                 moduleTitle.textContent = '场景节点速查手册';
                 moduleSub.textContent = '八大场景';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">79个节点</div>`;
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">79个节点</div>`;
                 html += `<div class="grid-cards">`;
                 SCENES.forEach(s => {
                     html += `
                         <div class="grid-card" onclick="openScene('${s.id}')">
-                            <span class="num" style="font-size:15px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
+                            <span class="num" style="font-size:20px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
                             <div class="name">${s.name}</div>
                             <div class="sub">${s.desc}</div>
                         </div>
@@ -1029,7 +1354,7 @@
                 moduleTitle.textContent = '全体系话术手册';
                 moduleSub.textContent = '六大话术体系';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
                 html += `<div class="script-list">`;
                 SCRIPT_TYPES.forEach(s => {
                     html += `
@@ -1171,8 +1496,8 @@
         console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
         console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
-        console.log('🖼️ 品牌图标: shanqiu_logo.png');
-        console.log('💡 如果图片不显示，请检查浏览器控制台（F12）查看具体错误信息');
+        console.log('🖼️ 品牌图标: shanqiu_logo.png (已放大2倍)');
+        console.log('📝 页面文字已整体放大');
     </script>
 
 </body>

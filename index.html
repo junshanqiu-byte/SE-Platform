@@ -146,7 +146,7 @@
         }
         .home-header .sub strong { color: rgba(0,0,0,0.45); font-weight: 500; }
 
-        /* ===== 卡片网格（无图标） ===== */
+        /* ===== 卡片网格 ===== */
         .card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -582,7 +582,6 @@
         // ================================================================
 
         // -------- Part1: 课程 (7门) --------
-        // 按用户提供的名称更新
         const COURSES = [
             { id: 'c0', title: '引言：写给庭院美学顾问的七堂课', file: 'part1_0.html' },
             { id: 'c1', title: '第1课：读懂日本枫树', file: 'part1_1.html' },
@@ -652,7 +651,8 @@
             { id: 'sc6', name: '放价与收尾话术', desc: '价值确认·从容收尾·美是唯一的理由', file: 'part4_6.html' },
         ];
 
-        // -------- Part5: 品种 (29个, 单文件) --------
+        // -------- Part5: 品种 (29个) --------
+        // 品种数据保留在主框架中，用于列表渲染，详情则加载 part5.html
         const VARIETIES = [
             { id: 'v1', name: '奥马', latin: 'Acer palmatum \'Ohma\'' },
             { id: 'v2', name: '春雨', latin: 'Acer palmatum \'Shun\'u\'' },
@@ -751,7 +751,7 @@
             else if (mod === 'part5') renderPart5();
         }
 
-        // -------- 通用：打开文件 --------
+        // -------- 通用：打开文件（iframe）并隐藏内页返回按钮 --------
         function openFileView(title, file, sub) {
             path.push(title);
             moduleTitle.textContent = title;
@@ -766,6 +766,45 @@
             `;
             const iframe = document.getElementById('fileIframe');
             if (iframe) {
+                // 加载完成后尝试隐藏内页的返回按钮
+                iframe.onload = function() {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (doc) {
+                            // 隐藏所有可能的返回按钮
+                            const selectors = [
+                                '.back-btn', '[data-back]', '.module-header .back-btn',
+                                '.back-link', '.top-mini .back-link', '.detail-back',
+                                'button.back-btn', 'a.back-link'
+                            ];
+                            selectors.forEach(sel => {
+                                const els = doc.querySelectorAll(sel);
+                                els.forEach(el => {
+                                    el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
+                                });
+                            });
+                            // 也尝试隐藏带有返回图标的元素（如 ‹ 或 ← 的按钮）
+                            const allButtons = doc.querySelectorAll('button, a');
+                            allButtons.forEach(btn => {
+                                const txt = btn.textContent.trim();
+                                if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back') {
+                                    btn.style.display = 'none';
+                                    btn.style.pointerEvents = 'none';
+                                }
+                            });
+                            // 隐藏带有 .back 类的元素
+                            const backEls = doc.querySelectorAll('.back, .back-btn, .back-link, .nav-back');
+                            backEls.forEach(el => {
+                                el.style.display = 'none';
+                                el.style.pointerEvents = 'none';
+                            });
+                        }
+                    } catch(e) {
+                        // 跨域忽略
+                        console.log('无法访问iframe内容（跨域或加载中）:', e);
+                    }
+                };
                 iframe.onerror = function() {
                     document.getElementById('fileViewContainer').innerHTML = `
                         <div class="file-placeholder">
@@ -775,12 +814,30 @@
                         </div>
                     `;
                 };
+                // 额外延迟处理（部分页面可能动态生成返回按钮）
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                        if (doc && doc.body && doc.body.innerHTML.trim().length < 10) {}
-                    } catch (e) {}
-                }, 3000);
+                        if (doc) {
+                            const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link', '.detail-back'];
+                            selectors.forEach(sel => {
+                                const els = doc.querySelectorAll(sel);
+                                els.forEach(el => {
+                                    el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
+                                });
+                            });
+                            const allBtns = doc.querySelectorAll('button, a');
+                            allBtns.forEach(btn => {
+                                const txt = btn.textContent.trim();
+                                if (txt === '‹' || txt === '←' || txt === '返回') {
+                                    btn.style.display = 'none';
+                                    btn.style.pointerEvents = 'none';
+                                }
+                            });
+                        }
+                    } catch(e) {}
+                }, 1500);
             }
         }
 
@@ -972,14 +1029,14 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种 --------
+        // -------- Part5: 品种（列表在主框架，详情加载part5.html） --------
         function renderPart5() {
             if (path.length === 0) {
                 path = ['主播品种速查手册'];
                 moduleTitle.textContent = '主播品种速查手册';
                 moduleSub.textContent = '29个品种';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">完整档案</div>`;
+                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">点击品种查看完整档案</div>`;
                 html += `<div class="variety-list">`;
                 VARIETIES.forEach(v => {
                     html += `
@@ -991,11 +1048,90 @@
                 });
                 html += `</div>`;
                 moduleScroll.innerHTML = html;
+            } else {
+                // 如果路径大于0，说明用户点击了品种，由 openVariety 处理
+                // 但 openVariety 会直接加载 part5.html，不会走这个分支
             }
         }
 
         function openVariety(vid) {
-            openFileView('品种速查手册', VARIETIES_FILE, '29个品种 · 完整档案');
+            // 直接加载 part5.html，让其在内部处理品种详情
+            // 同时传递品种名称作为面包屑
+            const variety = VARIETIES.find(v => v.id === vid);
+            if (!variety) { alert('品种不存在'); return; }
+            // 进入品种详情，加载 part5.html
+            // 注意：这里不push品种名称，因为part5.html内部会显示详情
+            // 但我们希望面包屑显示品种名称
+            path.push(variety.name);
+            moduleTitle.textContent = variety.name;
+            moduleSub.textContent = '品种详情';
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+
+            // 加载 part5.html
+            const fileUrl = VARIETIES_FILE;
+            moduleScroll.innerHTML = `
+                <div class="file-view" id="fileViewContainer">
+                    <iframe id="fileIframe" src="${fileUrl}" title="${variety.name}"></iframe>
+                </div>
+            `;
+            const iframe = document.getElementById('fileIframe');
+            if (iframe) {
+                iframe.onload = function() {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (doc) {
+                            // 隐藏返回按钮
+                            const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link', '.detail-back'];
+                            selectors.forEach(sel => {
+                                const els = doc.querySelectorAll(sel);
+                                els.forEach(el => {
+                                    el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
+                                });
+                            });
+                            const allBtns = doc.querySelectorAll('button, a');
+                            allBtns.forEach(btn => {
+                                const txt = btn.textContent.trim();
+                                if (txt === '‹' || txt === '←' || txt === '返回') {
+                                    btn.style.display = 'none';
+                                    btn.style.pointerEvents = 'none';
+                                }
+                            });
+                            // 尝试在part5.html中自动跳转到对应的品种
+                            // 由于无法直接控制part5.html的内部逻辑，我们通过URL hash传递品种ID
+                            // 但更可靠的方式是：在part5.html中通过postMessage监听
+                            // 或者我们可以直接修改iframe的src添加hash
+                            // 这里我们尝试通过hash传递
+                            const iframeWin = iframe.contentWindow;
+                            if (iframeWin) {
+                                // 尝试发送消息给part5.html
+                                iframeWin.postMessage({ type: 'viewVariety', id: vid }, '*');
+                            }
+                        }
+                    } catch(e) {
+                        console.log('无法访问iframe内容:', e);
+                    }
+                };
+                iframe.onerror = function() {
+                    document.getElementById('fileViewContainer').innerHTML = `
+                        <div class="file-placeholder">
+                            <div class="big">📄</div>
+                            <div>文件加载失败</div>
+                            <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${fileUrl} 存在于同一目录下</div>
+                        </div>
+                    `;
+                };
+                // 重新加载iframe以触发onload
+                // 但为了确保postMessage能发送，我们延迟一下
+                setTimeout(() => {
+                    try {
+                        const iframeWin = iframe.contentWindow;
+                        if (iframeWin) {
+                            iframeWin.postMessage({ type: 'viewVariety', id: vid }, '*');
+                        }
+                    } catch(e) {}
+                }, 1000);
+            }
         }
 
         // ================================================================
@@ -1020,6 +1156,12 @@
             }
         });
 
+        // 监听来自iframe的postMessage（用于品种详情跳转）
+        window.addEventListener('message', function(event) {
+            // 可以处理来自part5.html的消息
+            console.log('收到iframe消息:', event.data);
+        });
+
         // 暴露函数到全局
         window.openCourse = openCourse;
         window.openTreeDetail = openTreeDetail;
@@ -1037,6 +1179,7 @@
         console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
         console.log('📁 请确保所有 part*.html 文件与 index.html 在同一目录下');
+        console.log('💡 内页返回按钮已自动隐藏，使用左上角返回按钮逐级回退');
     </script>
 
 </body>

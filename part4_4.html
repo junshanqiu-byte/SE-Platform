@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>庭院美学顾问 · 保障话术手册 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 820px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+
+        h1 {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em; margin-bottom: 0.2em;
+        }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle {
+            font-size: 16px; color: rgba(0, 0, 0, 0.30); font-weight: 400;
+            margin-top: -0.2em; margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        h2 {
+            font-size: 24px; color: #1c2e2a; margin-top: 2em; margin-bottom: 0.8em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 16px;
+        }
+        h3 {
+            font-size: 19px; color: #2a423e; margin-top: 1.6em; margin-bottom: 0.5em;
+        }
+        h4 {
+            font-size: 16px; color: #2a423e; margin-top: 1.2em; margin-bottom: 0.4em;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); margin-bottom: 1em;
+        }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        ul, ol {
+            padding-left: 1.6em; margin-bottom: 1.2em;
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75);
+        }
+        li { margin-bottom: 0.3em; }
+        em { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+
+        .highlight-box {
+            padding: 16px 20px; border-radius: 12px; margin: 1.2em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid #6baa9e;
+            background: rgba(255, 255, 255, 0.30);
+        }
+        .highlight-box p:last-child { margin-bottom: 0; }
+        .highlight-box strong { color: rgba(0, 0, 0, 0.80); }
+        .highlight-box ul, .highlight-box ol { margin-bottom: 0; }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.20);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.2em 0;
+        }
+        .example-box .label {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+            color: rgba(0, 0, 0, 0.30); margin-bottom: 0.3em;
+        }
+        .example-box p { margin-bottom: 0.6em; font-size: 15px; }
+        .example-box p:last-child { margin-bottom: 0; }
+        .example-box .dialogue {
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.55);
+            padding-left: 1rem;
+            border-left: 2px solid rgba(127, 193, 197, 0.2);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.10);
+            color: #3a7a78;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            margin-right: 0.4rem;
+            font-weight: 500;
+        }
+
+        .table-wrap {
+            overflow-x: auto; margin: 1.2em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: 14px; min-width: 400px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600; color: #1c2e2a;
+            padding: 10px 14px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .table-caption {
+            font-size: 13px; color: rgba(0, 0, 0, 0.30);
+            text-align: right; padding: 4px 10px 0 0;
+            font-style: italic;
+        }
+
+        .feature-list {
+            list-style: none; padding: 0; margin: 1.2rem 0;
+        }
+        .feature-list li {
+            padding: 0.5rem 0 0.5rem 1.8rem;
+            position: relative;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            font-size: 15px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-list li::before {
+            content: "•";
+            position: absolute; left: 0.2rem;
+            color: #7fc1c5; font-size: 1.2rem;
+        }
+        .feature-list li strong { color: rgba(0, 0, 0, 0.85); }
+
+        .footer-note {
+            margin-top: 40px; padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center; font-size: 12px;
+            color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px;
+        }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            #app { padding: 12px 12px 30px; }
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; padding-left: 12px; }
+            h3 { font-size: 17px; }
+            p, ul, ol { font-size: 15px; }
+            .highlight-box, .example-box { padding: 14px 16px; font-size: 14px; }
+            table { font-size: 13px; min-width: 300px; }
+            th, td { padding: 6px 10px; }
+            .feature-list li { font-size: 14px; }
+            .badge { font-size: 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 48px 52px; }
+            h1 { font-size: 38px; }
+            h2 { font-size: 28px; }
+            p { font-size: 17px; }
+            .feature-list li { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <h1>庭院美学顾问 · 保障话术手册</h1>
+            <p class="subtitle">交付安心 · 而非消除恐惧</p>
+
+            <!-- 一、核心目标 -->
+            <h2>一、核心目标与底层逻辑</h2>
+            <p><strong>核心目标</strong>：让用户感到“这棵树值得信任”，而非“我被说服了”。保障话术的本质，不是用承诺去“消除恐惧”，而是用笃定和专业去“交付安心”——让用户从容地做出“这棵树应该属于我”的判断。</p>
+
+            <div class="highlight-box">
+                <p><strong>底层逻辑（顾问式视角）</strong>：</p>
+                <ul style="margin-left:1.2rem; margin-bottom:0;">
+                    <li><strong>保障不是“兜底”，是“底气的自然流露”。</strong> —— 我们不是“怕你退货所以给你承诺”，而是“我们对每一棵树的品质有充分的把握”。</li>
+                    <li><strong>信任不需要“喊出来”，只需要“展现出来”。</strong> —— 尺寸透明、流程清晰、态度笃定，这些本身就是最好的保障。</li>
+                    <li><strong>在枫树直播间，保障话术服务于“审美信任”。</strong> —— 用户不是因为“反正能退”才买，而是因为“我相信这棵树会在我家好好活着”才买。</li>
+                    <li><strong>保障的终点不是“退换无忧”，而是“无需退换”。</strong> —— 我们把功夫花在选品、包装、养护指导上，让用户从一开始就不需要动用保障。</li>
+                </ul>
+            </div>
+
+            <p><strong>核心原则</strong>：</p>
+            <ul>
+                <li>用“告知”代替“承诺”——“我们是这样做的”比“我保证”更有力量。</li>
+                <li>用“透明”代替“担保”——“你看到什么就收到什么”是最好的保障。</li>
+                <li>用“陪伴”代替“兜底”——“我们一直在这里”比“三个月售后”更让人安心。</li>
+                <li>保障话术的终点是“你不需要担心”，而非“你不用担心”。</li>
+            </ul>
+
+            <!-- 二、保障的四个维度 -->
+            <h2>二、保障的四个维度（顾问式重构）</h2>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>维度</th><th>核心问题</th><th>顾问式回应</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>品种信任</strong></td><td>“这棵真的是中华小叶红吗？”</td><td>“每一棵上直播间的树，品种都经过三轮确认。我们比任何人都怕出错——因为错一棵，就失去一个信任我们的人。”</td></tr>
+                        <tr><td><strong>存活信任</strong></td><td>“我养得活吗？”</td><td>“我们选的是容器苗，根系完整，没有缓苗期。你收到后，养护手册和园艺师都在——你养的不是一棵树，是我们陪你一起养。”</td></tr>
+                        <tr><td><strong>尺寸信任</strong></td><td>“收到的大小和直播间一样吗？”</td><td>“每一棵树的尺寸都在镜头前量过——高度、冠幅、粗度，全部透明。你看到多大，收到就是多大。”</td></tr>
+                        <tr><td><strong>物流信任</strong></td><td>“能安全送到我家吗？”</td><td>“打木架发货，京东快运，送货上门。树在路上走多久，我们比你更紧张——因为那是我亲手挑的树。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 三、六类用户 -->
+            <h2>三、六类用户 × 保障回应</h2>
+            <p><em>每类用户的顾虑不同，保障话术的切入点也不同。核心是“先听见他的顾虑，再用专业回应他的顾虑”。</em></p>
+
+            <h3>类型一：新手 · “我怕养不活”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您担心养不活，这很正常——毕竟它是一条命。”</p>
+                <p><span class="badge">专业解释</span>“我们选的是容器苗，根是养在盆里的，不是地挖的断根苗。所以种下去不需要缓苗，直接扎根。您按养护手册做，它不会辜负您。”</p>
+                <p><span class="badge">陪伴表态</span>“您不是一个人在养。养护手册、园艺师视频指导、客服——我们都在。您有任何问题，随时找我们。”</p>
+            </div>
+
+            <h3>类型二：品位型 · “怕收到的树和直播间不一样”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您担心的，其实也是我最在意的——一棵树长成这个样子不容易，不能被镜头辜负。”</p>
+                <p><span class="badge">专业解释</span>“我们做‘一物一拍’。您看到的这棵，拍的就是这棵。直播间没有滤镜，您看到什么姿态，收到就是什么姿态。尺寸我当着您的面量，高度、冠幅、粗度——全部透明。”</p>
+                <p><span class="badge">笃定收尾</span>“您收到觉得跟看到的不一样——联系我们。不是因为我们有‘保障’，是因为我亲手挑的树，我确定它值得。”</p>
+            </div>
+
+            <h3>类型三：面子型 · “怕买了没面子”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您担心花这个钱买回去，邻居看了觉得一般——我太懂了。”</p>
+                <p><span class="badge">专业解释</span>“我们上直播间的树，精品率只有10%。100棵里面挑10棵。您拿到的，是那个‘被挑出来的’。它的骨架、姿态、气质——经得起看。”</p>
+                <p><span class="badge">笃定收尾</span>“您不需要说价格。您只需要说‘这棵树是我挑的’——院子会替您说话。”</p>
+            </div>
+
+            <h3>类型四：务实型 · “怕买贵了”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您想确认自己花的钱值不值——这是理性的人都会做的事。”</p>
+                <p><span class="badge">专业解释</span>“我们是源头基地。同样的树形、同样的粗度，线下花卉市场四五千起步。今天这个价格，是因为它直接来自我们自己的苗圃。”</p>
+                <p><span class="badge">笃定收尾</span>“您花的每一分钱，都在树上——在它的树龄、在它的姿态、在它未来二十年陪您的时间里。您不是买贵了，您是买在了源头。”</p>
+            </div>
+
+            <h3>类型五：小院型 · “怕尺寸不对、种不下”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您担心买回去种不下——这是最实际的问题。”</p>
+                <p><span class="badge">专业解释</span>“尺寸我在镜头前量给您看——高度、冠幅、分枝点，全部透明。您量一下自家那个位置，心里有数。”</p>
+                <p><span class="badge">笃定收尾</span>“万一您量错了、种不下——联系我们。我们帮您换，不纠结。树要配院子，不是院子迁就树。”</p>
+            </div>
+
+            <h3>类型六：情怀型 · “怕品种不对、故事不真”</h3>
+            <div class="example-box">
+                <div class="label">顾问式回应</div>
+                <p><span class="badge">看见顾虑</span>“您买树，不只是买一棵植物——您买的是一个念想。”</p>
+                <p><span class="badge">专业解释</span>“中华小叶红就是中华小叶红，鸡爪槭就是鸡爪槭。我们每一棵树的品种都经过确认，因为我们知道——您在意的不只是好看，是‘它确实是那个东西’。”</p>
+                <p><span class="badge">笃定收尾</span>“品种错了，树您留着，钱退您。不是因为‘我们有保障’，是因为我确定它没错。”</p>
+            </div>
+
+            <!-- 四、六层递进 -->
+            <h2>四、保障话术的六层递进（从浅到深）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>层次</th><th>核心动作</th><th>话术示例</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1. 品种透明</td><td>告知确认流程</td><td>“每一棵上直播间的树，品种都经过三轮确认。我们比任何人都怕出错。”</td></tr>
+                        <tr><td>2. 尺寸透明</td><td>现场量给用户看</td><td>“高度、冠幅、粗度——全部在镜头前量。您看到多大，收到就是多大。”</td></tr>
+                        <tr><td>3. 养护陪伴</td><td>告知后续支持</td><td>“养护手册、园艺师视频指导、客服——您不是一个人在养。”</td></tr>
+                        <tr><td>4. 物流安心</td><td>告知包装与配送</td><td>“打木架发货，京东快运，送货上门。树在路上，我比您紧张。”</td></tr>
+                        <tr><td>5. 退换从容</td><td>告知流程（轻描淡写）</td><td>“种下去觉得不合适，联系我们。树要配院子，我们不纠结。”</td></tr>
+                        <tr><td>6. 底气收尾</td><td>回归品质自信</td><td>“为什么我敢这么说？因为我亲手挑的树，我确定它值得。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 每一层都是自然过渡，而非刻意“递进”。</p>
+
+            <!-- 五、完整话术示例 -->
+            <h2>五、完整话术示例（融合尺寸 + 品种 + 养护）</h2>
+            <div class="example-box">
+                <div class="label">模拟直播片段</div>
+                <p><em>（镜头对准一棵斜飘枫，主播站在树旁）</em></p>
+                <p><strong>主播</strong>：“这棵斜飘枫，分枝点一米二，冠幅一米八，高度两米二——尺寸我全部报给你了。你量一下你家那个位置，心里有数。”</p>
+                <p><strong>主播</strong>：“品种是中华小叶红，不是普通的红枫。我们做‘一物一拍’，你看到的就是你收到的。没有滤镜、没有美颜——这棵树长什么样，你收到就什么样。”</p>
+                <p><strong>主播</strong>：“养护的事情你不用操心——这棵是容器苗，根是完整的。种下去不需要缓苗，直接扎根。养护手册会随树一起到，园艺师一对一视频指导。你养的不是一棵树，是我们陪你一起养。”</p>
+                <p><strong>主播</strong>：“物流打木架，京东快运，送到你家门口。树在路上走多久，我比你更紧张——因为这棵树是我亲手从苗圃里挑出来的。”</p>
+                <p><strong>主播</strong>：“种下去觉得不合适，联系我们。树要配院子，不是院子迁就树。我们不纠结。”</p>
+                <p><strong>主播</strong>（停顿，从容）：“为什么我敢这么说？因为这棵树，我认识它很久了。它长成今天这个样子，不容易。我知道它值得。”</p>
+            </div>
+
+            <!-- 六、衔接节奏 -->
+            <h2>六、保障话术的衔接节奏（非独立存在）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>环节</th><th>保障话术的切入方式</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>开场</td><td>轻描淡写提一句：“我们家每一棵树都做一物一拍，尺寸透明，你看得到就收得到。”</td></tr>
+                        <tr><td>讲品中</td><td>自然融入：“这棵的尺寸我量给你看……养护的事你不用操心，我们全程陪你。”</td></tr>
+                        <tr><td>收尾</td><td>笃定收束：“为什么我敢这么说？因为我亲手挑的树，我确定它值得。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 七、常见误区 -->
+            <h2>七、常见误区（反面提醒）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>误区</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>只说“有保障”不讲具体内容</td><td>“你放心”“有保障”这种空话等于没说。要具体：“尺寸我量给你看”“养护手册会随树一起到”。</td></tr>
+                        <tr><td>保障话术像“喊口号”</td><td>“假一罚三！假一赔十！”——用户听多了，免疫了。真正的保障是细节和笃定。</td></tr>
+                        <tr><td>语气不自信</td><td>一边说“有保障”一边语气犹豫——用户会觉得你在心虚。保障话术的前提是“我真的相信这棵树”。</td></tr>
+                        <tr><td>只在最后提保障</td><td>用户在前半段就已经因为“怕不靠谱”划走了。保障要提前说、自然说、反复说。</td></tr>
+                        <tr><td>保障话术没有针对性</td><td>不管用户什么顾虑，都用同一套话术。要针对具体顾虑回应——新手怕养不活，品位型怕收到不一样。</td></tr>
+                        <tr><td>过度承诺</td><td>“养不活全额退”——这种话一旦说出去，用户反而会怀疑“你是不是对自己的树没信心”。适度、笃定、真实。</td></tr>
+                        <tr><td>忽略“审美信任”</td><td>保障话术如果只谈“退换”，而不谈“这棵树本身值得信任”，就会变成纯粹的“兜底”，失去了顾问式沟通的温度。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 八、速查卡 -->
+            <h2>八、保障话术 · 速查卡</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>场景</th><th>话术示例</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>品种透明</td><td>“每一棵上直播间的树，品种都经过三轮确认。”</td></tr>
+                        <tr><td>尺寸透明</td><td>“高度、冠幅、粗度——全部在镜头前量。您看到多大，收到就是多大。”</td></tr>
+                        <tr><td>养护陪伴</td><td>“养护手册、园艺师视频指导、客服——您不是一个人在养。”</td></tr>
+                        <tr><td>物流安心</td><td>“打木架发货，京东快运，送货上门。树在路上，我比您紧张。”</td></tr>
+                        <tr><td>退换从容</td><td>“种下去觉得不合适，联系我们。树要配院子，我们不纠结。”</td></tr>
+                        <tr><td>底气收尾</td><td>“为什么我敢这么说？因为我亲手挑的树，我确定它值得。”</td></tr>
+                        <tr><td>一物一拍</td><td>“你看到的就是你收到的。没有滤镜，没有美颜。”</td></tr>
+                        <tr><td>容器苗解释</td><td>“这棵是容器苗，根是完整的。种下去不需要缓苗，直接扎根。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 九、核心要点 -->
+            <h2>九、核心要点总结</h2>
+            <ul class="feature-list">
+                <li><strong>保障不是“承诺”，是“底气的自然流露”。</strong> —— 你相信这棵树，用户才会相信。</li>
+                <li><strong>先“看见顾虑”，再“回应顾虑”。</strong> —— 用户担心什么，你就自然地解释什么，而不是对着空气喊“我们有保障”。</li>
+                <li><strong>尺寸透明 > 退换承诺。</strong> —— 让用户买之前就清楚知道它多大，比告诉他“不合适能退”更有力量。</li>
+                <li><strong>养护陪伴 > 售后兜底。</strong> —— “我们陪你养”比“养不活我们赔”更温暖，也更真实。</li>
+                <li><strong>笃定语气 > 响亮口号。</strong> —— 从容地说“我确定它值得”，比喊“假一罚三”更有说服力。</li>
+                <li><strong>保障话术服务于审美信任。</strong> —— 最终目的是让用户从容地做出“这棵树属于我家”的判断，而不是“反正能退先试试”。</li>
+            </ul>
+
+            <div class="footer-note">
+                —— 基于《写给庭院美学顾问的七堂课》三阶模型 · 顾问式保障版 ——
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>水岸水景区 · 景观节点 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%; height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+            overflow-y: auto;
+        }
+        .content-wrap {
+            max-width: 920px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 20px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmerTitle 5s ease-in-out infinite; margin-top: 0.2em; margin-bottom: 0.2em; }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle { font-size: 15px; color: rgba(0, 0, 0, 0.30); font-weight: 400; margin-top: -0.2em; margin-bottom: 1.2em; letter-spacing: 0.3px; }
+        .section-badge { display: inline-block; font-size: 12px; font-weight: 500; color: #3a7a78; background: rgba(127, 193, 197, 0.10); padding: 2px 14px; border-radius: 20px; margin-bottom: 0.8em; }
+        h2 { font-size: 22px; color: #1c2e2a; margin-top: 0.2em; border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 14px; margin-bottom: 0.2em; }
+        .scene-desc { font-size: 14px; color: rgba(0, 0, 0, 0.45); margin-bottom: 1.2em; font-style: italic; padding-left: 18px; }
+        .node-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+            margin: 0.5em 0 1.2em 0;
+        }
+        .node-card {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+            display: flex; flex-direction: column;
+        }
+        .node-card .node-id {
+            font-weight: 700; color: #3a7a78; font-size: 14px;
+            display: inline-block; background: rgba(127, 193, 197, 0.12);
+            padding: 1px 12px; border-radius: 20px;
+            margin-bottom: 4px;
+            align-self: flex-start;
+        }
+        .node-card .node-name {
+            font-weight: 600; color: #1c2e2a; font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .node-card .node-tree {
+            font-size: 13px; color: #3a7a78;
+            background: rgba(127, 193, 197, 0.06);
+            padding: 2px 10px; border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 6px;
+            align-self: flex-start;
+            line-height: 1.5;
+        }
+        .node-card .node-tree strong { color: #2a5a58; font-weight: 600; }
+        .node-card .node-desc {
+            font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.68);
+            margin-bottom: 6px;
+        }
+        .node-card .node-space {
+            font-size: 12px; color: rgba(0, 0, 0, 0.40);
+            margin-top: 2px;
+            font-style: italic;
+        }
+        .node-card .node-effect {
+            font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.50);
+            margin-top: 4px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .node-card .node-feature {
+            font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.45);
+            margin-top: 3px;
+        }
+        @media (max-width: 640px) {
+            .node-grid { grid-template-columns: 1fr; }
+            #app { padding: 12px 10px 30px; }
+            .content-wrap { padding: 16px 14px; border-radius: 24px; }
+            h1 { font-size: 22px; } h2 { font-size: 19px; padding-left: 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 36px 40px; }
+            h1 { font-size: 34px; }
+        }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回首页</a>
+            </div>
+            <h1>水岸 / 水景区</h1>
+            <p class="subtitle">J20–J30 · 枫树庭院应用节点</p>
+            <span class="section-badge">倒影 · 虚实相生 · 动静对照</span>
+            <p class="scene-desc">一切有水的空间，利用倒影、落叶入水、枝条探水形成虚实相生。</p>
+            <div class="node-grid">
+
+                <div class="node-card">
+                    <div class="node-id">J20</div>
+                    <div class="node-name">池塘（自然式）</div>
+                    <div class="node-tree">推荐树形：<strong>12号·临水形</strong>（首选）— 极致探水姿态，枝条越接近水面倒影越完整；<strong>5号·高分枝斜飘</strong> — 枝条探向水面，姿态灵动；<strong>9号·低接龙爪垂枝</strong> — 枝条精致垂向水面。</div>
+                    <div class="node-desc">自然式池塘边种植枫树，枝条探向水面或垂向水面，倒影入池。这是水景区最经典的"枫+水"组合，虚实相生的画面是中式与日式庭院共有的审美追求。</div>
+                    <div class="node-effect">空间效果：实树与水中倒影形成"虚实相生"的画面，分不清实物与镜像。风动时倒影破碎、风停时重新聚合。秋叶入水后水面染成红色。</div>
+                    <div class="node-feature">景观特征：上下对称（实物与倒影），秋叶入水后水面染成红色。"虚实相生"是东方美学在水景中的最高表达。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J21</div>
+                    <div class="node-name">镜面水池</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 倒影如笔立，线条感强；<strong>2号·常规直立疏朗</strong> — 冠幅均衡，与方形水池形成方圆对比。</div>
+                    <div class="node-desc">规整几何形镜面水池旁种植枫树，利用水面倒影形成上下对称的画面。水面如镜，倒影清晰完整。</div>
+                    <div class="node-effect">空间效果：水面如镜，倒影清晰完整。水面静止时完整复制，微风起时倒影微皱，动静转换之间形成观赏节奏。</div>
+                    <div class="node-feature">景观特征：现代与传统结合，倒影的清晰度是核心观赏点。水面静止时完整复制，风起时倒影碎裂又聚合。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J22</div>
+                    <div class="node-name">极简池塘</div>
+                    <div class="node-tree">推荐树形：<strong>9号·低接龙爪垂枝</strong> — 枝条垂向水面，倒影精致；<strong>5号·高分枝斜飘</strong> — 枝条探向水面，姿态灵动。</div>
+                    <div class="node-desc">规整几何形的极简池塘边种植枫树。极简池塘更强调"几何纯粹性"——池塘干净无装饰、水面与地面平齐、池形纯圆或纯方。</div>
+                    <div class="node-effect">空间效果：极简池塘的几何规整与枫树的自然姿态形成"极与极"的对比。池塘的平静水面倒映树影。</div>
+                    <div class="node-feature">景观特征：极简池塘的几何规整与枫树的自然姿态形成现代与自然的"极与极"对话。倒影完整复制，秋叶入池后水面染上红色。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J23</div>
+                    <div class="node-name">溪流</div>
+                    <div class="node-tree">推荐树形：<strong>9号·低接龙爪垂枝</strong> — 枝条垂向水面，秋叶自然入水；<strong>5号·高分枝斜飘</strong> — 探水姿态，枝条与水流方向形成呼应。</div>
+                    <div class="node-desc">蜿蜒溪流边种植枫树，枝条探向流水，秋叶落入溪中随水漂流。溪流的"动"与枫树的"静"形成对比。</div>
+                    <div class="node-effect">空间效果：溪流的"动"与枫树的"静"形成对比。秋叶从树梢飘落，落在水面上，顺着溪流缓缓漂走。视线随着落叶移动，心也随之安静下来。</div>
+                    <div class="node-feature">景观特征：秋叶随水漂流是动态画面。水面上的红叶是溪流最好的装饰。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J24</div>
+                    <div class="node-name">叠水 / 瀑布</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 在瀑布旁形成垂直的线条，以"静"衬"动"；<strong>5号·高分枝斜飘</strong> — 枝条探向水幕方向。</div>
+                    <div class="node-desc">叠水或瀑布区域种植枫树，利用动静对比营造意境。瀑布的"动"与枫树的"静"形成强烈对比——水声潺潺与枫叶静美并存。</div>
+                    <div class="node-effect">空间效果：瀑布的"动"与枫树的"静"形成强烈对比，水声潺潺与枫叶静美并存，形成"动中取静"的观感。</div>
+                    <div class="node-feature">景观特征：水景是动态焦点，枫树是静态背景或前景。两者一动一静，形成空间张力。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J25</div>
+                    <div class="node-name">水中种植岛</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，在开阔水面中形成垂直的视觉锚点；<strong>2号·常规直立疏朗</strong> — 四向可观。</div>
+                    <div class="node-desc">在池塘中央或一侧堆筑小岛，岛上种植枫树。枫树四面环水，成为水面的绝对焦点。</div>
+                    <div class="node-effect">空间效果：水面包围了岛，岛托起了树。四面倒影同时呈现——无论站在池岸哪个位置，都能看到枫树的倒影。树的色彩变化在水面上形成360°的"色环"。</div>
+                    <div class="node-feature">景观特征：四面环水、四面倒影。枫树是水中央的"孤岛"也是"主角"。秋叶落水后，岛周围的整个水面被染红。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J26</div>
+                    <div class="node-name">水边石组 / 矶</div>
+                    <div class="node-tree">推荐树形：<strong>5号·高分枝斜飘</strong> — 枝条探向水面方向，与石组的"探水"姿态形成呼应；<strong>9号·低接龙爪垂枝</strong> — 枝条精致垂落，与石组的厚重形成对比；<strong>3号·低分枝直立疏朗</strong> — 自然丰满。</div>
+                    <div class="node-desc">水岸边放置一组自然景石（日式"矶"或中式湖石），石头部分探入水中，枫树种在石组后方或侧旁。石"探"入水、枫"垂"向水。</div>
+                    <div class="node-effect">空间效果：石组的水平延伸与枫树的垂直/斜向姿态形成构图对比。石头从岸边"走"进水里，枫树的枝条从岸上"探"向水面。</div>
+                    <div class="node-feature">景观特征：石为"骨"、枫为"衣"。枫叶落在石头上、落在水面上——石、枫、水三者形成了完整构图。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J27</div>
+                    <div class="node-name">水景 / 假山</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 在假山旁形成垂直的线条；<strong>5号·高分枝斜飘</strong> — 枝条探向水景方向。树形与假山的体量需形成比例关系。</div>
+                    <div class="node-desc">业主自己堆的假山或置石，加了水系循环水，枫树种在旁边。这是自建水景中最常见的"水+石+树"组合。</div>
+                    <div class="node-effect">空间效果：假山的堆叠感与枫树的自然姿态形成对比。水声与枫影并存，水系的声音成为庭院的背景音，枫树在其中静立。</div>
+                    <div class="node-feature">景观特征：水声枫影，自得其乐。石、水、树三者形成自然的构图，手法朴素但效果真实。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J28</div>
+                    <div class="node-name">水边平台</div>
+                    <div class="node-tree">推荐树形：<strong>9号·低接龙爪垂枝</strong> — 枝条精致垂向水面，与平台形成视线关系；<strong>5号·高分枝斜飘</strong> — 探水姿态，枝条与平台边缘形成呼应。</div>
+                    <div class="node-desc">水边自己搭的木平台，用于休息或观水，枫树种在平台旁。平台是人停留的地方，枫树是停留时的风景。</div>
+                    <div class="node-effect">空间效果：平台是人停留的地方，枫树是停留时的风景。坐于水边，看枫影入水。</div>
+                    <div class="node-feature">景观特征：坐于水边，看枫影入水。树影与水面、平台与人，形成"人-树-水"的日常画面。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J29</div>
+                    <div class="node-name">无边际水池 / 泳池旁</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 线条感强，与泳池的几何感呼应，不遮挡远方的视线；<strong>2号·常规直立疏朗</strong> — 冠幅规整，在池边形成完整的树冠轮廓。</div>
+                    <div class="node-desc">现代庭院的泳池或无边际水池旁种植枫树。水池的几何规整、水面与地面齐平，枫树在旁边提供垂直方向的色彩和柔和的视觉边界。</div>
+                    <div class="node-effect">空间效果：泳池的"水平无限"与枫树的"垂直有限"形成构图对比。无边际水池的水面延伸向远方，枫树是视线中的"锚点"。</div>
+                    <div class="node-feature">景观特征：泳池是"现代的"，枫树是"自然的"——两者并置形成"极与极"的对话。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J30</div>
+                    <div class="node-name">水景 · 置石 · 枫（三要素组合）</div>
+                    <div class="node-tree">推荐树形：<strong>5号·高分枝斜飘</strong> — 枝条探向水面，与石组的探水姿态形成呼应；<strong>9号·低接龙爪垂枝</strong> — 枝条精致垂落；<strong>3号·低分枝直立疏朗</strong> — 自然丰满。</div>
+                    <div class="node-desc">水岸边同时配置石与枫树——水为"底"、石为"骨"、枫为"衣"。这是庭院中最经典的"三要素构图"。</div>
+                    <div class="node-effect">空间效果：水的"柔"与石的"硬"与枫的"活"形成三重对比。石从岸边探入水，枫从石后探向水。水面倒影中，石影与枫影交错。</div>
+                    <div class="node-feature">景观特征：水为底、石为骨、枫为衣——三要素构成完整画面。秋叶落水时，先经过石、再落入水——从石到水的"色彩过渡"最动人。</div>
+                </div>
+
+            </div>
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                —— 水岸 / 水景区 · J20–J30 ——
+            </div>
+        </div>
+    </div>
+</body>
+</html>

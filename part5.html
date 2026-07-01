@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>主播品种速查手册 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== 全局重置 & 山秋背景 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%;
+            height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8;
+            color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 {
+            width: 400px;
+            height: 400px;
+            top: -120px;
+            right: -100px;
+            background: rgba(127, 193, 197, 0.25);
+        }
+        .bg-blur-circles .c2 {
+            width: 350px;
+            height: 350px;
+            bottom: -80px;
+            left: -80px;
+            background: rgba(95, 168, 166, 0.20);
+        }
+        .bg-blur-circles .c3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(167, 212, 210, 0.15);
+        }
+
+        /* ===== 主容器（全屏，自适应） ===== */
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            z-index: 1;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateX(16px);
+            will-change: transform, opacity;
+        }
+        .view.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        /* ===== 顶部导航（统一风格） ===== */
+        .top-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            padding: 16px 20px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .top-mini .brand {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(0, 0, 0, 0.20);
+            text-transform: uppercase;
+        }
+        .top-mini .back-link {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.25);
+            text-decoration: none;
+            padding: 4px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.40);
+        }
+
+        /* ===== 列表页 ===== */
+        #view-list .list-header {
+            flex-shrink: 0;
+            padding: 0 20px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .list-brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-top: 4px;
+        }
+        .list-brand .brand-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .list-brand .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            line-height: 1.1;
+        }
+        @keyframes shimmerTitle {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        .list-brand .brand-sub {
+            font-size: 11px;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        .list-brand .badge-img {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.30);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+        .list-brand .badge-img:active {
+            transform: scale(0.94);
+        }
+        .list-brand .badge-img svg {
+            width: 36px;
+            height: 36px;
+            stroke: #7fc1c5;
+            stroke-width: 1.8;
+            fill: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+        }
+        .list-brand .badge-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: none;
+        }
+        .list-brand .badge-img.has-image svg {
+            display: none;
+        }
+        .list-brand .badge-img.has-image img {
+            display: block;
+        }
+        .badge-img .upload-hint {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: #7fc1c5;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+            opacity: 0.9;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(127, 193, 197, 0.2);
+            transition: opacity 0.3s;
+        }
+        .badge-img.has-image .upload-hint {
+            opacity: 0;
+        }
+        .list-brand .badge-img input[type="file"] {
+            display: none;
+        }
+
+        .admin-toolbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .admin-toolbar button {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.40);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            backdrop-filter: blur(4px);
+        }
+        .admin-toolbar button:active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+        .admin-toolbar .btn-admin {
+            color: #3a7a78;
+            border-color: rgba(127, 193, 197, 0.15);
+            background: rgba(127, 193, 197, 0.06);
+        }
+        .admin-toolbar .btn-admin.active {
+            background: #3a7a78;
+            color: #fff;
+            border-color: #3a7a78;
+        }
+        .admin-toolbar .btn-admin.active:active {
+            background: #2a5a58;
+        }
+
+        .list-search {
+            position: relative;
+            margin-top: 4px;
+        }
+        .list-search input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 400;
+            background: rgba(255, 255, 255, 0.25);
+            color: #1c2e2a;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            font-family: inherit;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+        }
+        .list-search input:focus {
+            border-color: rgba(127, 193, 197, 0.30);
+            box-shadow: 0 0 0 4px rgba(127, 193, 197, 0.06), 0 2px 12px rgba(0, 0, 0, 0.02);
+            background: rgba(255, 255, 255, 0.50);
+        }
+        .list-search .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+        }
+        .list-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 2px 2px;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.20);
+        }
+        .list-stats .count {
+            color: #3a7a78;
+            font-weight: 500;
+        }
+
+        .list-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 20px 28px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .list-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .list-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+        }
+
+        .variety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .variety-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+        }
+        @media (max-width: 380px) {
+            .variety-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .variety-card {
+            background: rgba(255, 255, 255, 0.30);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.25s;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.01);
+        }
+        .variety-card:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.50);
+        }
+        .variety-card .v-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1c2e2a;
+            letter-spacing: 0.2px;
+            line-height: 1.3;
+        }
+        .variety-card .v-index {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 9px;
+            color: rgba(0, 0, 0, 0.05);
+        }
+        .variety-card .v-glow {
+            position: absolute;
+            top: -1px;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(127, 193, 197, 0.20), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .variety-card:hover .v-glow {
+            opacity: 1;
+        }
+        .variety-card.admin-mode .v-edit-btn {
+            display: flex;
+        }
+        .v-edit-btn {
+            display: none;
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            gap: 4px;
+        }
+        .v-edit-btn button {
+            background: rgba(255, 255, 255, 0.40);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 30px;
+            font-size: 9px;
+            padding: 2px 8px;
+            color: rgba(0, 0, 0, 0.35);
+            cursor: pointer;
+            font-family: inherit;
+            backdrop-filter: blur(4px);
+        }
+        .v-edit-btn button:active {
+            background: rgba(255, 255, 255, 0.70);
+        }
+
+        /* ===== 详情页 ===== */
+        #view-detail .detail-header {
+            flex-shrink: 0;
+            padding: 10px 20px 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .detail-header .header-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .detail-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.30);
+            cursor: pointer;
+            transition: all 0.25s;
+            flex-shrink: 0;
+            font-weight: 300;
+            line-height: 1;
+            backdrop-filter: blur(4px);
+        }
+        .detail-back:active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+        .detail-header .d-title-wrap {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-header .d-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1c2e2a;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .detail-header .d-latin {
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.25);
+            font-style: italic;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+        .detail-header .d-badge {
+            font-size: 10px;
+            font-weight: 400;
+            color: rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 2px;
+        }
+        .detail-header .btn-gallery-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 14px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(127, 193, 197, 0.10);
+            color: #3a7a78;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            border: 1px solid rgba(127, 193, 197, 0.06);
+            flex-shrink: 0;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+        }
+        .detail-header .btn-gallery-inline:active {
+            transform: scale(0.96);
+            background: rgba(127, 193, 197, 0.18);
+        }
+        .detail-header .admin-edit-btn {
+            display: none;
+            background: none;
+            border: 1px solid rgba(127, 193, 197, 0.12);
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 11px;
+            color: #3a7a78;
+            cursor: pointer;
+            font-family: inherit;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(4px);
+        }
+
+        .detail-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 28px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .detail-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .detail-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+        }
+
+        .detail-block {
+            margin-bottom: 20px;
+            animation: fadeUp 0.5s ease both;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+        }
+        .detail-block .block-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #3a7a78;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-block .block-label::after {
+            content: '';
+            flex: 1;
+            height: 1.5px;
+            background: linear-gradient(90deg, rgba(127, 193, 197, 0.12), transparent);
+        }
+        .detail-block .block-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: rgba(0, 0, 0, 0.72);
+            font-weight: 400;
+            letter-spacing: 0.1px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .detail-block .block-text strong {
+            color: #3a7a78;
+            font-weight: 500;
+        }
+
+        .detail-block .season-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .detail-block .season-item {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .detail-block .season-item .s-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(58, 122, 120, 0.5);
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .detail-block .season-item .s-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.60);
+            font-weight: 400;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(0, 0, 0, 0.12);
+            font-size: 14px;
+            grid-column: 1/-1;
+        }
+        .empty-state .big {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.15;
+        }
+
+        /* ===== 画廊 ===== */
+        #view-gallery {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 20;
+        }
+        .gallery-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        .gallery-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+        .gallery-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+        }
+        .gallery-slide .slide-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        .gallery-overlay {
+            position: absolute;
+            bottom: 36px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .gallery-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.50);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            pointer-events: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+        .gallery-indicator .dot-group {
+            display: flex;
+            gap: 8px;
+        }
+        .gallery-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .gallery-indicator .dot.active {
+            background: #7fc1c5;
+            transform: scale(1.3);
+        }
+        .gallery-indicator .arrow-hint {
+            font-size: 15px;
+            opacity: 0.3;
+            animation: pulseArrow 2s ease-in-out infinite;
+            transition: opacity 0.3s;
+            font-weight: 300;
+        }
+        .gallery-indicator .arrow-hint.end {
+            opacity: 0.06;
+            animation: none;
+        }
+        .gallery-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.40);
+            font-size: 17px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-weight: 300;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+        }
+        .gallery-close:active {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .gallery-counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        @keyframes pulseArrow {
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translateX(4px);
+            }
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.30);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            border-radius: 28px;
+            padding: 24px;
+            max-width: 420px;
+            width: 92%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .modal h3 {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #1c2e2a;
+        }
+        .modal label {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.45);
+            display: block;
+            margin: 10px 0 4px;
+        }
+        .modal input,
+        .modal textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.50);
+            transition: border-color 0.2s;
+        }
+        .modal input:focus,
+        .modal textarea:focus {
+            outline: none;
+            border-color: rgba(127, 193, 197, 0.30);
+        }
+        .modal textarea {
+            min-height: 50px;
+            resize: vertical;
+        }
+        .modal .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+            justify-content: flex-end;
+        }
+        .modal .btn-row button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .modal .btn-row .btn-cancel {
+            background: rgba(0, 0, 0, 0.02);
+            color: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .modal .btn-row .btn-save {
+            background: #3a7a78;
+            color: #fff;
+        }
+        .modal .btn-row .btn-save:active {
+            transform: scale(0.96);
+        }
+
+        .img-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+        .img-grid .img-item {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .img-grid .img-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .img-grid .img-item .del-btn {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: rgba(192, 57, 43, 0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .img-grid .img-item .del-btn:active {
+            transform: scale(0.9);
+        }
+        .modal .upload-btn {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.08);
+            border: 1px dashed rgba(127, 193, 197, 0.15);
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 13px;
+            color: #3a7a78;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 480px) {
+            .top-mini {
+                padding: 12px 16px 10px;
+            }
+            .top-mini .brand {
+                font-size: 11px;
+            }
+            .top-mini .back-link {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+            .list-brand .brand-name {
+                font-size: 20px;
+            }
+            .list-brand .badge-img {
+                width: 60px;
+                height: 60px;
+            }
+            .list-brand .badge-img svg {
+                width: 30px;
+                height: 30px;
+            }
+            .list-header {
+                padding: 0 14px 10px !important;
+            }
+            .list-scroll {
+                padding: 10px 14px 20px;
+            }
+            .detail-header {
+                padding: 8px 14px 6px !important;
+            }
+            .detail-header .d-title {
+                font-size: 18px;
+            }
+            .detail-scroll {
+                padding: 12px 14px 20px;
+            }
+            .detail-block {
+                padding: 14px 14px;
+            }
+            .detail-block .season-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .modal {
+                padding: 18px;
+                max-width: 94%;
+            }
+            .variety-grid {
+                gap: 6px;
+            }
+            .variety-card {
+                padding: 10px 6px;
+                border-radius: 12px;
+            }
+            .variety-card .v-name {
+                font-size: 12px;
+            }
+            .img-grid .img-item {
+                width: 60px;
+                height: 60px;
+            }
+            .admin-toolbar button {
+                font-size: 11px;
+                padding: 3px 10px;
+            }
+        }
+        @media (max-width: 380px) {
+            .variety-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .detail-block .season-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (min-width: 800px) {
+            .top-mini {
+                padding: 18px 32px 14px;
+            }
+            .list-header {
+                padding: 0 32px 14px !important;
+            }
+            .list-scroll {
+                padding: 16px 32px 32px;
+            }
+            .detail-header {
+                padding: 12px 32px 10px !important;
+            }
+            .detail-scroll {
+                padding: 20px 32px 32px;
+            }
+            .detail-block {
+                padding: 20px 24px;
+            }
+            .list-brand .brand-name {
+                font-size: 32px;
+            }
+            .list-brand .badge-img {
+                width: 80px;
+                height: 80px;
+            }
+            .variety-grid {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景层 -->
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+    </div>
+
+    <div id="app">
+
+        <!-- ===== VIEW 1: 品种列表 ===== -->
+        <div id="view-list" class="view active">
+            <!-- 顶部导航（统一风格） -->
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <div class="list-header">
+                <div class="list-brand">
+                    <div class="brand-left">
+                        <div class="brand-name">主播品种速查手册</div>
+                        <div class="brand-sub">庭院美学顾问 · 29个品种</div>
+                    </div>
+                    <span class="badge-img" id="badgeIcon" title="点击上传品牌图标">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                        <img id="badgeImage" src="" alt="品牌图标" />
+                        <span class="upload-hint">上传</span>
+                        <input type="file" id="fileInput" accept="image/*" />
+                    </span>
+                </div>
+                <div class="list-search">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" id="searchInput" placeholder="搜索品种名称..." autocomplete="off" />
+                </div>
+                <div class="list-stats">
+                    <span>共 <span class="count" id="totalCount">0</span> 个品种</span>
+                    <span id="resultCount"></span>
+                </div>
+                <div class="admin-toolbar" id="adminToolbar">
+                    <button class="btn-admin" id="toggleAdminBtn">🔒 管理员模式</button>
+                    <span style="font-size:11px;color:rgba(0,0,0,0.12);margin-left:auto;" id="adminStatus">未登录</span>
+                </div>
+            </div>
+            <div class="list-scroll" id="listScroll">
+                <div class="variety-grid" id="varietyGrid"></div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW 2: 品种详情 ===== -->
+        <div id="view-detail" class="view">
+            <div class="detail-header">
+                <div class="header-row">
+                    <button class="detail-back" id="detailBack">‹</button>
+                    <div class="d-title-wrap">
+                        <span class="d-title" id="detailTitle">品种名</span>
+                        <span class="d-latin" id="detailLatin">Acer palmatum</span>
+                    </div>
+                    <span class="d-badge" id="detailBadge">详情</span>
+                    <button class="btn-gallery-inline" id="detailGalleryBtn">实景图片</button>
+                    <button class="admin-edit-btn" id="editDetailBtn">✎ 编辑</button>
+                </div>
+            </div>
+            <div class="detail-scroll" id="detailScroll">
+                <div id="detailContent"></div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW 3: 画廊 ===== -->
+        <div id="view-gallery" class="view">
+            <button class="gallery-close" id="galleryClose">✕</button>
+            <div class="gallery-counter" id="galleryCounter">0 / 0</div>
+            <div class="gallery-container" id="galleryContainer">
+                <div class="gallery-track" id="galleryTrack"></div>
+                <div class="gallery-overlay">
+                    <div class="gallery-indicator">
+                        <span class="arrow-hint" id="arrowLeft">◀</span>
+                        <span class="dot-group" id="dotGroup"></span>
+                        <span class="arrow-hint" id="arrowRight">▶</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 模态框1：编辑品种 ===== -->
+        <div class="modal-overlay" id="editModalOverlay">
+            <div class="modal">
+                <h3 id="editModalTitle">编辑品种</h3>
+                <label>品种名称 *</label>
+                <input type="text" id="editName" placeholder="例如：奥马" />
+                <label>拉丁名</label>
+                <input type="text" id="editLatin" placeholder="Acer palmatum 'Ohma'" />
+                <label>品种来源</label>
+                <textarea id="editSource" placeholder="品种来源描述..."></textarea>
+                <label>树形与长势</label>
+                <textarea id="editTreeForm" placeholder="树形描述..."></textarea>
+                <label>叶形</label>
+                <textarea id="editLeafShape" placeholder="叶形描述..."></textarea>
+                <label>春季</label>
+                <input type="text" id="editSpring" placeholder="春季叶色" />
+                <label>夏季</label>
+                <input type="text" id="editSummer" placeholder="夏季叶色" />
+                <label>秋季</label>
+                <input type="text" id="editAutumn" placeholder="秋季叶色" />
+                <label>冬季</label>
+                <input type="text" id="editWinter" placeholder="冬季叶色" />
+                <label>价值提炼</label>
+                <textarea id="editValue" placeholder="价值提炼..."></textarea>
+                <label>其他</label>
+                <textarea id="editOther" placeholder="其他信息..."></textarea>
+                <div class="btn-row">
+                    <button class="btn-cancel" id="editModalCancel">取消</button>
+                    <button class="btn-save" id="editModalSave">保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 模态框2：图片管理 ===== -->
+        <div class="modal-overlay" id="imageModalOverlay">
+            <div class="modal">
+                <h3 id="imageModalTitle">实景图片管理</h3>
+                <div class="img-grid" id="imageGrid"></div>
+                <button class="upload-btn" id="imageUploadBtn">＋ 上传图片</button>
+                <input type="file" id="imageFileInput" accept="image/*" multiple style="display:none;" />
+                <div class="btn-row">
+                    <button class="btn-cancel" id="imageModalClose">关闭</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ================================================================
+        //  数据管理
+        // ================================================================
+        const STORAGE_KEY = 'maple_varieties_data';
+        const BADGE_KEY = 'maple_badge_image';
+
+        const DEFAULT_VARIETIES = [{
+            id: 'aoma',
+            name: '奥马',
+            latin: 'Acer palmatum \'Ohma\'',
+            source: '一款于1938年由日本选育的经典品种，得名于静冈县的大室山。它以其独特的直立半垂树形和灿烂夺目的秋色而闻名，在众多日本枫树中独树一帜，是需要大空间的花园或景观中一棵极具表现力的标本树。',
+            treeForm: '树形（核心优势）：这是\'奥马\'最显著的特征。它并非低矮蔓延的垂枝型，而是先直立生长形成主干，随后侧枝逐渐伸长并优雅地层层下垂，形成类似垂樱的柳树状帘幕效果，既有高度又有垂坠的动感，非常壮观。\n\n树形与长势：它是大型的层叠型枫树，需要充足的生长空间，只适合大型花园或公园。生长速度较快，成树高大，可达7-8米，冠幅宽阔。',
+            leafShape: '叶片中等大小，掌状7深裂，裂片几乎深达基部，显得十分开张。裂片披针形，边缘有锯齿，整体产生细腻的花边效果，与下垂的枝条相得益彰。',
+            leafColor: {
+                spring: '春季：新叶为黄绿色，叶缘带明亮的橙色，但很快变为均匀的亮绿色。',
+                summer: '夏季：叶片保持绿色。',
+                autumn: '秋季：迎来其高光时刻，叶片变为灿烂的金色、金橙色、红色和深红色的混合体，秋色表现年复一年极其稳定且壮观，被认为是顶级的秋色品种之一。',
+                winter: '冬季落叶后枝干姿态优美。'
+            },
+            value: '核心价值总结：宏伟尺度与优雅姿态的完美结合\n\n美学价值：它是一位"空间的舞者"，其独特的直立半垂形态结合了向上的力量感与向下飘洒的柔美，四季皆具画意。而秋季那如同燃烧般的绚烂色彩，更是将其视觉效果推向顶峰。\n\n空间价值：它是不适合小空间的"贵族"。在宽阔的草坪、水畔或作为建筑背景时，它能成为统领全局的焦点景观，提供无与伦比的垂直层次感和体量感。\n\n精神价值：种植\'奥马\'是对时间和空间的长期投资。等待它慢慢长成，欣赏其树形随岁月演变的过程，能带来巨大的满足感。其宏伟而优雅的姿态，象征着成熟、稳定与自然造物的神奇力量。\n\n总而言之，\'奥马\'是一款为宏大场景而生的经典日本枫树，它凭借其独特的直立垂枝树形和顶级秋色，能为大型花园带来任何其他品种都无法替代的戏剧性效果和震撼美感。',
+            other: '',
+            images: []
+        }, {
+            id: 'chunyu',
+            name: '春雨',
+            latin: 'Acer palmatum \'Shun\'u\'',
+            source: '一款名称意为"春季细雨"的日本枫树，其最突出的魅力在于秋季呈现出的一种如细沙洒落般的独特斑驳秋色。它并非以鲜艳的春色或夏色取胜，而是一款需要耐心等待、在秋季奉献出惊喜的品种。',
+            treeForm: '树形与长势：直立、灌丛状的小型乔木。尺寸与长势：生长缓慢，即使经过相当长的时间，其高度和冠幅也很少超过3米，体型小巧紧凑。',
+            leafShape: '叶片属于鸡爪槭组，长约5厘米，掌状5-7深裂，裂片呈披针状卵形，深裂达叶片的2/3或更多，叶缘有粗锯齿。叶柄长约4厘米。',
+            leafColor: {
+                spring: '春夏季：叶片在一年大部分时间里为浅绿色，相对朴素。',
+                summer: '春夏季：叶片在一年大部分时间里为浅绿色，相对朴素。',
+                autumn: '秋季（高光时刻）：秋季叶色变为红色，但特别之处，在于红色叶片上，会点缀着黄褐色的斑点或斑块，这种效果被称为沙尘斑，仿佛被细沙洒过一般，形成一种温暖而斑驳的独特质感。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：宁静朴素中的秋季惊喜\n\n美学价值：它不追求春夏的绚烂，而是将精华留待秋季。那种如同春日细雨过后、细沙点缀般的斑驳秋色，充满了诗意和独特的质感，值得细细品味。\n\n空间价值：其小巧的体型和紧凑的灌木形态，使其非常适合小型庭院、狭窄空间或容器栽培，能安静地融入环境，在秋季成为焦点。\n\n精神价值：培育\'春雨\'是一场关于耐心与发现的旅程。它大部分时间的朴素，更反衬出秋季那份偶然与独特之美带来的喜悦，适合欣赏内在美与季节变迁之趣的爱好者。\n\n总而言之，\'春雨\'是一款为懂得欣赏细微之美和季节韵律的园艺爱好者准备的日本枫树。它在秋季奉献的沙尘状斑驳叶色，宛如自然不经意间创作的艺术品，宁静而深刻。',
+            other: '偶然特征：在生长季早期，它偶尔会萌发出带白色斑驳的叶片，但这并非固定特征，发生频率极低。',
+            images: []
+        }, {
+            id: 'donglinhuangfeng',
+            name: '东林黄枫 / 热力棒',
+            latin: 'Acer oliverianum \'Hot Rod\'',
+            source: '核心定位：终极耐热型彩叶枫树\n\n\'Hot Rod\'是专为炎热气候培育的标志性品种，被誉为"终极耐热枫树"。它完美结合了日本枫树的优雅形态与橄榄槭的强健适应性，尤其适合南方地区栽培，在保持惊艳色彩的同时具备卓越的抗热能力。',
+            treeForm: '树形：直立生长习性，分枝紧密向上，自然形成狭优雅的树形，无需频繁修剪。尺寸：生长较快但体型适中，成熟高度约3-4米，冠幅仅2-3米，适合中小空间种植。',
+            leafShape: '掌状裂叶，形态优雅。',
+            leafColor: {
+                spring: '早春叶色：春季新叶展开时呈现锗红色，有明显的黄绿色叶脉，色彩饱和度较高。',
+                summer: '夏季叶色：叶色保持稳定的黄绿色，耐热性强，在炎热地区仍能保持良好状态，夏末就逐渐变成黄色。',
+                autumn: '秋天叶色：叶片变为柔和的金黄色，温暖雅致，黄叶期很长，最后变成浓烈的深红色，为年度观赏巅峰期。',
+                winter: '枝条特征：拥有明亮的亮黄色枝条，且全年色彩稳定性高，冬季无叶期尤为醒目，成为庭院焦点。早春时黄色树皮与锗红色新叶形成强烈对比，充满视觉张力。'
+            },
+            value: '核心价值总结\n\n核心优势：耐热性与秋天黄色、红色爆发力的完美结合，填补了炎热地区种植日本枫树的空白。\n\n独特之处：亮黄色枝杆与深红色秋叶的搭配在枫树品种中极为罕见，提供独特的色彩对比。\n\n适宜场景：特别推荐给南方地区的种植者，或任何需要低维护、高观赏价值的庭院设计。\n\n总结：\'Hot Rod\'是以"耐热超能力"为核心竞争力的革命性品种，既保留了日本枫树的美学精髓，又突破了气候限制，是高温地区彩叶乔木的终极解决方案。',
+            other: '耐热性优势：超级耐热——作为耐热枫树的标杆品种，在高温高湿环境下表现优异，远超普通日本枫树。适应性对比：虽对寒冷气候的适应性相对较弱，但在炎热地区是"难以击败"的选择。',
+            images: []
+        }, {
+            id: 'gui',
+            name: '桂',
+            latin: 'Acer palmatum \'Katsura\'',
+            source: '\'桂\'是一款于1974年从日本埼玉县推出的经典品种，其名称在日语中意为"假发"，形象地描绘了其茂密而优雅的树冠。它以其早春无比亮丽的橙黄色新叶和紧凑精致的树形而备受赞誉，并荣获英国皇家园艺学会（RHS）的花园功勋奖，是经过时间考验的杰出选择。',
+            treeForm: '树形：紧凑的直立型灌木或小乔木，枝叶密集，节间短，幼年生长较快，能迅速形成丰满的树冠。尺寸与长势：成熟尺寸因地区而异，约20年长至高宽约6x4米；整体体型可控，生长后期速度放缓。',
+            leafShape: '叶片较小，掌状5-7裂，裂片呈卵状披针形，先端细长。中心裂片明显较长，且叶片有自然向下翻转的独特习性，增强了整体的精致感和辨识度。',
+            leafColor: {
+                spring: '春季（高光时刻）：新叶展开时，呈现出淡黄橙色，而叶缘则呈现出更明亮的橙色或粉红色，叶脉附近为黄绿色，形成如糖果般温暖甜美的渐变效果，极为夺目。',
+                summer: '夏季：叶片主体褪为浅黄绿色至浓郁的绿色，但橙色的叶缘常常得以保留，在整个夏季保持层次感。',
+                autumn: '秋季：叶片上演另一场色彩秀，变为明亮的黄色、橙色和红色，绚丽多彩。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：稳定而绚丽的季节色彩与优雅体型的平衡\n\n美学价值：它最令人印象深刻的是早春那温暖、明亮且富有层次的橙黄色新叶，能瞬间带来春日的愉悦感。其叶色季节变化分明，从春到秋都保持着高度的观赏性，是一款"全能型"的观赏树种。\n\n空间价值：其紧凑直立的习性和茂密的枝叶，使其非常适合作为中小型庭院的核心观赏树，或种植于容器中点缀露台与阳台，能提供饱满而不显臃肿的景观效果。\n\n精神价值：种植\'桂\'意味着选择了一份经典的、值得信赖的美。其历久弥新的品质和获得的花园功勋奖，象征着一种经得起时间考验的优雅与格调，能为花园带来持久的安心与满足。\n\n总而言之，\'桂\'是一款凭借其早春无与伦比的温暖色调、优雅精致的树形和可靠的观赏表现而成为经典的日本枫树，是为花园注入明亮色彩与优雅气质的绝佳选择。',
+            other: '栽培适应性：喜半阴环境，但也能耐受全日照（需保证水分），在适当遮阴下叶色更佳。',
+            images: []
+        }, {
+            id: 'hongqianniao',
+            name: '红千鸟',
+            latin: 'Acer palmatum \'Beni Chidori\'',
+            source: '\'红千鸟\'是一款于1961年推出的直立型日本枫树，其名意为"红色的千鸟"，以其格外鲜艳的春季叶色和标志性的红色枝条闻名。它生长较快，株型紧凑，不仅是庭院中的亮点，更是备受推崇的优秀盆景素材。',
+            treeForm: '树形：直立生长，分枝密集，形成紧凑饱满的灌丛。枝干：当年生枝条在整个生长季节都呈现明亮的红色，多年生枝条为红紫色。这一特性使其即使在无叶时期，也具有独特的观赏价值，尤其在冬季。尺寸与长势：生长速度较快，但属于稍矮生品种，成熟高度约3米，株型控制良好。',
+            leafShape: '叶片较小，掌状5深裂，叶裂片狭窄，边缘有清晰锯齿，整体精致秀气。',
+            leafColor: {
+                spring: '春季：新叶萌发时，是最为鲜艳的深红色或深粉色之一，呈现出火红或柔和的粉红色，同时带有明显的黄绿色主脉和叶缘，红绿对比强烈，视觉冲击力极强。随后颜色会逐渐变为橙红色。',
+                summer: '夏季：叶片颜色褪去，变为黄绿色或中绿色，显得清新宜人。',
+                autumn: '秋季：气温降低后，叶片再次焕发为鲜艳的猩红色或深红色，为秋日增添热烈氛围。',
+                winter: '当年生枝条呈亮红色，多年生枝条红紫色，冬季观赏价值高。'
+            },
+            value: '核心价值总结：红枝与艳叶交织的四季戏剧\n\n美学价值：春季，其鲜艳的红叶与黄绿色叶脉形成的对比堪称惊艳；而四季常红的枝条则提供了持续的观赏点，尤其在冬季景观中尤为突出。\n\n空间价值：紧凑直立的株型使其非常适合小型庭院、狭小空间或大型容器栽植，能高效地利用垂直空间，打造亮眼的色彩焦点。\n\n精神价值：作为经典的盆景素材，它鼓励种植者进行艺术创作和精细养护，带来深度的参与感和成就感。其名称"红千鸟"也赋予其诗意的文化内涵，满足爱好者对品种历史与意境的追求。\n\n总而言之，\'红千鸟\'是一款凭借其鲜艳春色、四季红枝以及作为顶级盆景素材的潜力而历久弥香的日本枫树品种，是为花园和案头增添一抹亮丽红色的经典选择。',
+            other: '栽培适应性：适应性强，养护相对容易。盆景佳品：因其叶片小、枝节紧凑、枝条呈红色且生长可控，被公认为是非常优秀的盆景素材。',
+            images: []
+        }, {
+            id: 'hongsi',
+            name: '红司',
+            latin: 'Acer palmatum \'Beni Tsukasa\'',
+            source: '\'红司\'是一款于1972年推出的经典日本枫树品种，其名意为"红色的司政官"，象征着其华丽而庄重的气质。它以其春季明亮柔和的桃粉色新叶和四季分明的色彩变幻而著称，是一种兼具优雅与活力的中型灌木，非常适合小型花园或容器栽培。',
+            treeForm: '树形：具有直立的灌木状习性，树冠呈饱满的圆形，枝条纤细，形态优雅。尺寸与长势：属于中等大小品种，生长速度较慢，成熟高度和冠幅通常在2-3米左右，体型可控。',
+            leafShape: '叶片较小，掌状5-7深裂，裂片卵状披针形，先端细长尖锐，边缘有明显锯齿，整体显得精致秀丽。',
+            leafColor: {
+                spring: '春季：新叶展开时，呈现出明亮的桃红色、橙红色或虾粉色，色彩鲜活夺目，有时带有黄绿色叶脉，形成微妙对比，整体效果柔和而绚丽。',
+                summer: '夏季：叶片颜色逐渐沉稳，变为绿色，并常带有轻微的粉红色调或斑驳杂色，保持层次感。',
+                autumn: '秋季：叶片再次焕发色彩，变为鲜艳的深红色或橙红色，秋色浓郁。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：柔和明媚的春色与紧凑优雅的树形完美结合\n\n美学价值：它最动人的时刻在春季，那明亮而柔和的桃粉色新叶能瞬间点亮花园，带来无限的春意与活力。其四季变化的叶色确保了全年的观赏趣味。\n\n空间价值：中等偏小的体型和饱满的树冠使其能轻松融入各种尺度的花园空间，既不显突兀，又能成为视觉焦点，尤其适合现代小庭院或盆栽装饰。\n\n精神价值：种植\'红司\'能带来持续的喜悦，观察其叶色随季节更迭而变幻，如同见证一场自然的色彩魔术。其优雅的形态和易养护的特性，能带来安心与满足的园艺体验。\n\n总而言之，\'红司\'是一款凭借其明媚春色、优雅树形和广泛适应性而历久弥新的日本枫树品种，是为花园增添一抹柔和色彩与经典韵味的可靠选择。',
+            other: '栽培适应性：光照：喜部分遮阴环境，尤其在午后需适当遮荫，以避免叶片灼伤。土壤：适宜排水良好、微酸性的肥沃土壤。应用：因其紧凑的习性和优美的叶色，是小型庭院、花境点缀及容器栽培的理想选择。',
+            images: []
+        }, {
+            id: 'hongyinv',
+            name: '红乙女',
+            latin: 'Acer palmatum \'Beni Otome\'',
+            source: '\'红乙女\'是一款由日本园艺师于1985年选育的经典品种，其名意为"红衣少女"，形象地描绘了其春季新叶如少女面颊般娇嫩的鲑鱼粉色。它是一款树形紧凑、抗性极强的中矮型枫树，以其从春到秋持续变化的柔和色彩和优雅的伞状树形而广受欢迎。',
+            treeForm: '树形：直立紧凑，自然生长即呈饱满的伞状或半球形，萌枝能力强，形态优美无需过多修剪。尺寸与长势：属于中矮型，生长速度中等，成株高度通常在2.5至3米，非常适合中小型花园或容器栽植。',
+            leafShape: '叶片中等偏小，掌状5-7深裂，裂片呈披针形，先端细长尖锐，边缘有粗锯齿。叶质较薄，透光性佳，在阳光下尤为绚丽。',
+            leafColor: {
+                spring: '春季：新叶萌发时为深鲑鱼粉色，叶缘为红色，随后底色逐渐变为淡黄色，叶缘淡化为胭脂粉色，整体呈现出温暖柔和的粉黄渐变效果，格外迷人。',
+                summer: '夏季：粉色边缘逐渐褪去，叶片主体变为黄绿色，但顶梢会持续长出红色新叶，使得夏季的树冠色彩富有层次，毫不单调。',
+                autumn: '秋季：叶片变为明亮的橙红色至浓红色，为季节画上热烈的句号。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：娇嫩色彩与强健体魄的完美结合\n\n美学价值：它不像一些品种以强烈对比夺人眼球，而是以春季那种柔和、娇嫩的鲑鱼粉和胭脂粉渲染出独特的浪漫气息。薄叶带来的通透感，使它在阳光下仿佛自带光晕，优雅而灵动。\n\n空间价值：其紧凑饱满的天然伞形树冠，使其成为小空间庭院、露台或大型容器的理想选择，能轻松营造出结构优美、四季有景的焦点景观。\n\n精神价值：命名"红衣少女"赋予了它拟人化的温柔意象。种植它，既能欣赏到其如少女般娇美的色彩，又无需付出过于精心的呵护，这种"强健"与"娇美"的反差，带来的是安心与愉悦的双重满足。\n\n总而言之，\'红乙女\'是一款凭借其柔和的春色、优雅的树形和出色的环境适应性而成为经典的中矮型日本枫树，是为花园增添一抹持久浪漫与优雅气息的绝佳选择。',
+            other: '栽培适应性：抗性极强，耐寒、耐晒，适应性强，在大部分地区都能生长良好，养护省心，是新手和进阶爱好者的可靠选择。',
+            images: []
+        }, {
+            id: 'hudie',
+            name: '蝴蝶',
+            latin: 'Acer palmatum \'Kochō nishiki\'',
+            source: '\'蝴蝶\'是一款极具特色的小叶锦叶品种，其日本名"Kochō nishiki"意为"杂色的蝴蝶"。它以每片叶子都独一无二的奇异形态和随季节变幻的迷人斑色而著称，是锦叶枫树中最可靠、最令人向往的品种之一，总能吸引观赏者的目光。',
+            treeForm: '树形：僵硬地直立生长，枝条短而细密，形成茂密的大灌木或非常小型的乔木。尺寸与长势：生长缓慢，成株可达6米高，但进程缓慢。新枝非常纤细精致，因此嫁接难度较大。',
+            leafShape: '叶片形态高度可变，几乎找不到两片完全相同的叶子。多为掌状5深裂，裂片细长狭窄，几乎深达叶基。每个小裂片形状各异，长短不一，多数不规则，部分呈镰刀状，极具艺术感。',
+            leafColor: {
+                spring: '春季：斑驳部分为奶油色或白色，与蓝灰绿色的叶面形成清新雅致的对比。白色区域的边缘常带有浅粉色的晕染，格外娇美。',
+                summer: '夏季：白色斑驳保持，底色蓝灰绿。',
+                autumn: '秋季：白色的斑驳区域会转变为醒目的洋红色或品红色，为整棵树带来一种全新的、戏剧性的观赏品质。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：每一片叶子都是独一无二的艺术品\n\n美学价值：它最大的魅力在于其不可复制的叶片形态和清雅脱俗的斑色。春季，如同无数只形态各异的白色蝴蝶停驻在枝头；秋季，则魔术般地变为洋红色，充满惊喜。其观赏性极高，是真正的"对话树"。\n\n空间价值：其直立紧凑的习性使其非常适合小型庭院、岩石花园或大型容器，能作为视觉焦点，为空间增添一份精致、奇特的艺术气息。\n\n精神价值：拥有\'蝴蝶\'意味着收藏了一件不断生长的、充满随机性的活艺术品。观察每一片新叶的独特形态，等待其季节性的色彩变幻，能带来持续的新鲜感和探索的乐趣，满足园艺爱好者对独特性和艺术性的极致追求。\n\n总而言之，\'蝴蝶\'是一款为追求极致独特性和艺术感的鉴赏家准备的日本枫树。它不仅仅是一棵树，更是一件枝头上不断演变、永不重复的自然雕塑。',
+            other: '',
+            images: []
+        }, {
+            id: 'huancai',
+            name: '幻彩',
+            latin: 'Acer palmatum \'Orihime nishiki\'',
+            source: '\'幻彩\'是一款历史悠久的锦叶日本枫树，其名"织殿锦"意为"大师的丰富色彩的布料"，形象地概括了其叶片如华丽锦缎般绚烂多变的特点。它以其极其多样化的粉白斑纹和强健的生长习性而成为鸡爪槭组中最优秀的锦叶品种之一，观赏期从早春持续到深秋。',
+            treeForm: '树形：直立、茂密，形成圆顶形灌木或小乔木，结构饱满。尺寸与长势：生长快且强健，成株可达6米，比许多锦叶品种更具活力。',
+            leafShape: '叶片中等大小，掌状5-7深裂，裂片卵形，先端长而渐尖，边缘有明显锯齿，叶柄粉红色而细长。',
+            leafColor: {
+                spring: '春季：新叶展开时，基底为深绿色，但其上覆盖着亮粉色、白色、奶油色的斑纹，这些斑纹大小、形状、组合方式千变万化，可能呈点状、块状，甚至覆盖整个裂片，有些叶子会完全呈粉色或白色。强烈斑驳的叶片部分常会弯曲成镰刀状，极具动态美。',
+                summer: '夏季：斑纹中的粉色褪去，转变为白色或奶油色，与浓郁闪亮的绿色基底形成清新对比。',
+                autumn: '秋季：叶片变为金黄色、橙色乃至鲜红色，而白色斑块依然存在，形成红白相间的独特秋景。',
+                winter: '年轻枝条的树皮呈现醒目的粉红色或粉白条纹，这是其重要的识别特征，也增加了冬季的观赏点。'
+            },
+            value: '核心价值总结：强健体魄支撑下的锦缎般华丽斑纹\n\n美学价值：它是一位"色彩魔术师"，其斑纹的随机性和多样性确保了每一片叶子、每一棵树都是独一无二的艺术品。春季的粉色调华丽梦幻，夏日的绿白配比清爽，秋日的红白对比热烈，提供了持续三季的视觉盛宴。\n\n空间价值：其直立茂密的树形能快速形成有效的景观体量，非常适合作为庭院中的焦点树，能显著提升花园的色彩层次和艺术感。\n\n精神价值：栽培\'幻彩\'如同收藏一幅不断变化的活织锦。其强健的特性降低了养护难度，而它每年带来的不可预知的斑纹变化，则充满了惊喜和期待，能满足爱好者对收藏级品种的追求。\n\n总而言之，\'幻彩\'是一款将变化莫测的华丽斑纹与强健生长习性完美结合的经典日本枫树，是为花园带来持续惊喜和高级艺术感的传世之选。',
+            other: '栽培适应性：相当强健，非常耐寒，适应力佳。早春进行修剪（展叶前）有助于激发最佳的色彩表现。',
+            images: []
+        }, {
+            id: 'huangpihongye',
+            name: '荒皮红叶',
+            latin: 'Acer palmatum \'Arahagah\'',
+            source: '\'荒皮红叶\'是一款于1969年推出的独特日本枫树品种，其名称直译为"粗糙的树皮"。与绝大多数以观叶为主的枫树不同，它最核心的观赏价值在于其随树龄增长而逐渐形成的、极具质感的粗糙软木状树皮，是一款为庭院和盆景提供四季皆宜的骨干结构的经典品种。',
+            treeForm: '树形：直立、旺盛，生长速度较快。尺寸与长势：成株高度可达4-8米，是中型乔木。前10年生长迅速，可达到可观的高度。',
+            leafShape: '叶片较小，掌状5-7深裂，裂片窄卵形，先端细长，边缘有清晰锯齿，是典型的鸡爪槭叶形。',
+            leafColor: {
+                spring: '春季：新叶可能带红色，随后变为黄绿色，叶缘或有红晕。',
+                summer: '夏季：叶片保持绿色。',
+                autumn: '秋季：变为明亮的红色或橙红色，与粗糙的树皮形成温暖的对比。',
+                winter: '粗糙软木状树皮成为视觉焦点。'
+            },
+            value: '核心价值总结：超越叶色变幻的永久结构性美感\n\n美学价值：它提供了一种更持久、更深沉的美学维度。其随岁月累积的粗糙树皮，象征着时间与自然的力量，为花园带来稳定感和古朴的意境，尤其在冬季万物凋零时，其价值无可替代。\n\n空间价值：其挺拔的树形和独特的树干质感，使其成为庭院中不可或缺的骨架植物，能提供坚实的垂直线条和全年的结构支撑。\n\n精神价值：培育\'荒皮红叶\'是一场"时间投资"。观察并陪伴其树皮一年年变得粗犷苍劲，能带来深厚的满足感和与自然共成长的体验。它特别适合追求盆景艺术和庭院永久结构的爱好者。\n\n总而言之，\'荒皮红叶\'是一款为花园和盆景提供核心结构与永恒美感的独特日本枫树。它不追求一季的绚烂，而是以日益沧桑的树干，成就一幅经得起时间考验的立体画卷。',
+            other: '栽培适应性与应用：盆景佳品——由于其独特的树皮和良好的矮化适应性，是极其受推崇的盆景素材，能快速展现古树的韵味。景观应用——在庭院中，适合作为体现结构感和四季观赏性的骨架树种。',
+            images: []
+        }, {
+            id: 'huangye',
+            name: '荒野',
+            latin: 'Acer palmatum \'Kōya\'',
+            source: '\'荒野\'是一款直立生长、叶色清新的日本枫树，以其春天鲜嫩的黄绿色叶片和秋季温暖的黄橙色变化而引人注目。它具有良好的适应性和耐湿度能力，是一款适合多种花园环境的可靠选择。',
+            treeForm: '树形：直立生长，形态整齐，10年后高度可达约3-5米。生长速度：中等生长速度，成型后冠幅饱满。',
+            leafShape: '叶片边缘带有轻微的褶皱或波浪状，增加了叶片的质感和观赏细节。',
+            leafColor: {
+                spring: '春季：新叶为鲜嫩明亮的黄绿色（近乎荧光绿），充满活力，是春季花园中的亮点。',
+                summer: '夏季：叶片颜色加深，转为更深沉的绿色，提供清凉的视觉效果。',
+                autumn: '秋季：叶片呈现黄色至橙色的温暖色调，为花园增添秋日氛围。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：清新叶色带来的持久而低调的优雅\n\n视觉价值：从春到秋的柔和色彩变化提供持续观赏兴趣，鲜嫩的春色尤为突出。\n\n空间价值：直立紧凑的树形适合中小型花园、庭院或大型容器种植。\n\n实用价值：强健易养护，对湿度耐受性好，是新手和潮湿地区园丁的安心选择。\n\n总结：\'荒野\'是一款以清新叶色和强适应性为特色的日本枫树，它不追求夸张的艳丽，而是以四季分明的柔和变化和可靠的生长表现，为花园带来持久而低调的优雅。',
+            other: '生态与花期：花期5月开花，花朵虽不显眼，但能吸引有益昆虫和鸟类。生态价值：有助于花园生态多样性。栽培适应性：光照——适合全日照至斑驳遮阴环境。土壤——喜酸性、肥沃、排水良好的土壤。耐性——耐寒性强，且对湿度耐受性好。',
+            images: []
+        }, {
+            id: 'huangbazhang',
+            name: '黄八丈',
+            latin: 'Acer palmatum \'Kihachijō\'',
+            source: '\'黄八丈\'是一款山红叶系的日本枫树，以其大型亮绿色叶片、深裂重锯齿的独特叶形和秋季金黄与玫瑰色交融的罕见秋色而著称。树体强健挺拔，蓝灰色树皮上的白色条纹随树龄增长愈发明显，整体展现出一种厚重而独特的景观效果。',
+            treeForm: '树形：枝条粗壮且向外斜伸，形成丰满的圆形树冠，整体为低矮乔木或高大灌木形态，可高达6米。树皮：树皮呈深绿色并带有蓝灰色调，随年龄增长会出现显著的白色条纹，质感突出。',
+            leafShape: '叶片大型（长6-7厘米，宽8-9厘米），呈7或9深裂，裂片呈长卵状披针形，先端具极狭窄的尖头，叶缘有深刻的重锯齿，形态辨识度极高。',
+            leafColor: {
+                spring: '生长季：叶片为明亮的绿色，平整展开。',
+                summer: '生长季：叶片为明亮的绿色，平整展开。',
+                autumn: '秋季：秋色极为独特，先变为独特的金黄色并带有玫瑰色调，随后与浅橙色和红色混合，色彩层次丰富。',
+                winter: '树皮深绿色带蓝灰色调，随年龄出现显著白色条纹。'
+            },
+            value: '核心价值总结：罕见的秋色和雄浑的姿态\n\n美学价值：大型深裂的叶片与金黄带玫瑰调的秋色组合罕见，四季皆具观赏点，尤其是秋季表现突出。\n\n空间价值：丰满的圆形树冠适合大中型庭院或公园种植，能形成坚实的视觉锚点。\n\n精神价值：强健的树体和独特的外观象征着力量与独特性，适合追求厚重质感和长期景观效果的爱好者。\n\n总结：\'黄八丈\'是一款以独特叶形、罕见秋色和强健体魄为特色的山红叶系品种，它不追求柔美，而是以雄浑有力的姿态和独特的季节色彩，为园林带来稳定而持久的观赏价值。',
+            other: '强健性：植株生长强健，枝条粗壮，结构稳定。耐寒性：耐寒性强，适应性强。名称渊源：品种名意为"源自八丈岛"，体现了其日本渊源。',
+            images: []
+        }, {
+            id: 'meidaolu',
+            name: '美岛绿',
+            latin: 'Acer palmatum \'Midori Shima\'',
+            source: '\'美岛绿\'是一款源自日本、由法国园艺家引入欧洲的独特品种，其名称意为"河原之绿"，又名"川源绿"。它以其异常明亮的绿色树皮和清新淡雅的浅黄绿色叶片为主题，营造出一种通体清新、自然和谐的独特观赏效果，在众多日本枫树中别具一格。',
+            treeForm: '树形：生长迅速、直立，成型后呈开阔的花瓶形状。尺寸与长势：生长较快，10年内可长至2.5-3米高，易于栽培。',
+            leafShape: '为典型的掌状裂叶。',
+            leafColor: {
+                spring: '春季：新叶为亮嫩绿色，是春季最美丽的绿色之一，刚展开时颜色极浅，近乎白色。',
+                summer: '夏季：叶片变为浅绿色，与绿色的树皮几乎融为一体，显得格外清爽。',
+                autumn: '秋季：叶片变为明亮的黄色，通透亮丽。',
+                winter: '枝干亮绿色或翠绿色，格外醒目。'
+            },
+            value: '核心价值总结：清新脱俗的绿色主题与四季皆宜的和谐美感\n\n美学价值：它不追求斑斓的色彩，而是以不同层次的绿色（从嫩绿、翠绿到浅绿）构建出和谐统一的视觉体验，通体清新的风格带来宁静、纯粹的自然美感，尤其在炎夏能带来清凉感。\n\n空间价值：其直立的瓶状树形和明亮的绿色，使其非常适合作为现代简约风格庭院中的焦点树，或与深色树皮的植物搭配形成鲜明对比，能有效提亮空间。\n\n精神价值：培育\'美岛绿\'能带来一种宁静与治愈的感受。其统一的绿色调象征着和谐与生机，能为花园营造出一片静谧安宁的角落，满足人们追求自然、平和氛围的心理需求。\n\n总而言之，\'美岛绿\'是一款凭借其独特的亮绿色树皮和清新叶色而独树一帜的日本枫树，是为花园带来持续清凉感与和谐之美的绝佳选择。',
+            other: '栽培适应性：光照——喜阳光，能使树皮颜色达到最佳状态，但在炎热地区需防护午后的强烈日晒，以免树皮和叶片灼伤。耐寒性：植株耐寒。',
+            images: []
+        }, {
+            id: 'mohuanshanhu',
+            name: '魔幻珊瑚',
+            latin: 'Acer palmatum \'Maho Coral\'',
+            source: '\'魔幻珊瑚\'是一款由"出猩猩"实生苗选育出的新品种，以其在早春绽放出的独特、明亮的珊瑚粉色而命名。它生长快速、直立，是一款色彩表现极为强烈的彩叶矮生日本枫树。',
+            treeForm: '树形：直立性生长，株型饱满。尺寸与长势：属于矮生品种，但长势较快。预计15年内可长至高与冠幅均约1.8米（6英尺），成型株高可达2.5-3米。',
+            leafShape: '掌状5-7深裂，叶裂深邃，裂片细瘦清秀，呈现出精致通透的质感。',
+            leafColor: {
+                spring: '春季：新叶展开时，呈现出明亮的珊瑚粉色，是一种非常独特的色调。叶心为橙黄色，向外渐变为粉红，叶脉附近则透出黄绿色，色彩层次极为丰富，具有强烈的视觉冲击力，能照亮整个花园。',
+                summer: '夏季：强烈的珊瑚粉色逐渐淡去，转变为纯绿色，但新生的枝梢仍带酒红色，整体绿意盎然，清雅动人。',
+                autumn: '秋季：颜色再次变得鲜艳，恢复为明亮的橙色和珊瑚粉色，为花园带来秋日的热烈。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：早春无与伦比的色彩爆发力\n\n美学价值：它最夺目的时刻在早春，那罕见的珊瑚粉色异常明亮和耀眼，即使从远处也能成为视觉焦点。这种持续整个春季的强烈色彩秀，使其成为花园中名副其实的"色彩发动机"。\n\n空间价值：直立的习性和中等偏小的体型，使其非常适合作为庭院中层的焦点树，或栽植于阳光充足的角落，以点亮空间。其强劲的长势能较快地形成景观效果。\n\n精神价值：拥有它意味着每年春天都能率先迎来一场确定无疑的色彩盛宴，这种极具活力的色彩能给人带来积极、欢愉的情绪价值，满足园艺爱好者对早春花园色彩的极致追求。\n\n总而言之，\'魔幻珊瑚\'是一款凭借其在早春绽放出的独特、亮眼珊瑚粉色而脱颖而出的日本枫，是为花园带来强烈早春气息与现代活力的绝佳选择。',
+            other: '栽培适应性：耐寒且强健，叶片抗灼伤能力较强，可以承受较多的阳光照射，比许多日本枫树更易栽培。',
+            images: []
+        }, {
+            id: 'niuzhao',
+            name: '牛爪（丑之爪）',
+            latin: 'Acer palmatum \'Ushi no Tsume\'',
+            source: '\'牛爪\'（亦称\'丑之爪\'）是一款特性鲜明的古早品种日本枫树，其名颇具趣味性。它并非以春日娇艳取胜，而是一位专为秋天奉献绚烂色彩的表演者，尤其以其出色的耐热抗性备受关注。',
+            treeForm: '树形与长势：具体树形资料未详述，应为经典灌木或小乔木形态。',
+            leafShape: '作为经典品种，具有典型的掌状裂叶形态。',
+            leafColor: {
+                spring: '春季：新叶为亮绿色，清新而有活力。',
+                summer: '夏季：叶片转为深绿色，郁郁葱葱，为花园带来清凉感。',
+                autumn: '秋季：迎来其高光时刻，叶片先后呈现出带有荧光感的耀眼橙色，随后变为橙黄色，最终展现出绚烂的橙红色，色彩变化过程层次丰富，极为夺目。',
+                winter: '枝条一年四季均呈现红色，这在无叶的冬季为其提供了持续的结构美感和观赏价值。'
+            },
+            value: '核心价值总结：卓越的抗性基础之上，于秋季爆发的惊人色彩力量\n\n美学价值：它是一位"秋日明星"，其秋季的色彩变化——从荧光橙到橙红——充满了戏剧性的张力，温暖而热烈，能点亮整个晚秋的花园。\n\n空间价值：四季常红的枝条使其在冬季景观中别具一格，提供了难得的色彩和结构。\n\n精神价值：选择\'牛爪\'，意味着无需过分担忧夏季酷暑，便能稳定地收获一场年度秋色盛宴。\n\n总而言之，它对恶劣气候的顽强耐受性，能给种植者带来极大的安心感和成就感，尤其为高温地区的园艺爱好者提供了种植日本枫树的信心。',
+            other: '抗性卓越：实践表明，它能很好地适应高温环境，即便在浙江地区夏季40°C的气候条件下，依然能健康生长并在秋季展现出完美秋色，这使其成为南方地区（如两广）枫树爱好者的理想选择。',
+            images: []
+        }, {
+            id: 'nvshen',
+            name: '女神',
+            latin: 'Acer palmatum \'Megami\'',
+            source: '\'女神\'是一款出自荷兰的中型网脉斑叶品种日本枫树，属于"脉纹"系列，以其如迷宫般变幻的叶脉色彩而闻名，荣获皇家园艺学会奖项，是真正的宝藏枫树。',
+            treeForm: '树形：整体为直立的宽阔灌木丛生形态，枝条细长且优雅，略有下垂感，形成优雅的拱形或层叠效果。尺寸与长势：属于中等生长速度的品种，成熟后通常可达到2.5-3米高，冠幅相近，非常适合中小型花园或大型容器栽植。',
+            leafShape: '掌状5-7深裂，裂片狭窄，呈披针形，先端渐尖，叶缘有精致的粗锯齿，整体显得非常精致秀丽。',
+            leafColor: {
+                spring: '春季：新叶展开时，呈现出极为华丽的橙粉红色大理石纹路，背景色为柔和的粉、橙、黄混合，上面覆盖着黄绿色的网状叶脉，色彩缤纷，惊艳夺目。',
+                summer: '夏季：叶片颜色变深，转为紫红色或栗色为底，叶脉则变为红色或保持绿色，对比依然明显，呈现出沉稳的韵味。',
+                autumn: '秋季：再次上演色彩秀，恢复为灿烂的火红、橙粉色，深粉色从叶缘向内扩散，而黄绿色的叶脉网络依旧清晰，最后整体变为亮红色后落叶。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：变幻的脉纹艺术\n\n美学价值：它像一位真正的女神，每个季节都换上新装。春季的斑斓、夏季的深沉、秋季的炽热，其独特的脉纹特征确保了它在任何时期都是视觉的焦点，极具艺术感。\n\n空间价值：中等体量和优雅的垂枝形态，使其成为庭院中层的绝佳选择，能柔和地填充空间，增添动感和层次，尤其适合作为点睛之笔。\n\n精神价值：拥有它如同收藏一件不断变化的活艺术品，其学名源于希腊神话中的迷宫女神，寓意着其叶脉如迷宫般引人入胜，能满足园艺爱好者对独特、稀有品种的追求，带来持续的观察乐趣和审美享受。\n\n总而言之，\'女神\'是一款凭借其独一无二的网状叶脉和四季分明的色彩变幻而脱颖而出的日本枫，是为花园增添优雅与神秘气息的绝佳选择。',
+            other: '栽培适应性：耐寒性强（可耐-29°C），喜半阴环境，忌强烈日晒，适合在能保护其精致叶片免受灼伤的环境下生长。',
+            images: []
+        }, {
+            id: 'ribenrichu',
+            name: '日本日出',
+            latin: 'Acer palmatum \'Nippon Sunrise\'',
+            source: '\'日本日出\'是一款由美国育种家从经典品种\'珊瑚阁\'的实生苗中选育出的杰出改良品种。它完美地继承了亲本标志性的观赏树皮，并在此基础上实现了树皮色彩的进一步丰富和叶色观赏性的显著提升，被誉为最好的珊瑚色树皮枫树之一，其色彩变幻如日出般绚烂。',
+            treeForm: '树形：直立生长，树冠呈宽阔的球状，结构饱满。尺寸与长势：幼苗生长迅速，后期分枝增厚，成树可达7米，体型较大。',
+            leafShape: '典型的掌状5裂（偶有7裂），裂片卵形渐尖，叶缘有精细的双锯齿。',
+            leafColor: {
+                spring: '春季：新叶为明亮的黄绿色，带淡黄色斑纹，叶缘有淡红或铜橙色晕染。',
+                summer: '夏季：叶片成熟为新鲜的浅绿色。',
+                autumn: '秋季：秋叶呈现明亮的黄色、壮观的金色，并带有橙红色斑块和深红色，色彩绚丽。',
+                winter: '树皮色彩从淡黄到橙色再到深红色渐变，如日出。'
+            },
+            value: '核心价值总结：青出于蓝而胜于蓝的全面升级\n\n美学价值：它解决了\'珊瑚阁\'叶色平淡的遗憾，提供了从春到秋的丰富叶色变化。而其树皮的色彩变幻远超亲本，实现了四季皆景，尤其是冬季的枝干如同燃烧的火焰，极具视觉冲击力。\n\n空间价值：其挺拔的树形和较大的最终尺寸，使其非常适合作为大中型庭院的视觉骨架树种，能提供显著的垂直景观效果和全年的色彩引导。\n\n精神价值：拥有\'日本日出\'意味着每天都能在自家庭院欣赏到"日出"般的色彩奇迹。其强劲的生命力和绚丽的色彩，象征着活力、温暖与希望，能带来持续不断的自然馈赠之感。\n\n总而言之，\'日本日出\'是一款在经典基础上实现全方位超越的优秀品种，它集绚丽的四季树皮、观赏性强的叶色和强健的体魄于一身，是追求极致庭院色彩效果和全年观赏性的不二之选。',
+            other: '栽培适应性：抗性极强，非常耐全日照，环境适应力强，养护相对省心。',
+            images: []
+        }, {
+            id: 'sanhejin',
+            name: '三河锦',
+            latin: 'Acer palmatum \'Mikawa nishiki\'',
+            source: '\'三河锦\'是一款于1990年在日本爱知县从三河实生苗中选育出的斑叶品种。它以其变幻莫测的锦斑叶色而闻名，尤其在春季，叶片能展现出粉、白、绿交织的华丽色彩，但其锦斑表现与气候条件密切相关，需要一定的耐心等待其成熟后的完美呈现。',
+            treeForm: '树形：直立生长，具有三河系品种紧凑低矮的特性，但节间距相对较长。尺寸与长势：幼龄期生长较快，10年成树高约3.5米，最终可长成中小型乔木，适合大多数花园空间。',
+            leafShape: '叶片较长，掌状7深裂，裂片呈披针形，先端长渐尖，边缘有粗锯齿，形态舒展优雅。',
+            leafColor: {
+                spring: '春季：锦斑表现的高峰期。在低温条件下，叶片呈现出最惊艳的色彩：叶缘为玫红色至红褐色斑纹，叶片中心（叶脉附近）为明亮的淡绿色或黄绿色，有时整体呈现浅粉色与绿色中心的组合，色彩对比鲜明，极为华丽。',
+                summer: '夏季：锦斑效果减弱，叶片主体变为绿色，叶缘常带有白色或黄绿色的斑纹。',
+                autumn: '秋季：叶片变为黄色、橙红色或红褐色的混合色调，五彩缤纷。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：充满惊喜的锦叶艺术与栽培过程中的期待感\n\n美学价值：它是一位"色彩魔术师"，尤其是春季那不确定但可能极其绚烂的锦斑，如同开盲盒般的惊喜，其粉、白、绿交织的叶色在任何年份的峰值期都是花园中无可争议的焦点。\n\n空间价值：直立的紧凑树形使其非常适合作为中小型庭院的核心观赏树，能提供独特的垂直景观而不占用过多空间。\n\n精神价值：栽培\'三河锦\'是一个与自然协作的过程，每年的气候条件都会带来不同的色彩表现，这增加了园艺的趣味性和挑战性。等待它逐年展现出更完美斑纹的过程，本身就是一种充满期待和成就感的体验。\n\n总而言之，\'三河锦\'是一款为有经验的园艺爱好者准备的、充满惊喜的锦叶日本枫树，它奖励那些愿意付出耐心和精心照料的园丁，以其成熟后变幻莫测的华丽色彩带来无与伦比的满足感。',
+            other: '光照管理：需要防护以避免午后的强烈日晒，但早晨或斑驳的光照有助于激发春季最佳的锦斑颜色。耐心培育：其锦叶效果随着树的成熟而愈发显著，需要耐心养护，长远来看将获得美丽的回报。',
+            images: []
+        }, {
+            id: 'shanjin',
+            name: '山锦',
+            latin: 'Acer palmatum \'Yama nishiki\'',
+            source: '\'山锦\'是一款名称意为"山之彩"或"雪峰"的日本枫树，以其独特的白色网状脉纹叶色而闻名。它创造出如白雪覆盖山峰般的视觉效果，是一种优雅的直立型锦叶品种，其斑纹表现虽受环境影响，但一旦成功展现，便极具艺术感染力。',
+            treeForm: '树形：直立生长，形态优雅。尺寸与长势：属于中小型品种，生长势出乎意料地强劲（考虑到其叶片叶绿素较少）。成熟高度通常在2.5-3米左右，适合中小型花园。',
+            leafShape: '叶形为叶裂较深的掌状裂叶，叶缘有显著锯齿。',
+            leafColor: {
+                spring: '春季：新叶萌发时为浅黄绿色，随后叶缘或叶片大部分区域呈现出亮白色或乳白色的网状斑纹，绿色部分则如叶脉般勾勒其间，形成如"雪峰"般的独特图案。新叶边缘有时略带粉红色。',
+                summer: '夏季：斑纹的保持需要避免午后烈日的暴晒，否则可能导致灼伤或褪色。在适当遮阴下，斑纹效果得以延续。',
+                autumn: '秋季：叶片转变为鲜艳的橙红色至深红色，带来醒目的秋色表现。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：如艺术品般的网状斑纹与栽培中的挑战与回报\n\n美学价值：它最吸引人之处在于那独特的"雪峰"状网状叶脉，这种精细而醒目的斑纹在日本枫树中独树一帜，极具观赏性和艺术感，能成为花园中引人注目的焦点。\n\n空间价值：其直立的习性和中等偏小的体型，使其非常适合在小庭院、荫蔽花境或大型容器中种植，能增添一份精致而优雅的格调。\n\n精神价值：成功培育\'山锦\'并使其展现出完美斑纹，对园丁而言是一种值得骄傲的成就。这种对环境条件的敏感性增加了园艺的挑战性和趣味性，当叶片最终呈现出理想状态时，会带来极大的满足感。\n\n总而言之，\'山锦\'是一款为追求独特斑叶效果和园艺挑战的爱好者准备的日本枫树。当在适宜的环境下成功栽培时，它那如雪覆山峰般的叶片必将带来无与伦比的视觉享受。',
+            other: '栽培适应性：光照——需要部分遮阴，尤其要防护午后的强烈日照，以保护其娇嫩的斑纹并维持最佳叶色。环境敏感性：其出色的斑纹表现与春季凉爽、叶片缓慢展开的气候条件密切相关，斑纹并非始终一致或常年可见。',
+            images: []
+        }, {
+            id: 'weiersunfenairen',
+            name: '威尔逊粉矮人',
+            latin: 'Acer palmatum \'Wilson\'s Pink Dwarf\'',
+            source: '\'威尔逊粉矮人\'是一款由美国加州育种家选育的、以早春灿烂的鲑鱼粉色和近乎全年的色彩斑斓而闻名的紧凑型日本枫树。它不仅是春季的报信者，更因其持续萌发彩色新梢的特性，在整个生长季都保持着令人愉悦的视觉活力，是一款表现力极强的矮生品种。',
+            treeForm: '树形：精美的直立矮生灌木，结构紧凑而浓密，冠幅宽阔，分枝茂盛。尺寸与长势：纵向生长缓慢，成株高度仅3-4米，名副其实的"矮人"，非常适合空间有限的花园。',
+            leafShape: '叶片较小，通常为掌状5深裂，裂片细长，叶缘锯齿明显。新叶尤其小，有时中央裂片突出，看似3裂，形态精巧。',
+            leafColor: {
+                spring: '早春（高光时刻）：作为萌芽最早的品种之一，新叶绽放出灿烂明亮的鲑鱼粉色或粉红色，并带有嫩黄色叶脉，如同一团甜美的火焰。虽持续时间不长，但会迅速转变为热情的橙红色和橙黄色，并持续数周，极为醒目。',
+                summer: '夏季：叶片成熟为明亮的浅绿色。但其独特之处在于会持续不断地萌发新梢，新叶呈现粉红、橙红、锈红等多种色彩，与绿色老叶交织，使整个植株在整个夏天都显得色彩斑斓。',
+                autumn: '秋季：落叶很晚，叶色由绿转为橙黄，最终变为火热的橙红色和粉红色，观赏期长。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：超长的色彩盛宴与紧凑体型的完美结合\n\n美学价值：它打破了枫树仅在春秋两季有色彩的常规。从早春的惊艳粉彩，到夏季持续的"彩叶杂烩"，再到秋日的火热，它几乎全年无休地提供着色彩享受，是花园中名副其实的"活力源泉"。\n\n空间价值：紧凑的矮生习性使其成为小庭院、花境前景、大型容器或阳台绿化的绝佳选择，能用有限的空间创造出极大的色彩影响力。\n\n精神价值：种植\'威尔逊粉矮人\'会带来持续的惊喜。其早春的盛放预示着生机，而夏季不断冒出的彩色新梢则如同永不枯竭的惊喜，能为园丁带来满满的成就感和愉悦的心情。\n\n总而言之，\'威尔逊粉矮人\'是一款为追求极致色彩和四季花园趣味的爱好者准备的杰出品种。它用紧凑的体型奉献出持久而绚丽的色彩表演，是点亮任何花园角落的完美选择。',
+            other: '栽培适应性：抗性强，耐晒、耐寒，喜欢全日照环境，在充足阳光下色彩表现最佳，养护相对省心，适应性强。',
+            images: []
+        }, {
+            id: 'xilali',
+            name: '希拉蕊',
+            latin: 'Acer palmatum \'Hilary\'',
+            source: '\'希拉蕊\'是一款源自新西兰的极为独特和引人注目的复色日本枫树，被誉为绿色\'紫炎\'的红色等价物。它以其如同设拉子葡萄般浓郁、斑斓的叶色，以及强劲的长势和良好的抗性而备受青睐。',
+            treeForm: '树形：幼年直立生长，随后树冠逐渐展开并呈现优雅的拱形，枝条略微下垂。尺寸与长势：年轻时生长活力强劲，能较快成型。成熟后通常为中小型乔木或大型灌木，高度约在3-4米（亦有资料称可达更高），冠幅扩张。',
+            leafShape: '掌状5-7深裂，裂片深裂近乎带状，狭长且尖端尖锐，叶缘有稀疏锯齿。裂片常呈现不规则、弯曲或扭曲的形态，极具动感和个性。',
+            leafColor: {
+                spring: '春季：新叶展开时，呈现出深紫红色或明亮的樱桃红色，叶缘带有鲜艳的粉红色或浅粉色斑驳，对比强烈，如同盛开的玫瑰，绚丽夺目。',
+                summer: '夏季：底色变为灰紫色或橄榄绿色，斑驳的边缘变为奶油色或粉红色，并时常夹杂绿色条纹，色彩层次丰富且凉爽。',
+                autumn: '秋季：叶片最终变为灿烂的猩红色或橙红色，上演谢幕前的色彩高潮。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：强劲生命力和斑斓复色交织的视觉盛宴\n\n美学价值：它打破了日本枫树色彩单一的常规，将粉、紫、绿、奶油白巧妙融合于每片叶片，如同打翻的调色盘，在任何季节都是花园中无法忽视的艺术焦点，尤其适合追求独特性和现代感的庭院。\n\n空间价值：其直立的习性、扩张的冠幅和优雅的姿态，使其非常适合作为庭院中心的标本树，也能为花境提供强有力的中高层结构。强劲的长势意味着能较快地营造出成熟的景观效果。\n\n精神价值：拥有\'希拉蕊\'如同收藏了一幅会随季节变化的活油画，其旺盛的生命力和绚丽的色彩能持续带来惊喜与满足感，象征着热情、活力与不凡的品味，是园艺爱好者彰显个性的终极选择之一。\n\n总而言之，\'希拉蕊\'是一款凭借其强劲长势、独特斑斓复色和出色抗性而脱颖而出的日本枫树，是为花园注入持续惊艳色彩与现代艺术气息的卓越选择。',
+            other: '栽培适应性：抗性强，叶片抗灼伤能力显著优于许多日本枫树品种，对常见病虫害也有较好抵抗力。喜光照——在充足的阳光下（需避免夏季午后暴晒）其叶色最为鲜艳明亮。适宜排水良好、微酸性的肥沃土壤。',
+            images: []
+        }, {
+            id: 'xuhe',
+            name: '旭鹤',
+            latin: 'Acer palmatum \'Asahi Tsuru\'',
+            source: '\'旭鹤\'是一款名称意为"朝阳之鹤"的日本枫树，以其边界锐利、对比鲜明的斑纹和斑纹形态的高度多样性而闻名。它是斑叶枫树中表现稳定可靠的品种，白色部分纯净，绿色部分浓郁，春季新叶常带粉晕，整体观赏性极佳。',
+            treeForm: '树形：直立生长，树冠开展，呈圆形。幼树生长较快，随着树龄增长，速度减慢，形态变得更加紧凑。尺寸：可长成高8米、宽3-4米的多干型乔木，形态颇为壮观。',
+            leafShape: '典型的鸡爪槭叶形，掌状5裂，大小在3-8厘米之间。带有白色斑纹的裂片常呈镰刀状弯曲。叶柄长度可达6厘米，颜色从粉色到绿色不等。枝条小枝为暗绿色，不具粉红色条纹，这是其与相似品种\'幻彩\'的关键区别点。',
+            leafColor: {
+                spring: '春季新生长出的叶片常呈现淡粉色，随后转变为纯白色斑纹。',
+                summer: '白色斑纹与绿色叶面对比鲜明，斑纹形态多样（从几乎全白到点缀细小白色或粉色斑点）。',
+                autumn: '秋季色叶表现，具体未详，但整体观赏性佳。',
+                winter: '小枝暗绿色，不具粉红色条纹。'
+            },
+            value: '核心价值总结：迷人斑纹与强壮树体的完美结合\n\n美学价值：锐利清晰的斑纹与每片叶子的不可预测性相结合，使其如同自然的艺术品，尤其春季的粉白效果清新脱俗。\n\n空间价值：成熟后高大丰满的树形适合作为庭院焦点树，提供坚实的体量和独特的观赏效果。\n\n精神价值："朝阳之鹤"的名称赋予其诗意与祥瑞的寓意，其稳定而多样的表现象征着自然造物的精妙与和谐。\n\n总结：\'旭鹤\'是一款将斑纹的锐利度、多样性和树体的强壮性完美结合的经典斑叶日本枫树，是为花园增添高雅气质和持续视觉趣味的可靠选择。',
+            other: '栽培适应性：光照——与所有斑叶品种一样，午后适当遮阴有助于防止叶片灼伤。耐寒性：耐寒性强，适应多种景观环境。斑纹稳定性：斑纹在老枝上表现更为充分和稳定。',
+            images: []
+        }, {
+            id: 'xuexi',
+            name: '血汐',
+            latin: 'Acer palmatum \'Chi Shio\'',
+            source: '\'血汐\'是一款名称富有诗意（意为"血之潮汐"）的经典日本枫树品种，拥有千染、红八房等多个别名。它是最具代表性的"春枫"类型之一，以其早春无比鲜亮的新芽和紧凑优雅的树形而备受青睐，能完美融入日式与西式等各种庭院风格。',
+            treeForm: '树形：树形紧凑、丰满，结构优雅。尺寸与长势：生长速度适中，成株尺寸可控，非常适合空间有限的环境。',
+            leafShape: '属于伊吕波枫系，叶片精致，具典型掌状裂叶形态。',
+            leafColor: {
+                spring: '春季（高光时刻）：四月的新芽萌发时，呈现出极为鲜艳的赤红色，如同血色的潮汐，充满震撼力。随后，叶片中心逐渐变为绿色，而叶缘仍保持红色，形成红绿相间的独特景观。',
+                summer: '夏季：叶片完全转变为纯绿色，显得清新而富有生机。',
+                autumn: '秋季：叶片变为温暖的橙黄色至黄色，为庭院带来柔和的秋意。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：早春无与伦比的红色爆发力与四季皆宜的紧凑形态\n\n美学价值：它最夺目的时刻在早春，那鲜红欲滴的新芽能瞬间点燃花园的活力，是宣告春天来临的明确信号。其叶色从红到绿的渐变过程也极具动态美感。\n\n空间价值：紧凑的树形使其成为小庭院、狭窄空间或容器栽培的绝佳选择，能高效利用空间，在任何角落都能成为视觉亮点。\n\n精神价值：种植\'血汐\'意味着每年都能最早感受到春天的蓬勃生机。其名"血汐"蕴含的生命力与美感，能带来积极的情感共鸣，象征着新生与希望。\n\n总而言之，\'血汐\'是一款凭借其震撼的春色和优雅适应性而成为经典的日本枫树，是为花园带来最早春意和持续魅力的可靠选择。',
+            other: '栽培适应性：应用广泛——因其紧凑的习性，既适合庭院地栽，作为焦点或边界植物，也非常适合盆栽，用于装饰阳台、露台等空间。适应性强——能与日式、西式等多种园林风格和谐搭配。',
+            images: []
+        }, {
+            id: 'yinying',
+            name: '乙女樱',
+            latin: 'Acer palmatum \'Otome Sakura\'',
+            source: '\'乙女樱\'是一款源自\'出猩猩\'枝变的杰出品种，其名意为"少女樱"，形象地捕捉了其春季叶片如樱花般娇嫩绚丽的特质。它以其春季无与伦比的亮红色彩和优雅精致的树形而备受推崇，被誉为色彩变化最令人心动的日本枫树之一。',
+            treeForm: '树形：半矮生型直立生长，分枝密集，树冠呈宽阔茂密的圆形，细枝脆弱但结构优雅。尺寸与长势：生长速度相对较快，成树高度约3米，冠幅与高度相近，形成平衡的圆形树冠。',
+            leafShape: '叶片宽约4-5厘米，掌状5-7裂，中等深裂。裂片披针形，先端细长，边缘具精细锯齿，叶柄几乎与叶片等长，整体形态精致优雅。',
+            leafColor: {
+                spring: '春季：新叶呈现出日本枫树中最明亮、最醒目的亮红色或粉红色，并带有黄色叶脉，色彩饱和度高，能持续数周，随后逐渐变为栗红色，在五月底转为橙色。',
+                summer: '夏季：叶片主体变为中绿色，但树梢会持续萌发类似春季的红色新叶，使树冠色彩富有层次。',
+                autumn: '秋季：叶片变为鲜艳的橙黄色和红色，上演迷人的秋色秀。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：转瞬即逝的极致春色与持久优雅的树形结构\n\n美学价值：它最震撼的魅力在于春季那短暂却无与伦比的亮红色，其鲜艳程度在枫树品种中名列前茅，能瞬间成为整个花园的焦点。随后的色彩演变如同一场持续的视觉盛宴。\n\n空间价值：其半矮生、圆润丰满的树形，能自然形成优雅的景观焦点，非常适合作为小庭院、日式花园或视线焦点的中心装饰树。\n\n精神价值：种植\'乙女樱\'意味着追求极致的美。其名"少女樱"赋予了它青春与绚烂的意象，虽然最美的春色稍纵即逝，但正因如此，更值得珍惜和期待，带来年复一年的欣喜与感动。\n\n总而言之，\'乙女樱\'是一款凭借其极致绚丽的春色、优雅的树形和富有戏剧性的色彩变化而脱颖而出的日本枫树，是为追求瞬间惊艳与持久韵味的园艺爱好者准备的顶级选择。',
+            other: '栽培适应性：防护需求——需要保护以防止晚霜冻对娇嫩新叶和细枝的伤害。应用——其优雅的形态和绚丽的色彩，使其成为中小型庭院中绝佳的焦点树。',
+            images: []
+        }, {
+            id: 'yiluhong',
+            name: '刈羽红',
+            latin: 'Acer palmatum \'Kariha Red\'',
+            source: '\'刈羽红\'是一款于1991年发现的自然变异品种，源自日本新潟县的山红叶槭。它并非人工杂交选育，而是大自然的馈赠，以其古朴雅致的叶色和显著的绿色叶脉为特征，展现出一种不同于常见园艺品种的野趣与沉稳之美。',
+            treeForm: '树形与长势：作为自然生长的树种，其树形应较为自然开阔，为中大型灌木或小乔木。枝干：新生枝条为红色，老枝则转为绿色。',
+            leafShape: '掌状7深裂，裂片深邃，可达叶片基部的1/2至1/3处，叶片基部呈心形，叶缘有细锯齿，形态舒展而优雅。',
+            leafColor: {
+                spring: '春季：新叶展开为深红色或红褐色，与清晰可见的绿色叶脉形成庄重而独特的对比。',
+                summer: '夏季：叶片颜色变深，转为紫红色后渐变为墨绿色或棕绿色，叶脉对比依然明显，整体感觉沉稳内敛。',
+                autumn: '秋季：呈现出非常独特的景象，叶片底色变为黄色，其上散生着红色斑点或斑块，色彩斑驳，富于趣味。',
+                winter: '新生枝条红色，老枝绿色。'
+            },
+            value: '核心价值总结：源于自然的古朴韵味与独特斑驳秋色\n\n美学价值：它不追求鲜艳夺目，而是以春日的红绿脉纹和秋日的黄底红斑，展现出一种沉稳、雅致且极具辨识度的美感，尤其适合营造自然式、富有禅意的庭院风格。\n\n空间价值：其自然生长的习性，使其在庭院中能作为体现野趣的骨架树种，增添层次感和成熟度。\n\n精神价值：选择\'刈羽红\'，意味着欣赏并接纳自然的本真之美。它的发现故事和自然属性，能满足园艺爱好者对品种独特渊源和自然韵味的追求，带来一种与自然对话的平和感。\n\n总而言之，\'刈羽红\'是一款凭借其自然古朴的叶色、独特的脉纹对比和斑驳秋色而独具魅力的日本枫树，是为追求自然野趣和禅意美学的花园增添深度与个性的上佳选择。',
+            other: '栽培适应性：抗性强，叶片抗灼伤能力强，对环境适应力佳，养护相对省心。',
+            images: []
+        }, {
+            id: 'yinhuabu',
+            name: '印花布',
+            latin: 'Acer palmatum \'Nishiki\'',
+            source: '\'印花布\'是一款直立、茂密且极具活力的日本枫树品种，被视为"桂"的矮化变种。它以其在春季如杏黄绸缎般柔和亮丽的叶色，以及持续整个生长季的明快黄色调而著称，尤其适合空间有限的花园或容器栽培。',
+            treeForm: '树形：直立且生长旺盛，形成宽阔、茂密的灌丛，株型紧凑饱满。尺寸与长势：虽被描述为"矮化"，但实际为中大型灌木。长势强劲，10年后可达约4米高，成熟株高和冠幅通常在2-2.5米左右，非常适合中小型花园。枝干：新生枝条为红色/砖红色，成熟树皮会变成淡黄色，与春季的橙黄色叶片形成美妙对比，增加了冬季的观赏点。',
+            leafShape: '叶片自然偏小，形态精致。',
+            leafColor: {
+                spring: '春季：新叶萌发时呈现出明亮的杏黄色或橙黄色，并带有醒目的红橙色边缘，整体视觉效果温暖柔和，异常亮眼。',
+                summer: '夏季：诱人的红边迅速褪去，叶片展现出强烈的柠檬黄色，且这种明快的黄色调比多数同类品种持续得更久，随后在仲夏转为宜人的浅绿色或石灰绿色，依旧清新悦目。',
+                autumn: '秋季：叶片变为黄色、橙色和红色的有趣组合，色彩突出，观赏性极佳。',
+                winter: '新生枝条红色/砖红色，成熟树皮淡黄色。'
+            },
+            value: '核心价值总结：持久亮丽的黄色调与紧凑丰茂株形的完美结合\n\n美学价值：它最显著的特点是其持久而明亮的柠檬黄色，能为花园的阴凉处带来阳光般的活力。从春到秋持续变化的柔和色彩，使其成为一个能从不同季节提供愉悦视觉体验的品种。\n\n空间价值：相较于原始品种\'桂\'，其尺寸更为紧凑，茂密的习性使其能快速形成丰满的景观效果，是小型庭院、狭小空间或大型容器中打造亮眼焦点的理想选择。\n\n精神价值：拥有\'印花布\'意味着能享受到从春季柔和到秋季热烈的、几乎贯穿全生长季的色彩盛宴。其强劲的生命力和持久的美丽，能带来持续的满足感，尤其适合追求长期庭院色彩效果的爱好者。\n\n总而言之，\'印花布\'是一款凭借其持久的明快叶色、紧凑丰满的株形以及强大的适应性而备受喜爱的日本枫树，是点亮中小型花园或装饰露台的绝佳选择。',
+            other: '栽培适应性：耐寒性强，适应性强。应用广泛——因其紧凑的习性和小叶，非常适合于容器栽种或作为盆景素材，深受盆景爱好者喜爱。',
+            images: []
+        }, {
+            id: 'yuqianjin',
+            name: '羽前锦',
+            latin: 'Acer palmatum \'Uzen nishiki\'',
+            source: '\'羽前锦\'被公认为最出色的锦叶日本枫树品种之一，其春季叶片呈现出浓郁粉紫色边缘与内部粉白斑块交织的极致斑纹，且色彩持久性远超普通斑叶品种。它集强健长势、独特观赏性和中等体型于一身，是收藏级庭院标本树的典范。',
+            treeForm: '树形：直立生长，幼树树冠较窄，随成熟逐渐变得宽阔。尺寸：长势强健快速，10年可达2-2.5米高，成熟株高约3-4.5米，冠幅约3米，属于中型乔木。',
+            leafShape: '叶片掌状深裂，纹理精致，增强了斑纹的立体感。',
+            leafColor: {
+                spring: '春季：早春新叶展开时，绿色叶面边缘带有厚实的粉紫色边框，叶片内部则充满粉色与白色的大面积斑块，色彩对比强烈，极为惊艳。',
+                summer: '夏季：粉紫色边框逐渐淡化，但白色斑纹持续扩张，占据更多叶面，呈现出绿底白斑的主色调，斑纹保持度非常好。',
+                autumn: '秋季：叶片变为明亮的黄橙色，形成温暖的秋景。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：强烈持久斑纹与强健长势\n\n美学价值：极度鲜明且持久的粉白斑纹使其在锦叶枫树中独树一帜，春季效果尤为震撼，堪称"行走的艺术品"。\n\n空间价值：中等体型和直立树形使其非常适合中小型庭院作为焦点树，或用于建筑基础种植。\n\n收藏价值：作为极为稀有的品种，其强健性与顶级观赏性的结合，使其成为资深收藏家必入的标杆级锦叶枫树。\n\n总结：\'羽前锦\'是一款以强烈持久斑纹和强健长势重新定义锦叶日本枫树标准的品种，它能为花园带来从春到秋的无与伦比的视觉冲击力，是追求极致斑纹效果者的终极选择。',
+            other: '栽培适应性：为保持最佳叶色，需午后遮阴或种植于斑驳光照处，避免强烈日晒导致斑纹灼伤。土壤——喜肥沃、排水良好的土壤。耐寒性——耐寒，适应性强，养护相对容易。',
+            images: []
+        }, {
+            id: 'shu',
+            name: '曙',
+            latin: 'Acer palmatum \'Akebono\'',
+            source: '\'曙\'是一款名称意为"黎明"的日本枫树，完美诠释了其春叶如破晓天空般绚丽的特色。它以其在春季新叶绽放时独特的鲜红色与黄绿色叶脉的惊艳对比而闻名，色彩变化柔和而富有诗意。',
+            treeForm: '树形：树姿优美，树干可能呈现独特的轻微波浪形，增加了观赏的趣味性。尺寸与长势：属于中型品种，生长稳健，成熟高度通常在2至4米之间，形成丰满的灌丛或小乔木状。',
+            leafShape: '掌状5-7深裂，裂片边缘有粗锯齿，形态经典而优雅。',
+            leafColor: {
+                spring: '春季：新叶展开时，呈现出鲜艳的红色或粉橙色，同时黄绿色的叶脉形成清晰而美妙的对比，宛如黎明的霞光，充满生机与活力。',
+                summer: '夏季：叶片成熟后转变为纯净、清爽的绿色，为花园带来一片清凉宁静的绿意。',
+                autumn: '秋季：气温降低后，叶片再次焕发色彩，变为深红橙色或紫红色，为秋日花园增添温暖的色调。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：如黎明般清新且富有诗意的季节色彩变幻\n\n美学价值：它最动人的时刻在春季，鲜红新叶与黄绿色叶脉的对比，如同天边初升的朝阳，明亮而充满希望。这种柔和而鲜明的色彩过渡，赋予了庭院一种动态的、富有哲学意味的美感。\n\n空间价值：中等的体型和优雅的树姿，使其非常适合作为庭院中的主体景观树，或栽植于窗前、路径拐角处，四季皆能成景，和谐地融入整体景观设计。\n\n精神价值：命名"曙"本身就蕴含了新生与希望的寓意。种植它，意味着在每年的春天都能见证一场"黎明"的降临，这种周而复始的色彩变化能给人带来宁静的慰藉与对生命力的感悟，满足园艺爱好者对庭院意境美的追求。\n\n总而言之，\'曙\'是一款凭借其春叶如黎明霞光般清新亮丽的色彩而深受喜爱的日本枫树，是为花园带来诗意、希望与四季变换乐趣的经典选择。',
+            other: '栽培适应性：作为经典的日本枫树品种，适应性强，养护相对容易，适合在大部分庭院环境中生长。',
+            images: []
+        }, {
+            id: 'zhiji',
+            name: '织姬',
+            latin: 'Acer palmatum \'Orihime\'',
+            source: '\'织姬\'是一款以日本神话中"织女"命名的超小叶日本枫树品种，与\'舞姬\'齐名。它的发现为日本枫树，尤其是盆景领域，开启了新的篇章。其最显著的特征是极其微小的叶片，使其成为追求极致精致感的园艺师和盆景爱好者的珍贵收藏。',
+            treeForm: '树形：生长习性紧凑，枝条细密，自然形成精致而茂密的灌丛形态。尺寸与长势：属于矮生品种，生长缓慢，成株尺寸较小，这使其天生适合小空间栽培和盆景创作。',
+            leafShape: '叶片极其微小，是所有日本枫树中叶片最小的品种之一。掌状深裂，裂片纤细，呈现出无比精致的形态。',
+            leafColor: {
+                spring: '具有春秋色叶表现（预期红色或黄色调），微小叶片使色彩变化显得格外稠密迷人。',
+                summer: '绿色。',
+                autumn: '秋季可能呈现红色或黄色。',
+                winter: '落叶。'
+            },
+            value: '核心价值总结：以微小叶片达到艺术巅峰的极致精致感\n\n美学价值：它的美在于极致的微观世界。超小的叶片带来无与伦比的细腻质感和平滑的树冠轮廓，无论是作为小型盆栽还是盆景，都展现出一种安静而强大的艺术吸引力。\n\n空间价值：其矮小紧凑的习性，使其成为阳台、窗台、案头等微小空间的绝佳装饰，能在方寸之间展现完整的自然景观。\n\n精神价值：拥有\'织姬\'意味着投身于一门精细的艺术。它特别适合盆景爱好者，其培育过程需要耐心和技巧，能带来深厚的专注感、成就感和与自然对话的独特体验。其名"织姬"也赋予了它浪漫的文化内涵。\n\n总而言之，\'织姬\'是一款凭借其登峰造极的超小叶形态而在日本枫树家族中占据独特地位的品种，是为盆景和微缩园林艺术而生的珍品，是献给追求极致细节的爱好者的终极选择。',
+            other: '栽培适应性与应用：核心应用——顶级盆景素材。其超小叶的特性是盆景艺术的理想选择，能完美呈现"缩龙成寸"的艺术效果，营造出比例协调、细节丰富的微型景观。适合种植于小型花盆、岩石庭院或其他需要点缀精致植物的场景。',
+            images: []
+        }];
+
+        DEFAULT_VARIETIES.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN'));
+
+        // ================================================================
+        //  数据加载
+        // ================================================================
+        function loadData() {
+            let data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.length < 29) { localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_VARIETIES)); return DEFAULT_VARIETIES
+                            .slice(); }
+                    return parsed;
+                } catch (e) { localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_VARIETIES)); return DEFAULT_VARIETIES
+                        .slice(); }
+            } else { localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_VARIETIES)); return DEFAULT_VARIETIES.slice(); }
+        }
+
+        function saveData(varieties) { localStorage.setItem(STORAGE_KEY, JSON.stringify(varieties)); }
+
+        function loadBadge() {
+            const saved = localStorage.getItem(BADGE_KEY);
+            if (saved) { badgeImage.src = saved;
+                badgeIcon.classList.add('has-image'); }
+        }
+
+        function saveBadge(base64) { localStorage.setItem(BADGE_KEY, base64); }
+
+        // ================================================================
+        //  状态
+        // ================================================================
+        let varieties = loadData();
+        let currentVarietyId = null;
+        let currentGalleryIndex = 0;
+        let galleryImages = [];
+        let isAdmin = false;
+
+        const $ = (sel) => document.querySelector(sel);
+        const viewList = $('#view-list');
+        const viewDetail = $('#view-detail');
+        const viewGallery = $('#view-gallery');
+        const varietyGrid = $('#varietyGrid');
+        const searchInput = $('#searchInput');
+        const totalCount = $('#totalCount');
+        const resultCount = $('#resultCount');
+        const detailTitle = $('#detailTitle');
+        const detailLatin = $('#detailLatin');
+        const detailBadge = $('#detailBadge');
+        const detailContent = $('#detailContent');
+        const detailBack = $('#detailBack');
+        const detailGalleryBtn = $('#detailGalleryBtn');
+        const editDetailBtn = $('#editDetailBtn');
+        const galleryTrack = $('#galleryTrack');
+        const dotGroup = $('#dotGroup');
+        const galleryCounter = $('#galleryCounter');
+        const galleryClose = $('#galleryClose');
+        const arrowLeft = $('#arrowLeft');
+        const arrowRight = $('#arrowRight');
+        const galleryContainer = $('#galleryContainer');
+        const badgeIcon = $('#badgeIcon');
+        const fileInput = $('#fileInput');
+        const badgeImage = $('#badgeImage');
+        const toggleAdminBtn = $('#toggleAdminBtn');
+        const adminStatus = $('#adminStatus');
+
+        const editModalOverlay = $('#editModalOverlay');
+        const editModalTitle = $('#editModalTitle');
+        const editName = $('#editName');
+        const editLatin = $('#editLatin');
+        const editSource = $('#editSource');
+        const editTreeForm = $('#editTreeForm');
+        const editLeafShape = $('#editLeafShape');
+        const editSpring = $('#editSpring');
+        const editSummer = $('#editSummer');
+        const editAutumn = $('#editAutumn');
+        const editWinter = $('#editWinter');
+        const editValue = $('#editValue');
+        const editOther = $('#editOther');
+        const editModalCancel = $('#editModalCancel');
+        const editModalSave = $('#editModalSave');
+
+        const imageModalOverlay = $('#imageModalOverlay');
+        const imageModalTitle = $('#imageModalTitle');
+        const imageGrid = $('#imageGrid');
+        const imageUploadBtn = $('#imageUploadBtn');
+        const imageFileInput = $('#imageFileInput');
+        const imageModalClose = $('#imageModalClose');
+        let editingId = null;
+
+        // ================================================================
+        //  渲染
+        // ================================================================
+        function renderList(filter = '') {
+            const q = filter.trim().toLowerCase();
+            let filtered = q ? varieties.filter(v => v.name.includes(q)) : varieties;
+            filtered.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN'));
+            totalCount.textContent = varieties.length;
+            resultCount.textContent = q ? `找到 ${filtered.length} 个` : '';
+            if (filtered.length === 0) {
+                varietyGrid.innerHTML =
+                    `<div class="empty-state"><div class="big">⌕</div><div>未找到匹配的品种</div><div style="font-size:13px;color:rgba(0,0,0,0.08);margin-top:4px;">试试其他关键词</div></div>`;
+                return;
+            }
+            varietyGrid.innerHTML = filtered.map((v, idx) => `
+                <div class="variety-card" data-id="${v.id}" data-index="${idx}">
+                    <div class="v-glow"></div>
+                    <span class="v-index">${String(idx + 1).padStart(2, '0')}</span>
+                    <span class="v-name">${v.name}</span>
+                    ${isAdmin ? `<div class="v-edit-btn"><button class="edit" data-id="${v.id}">✎</button></div>` : ''}
+                </div>
+            `).join('');
+            varietyGrid.querySelectorAll('.variety-card').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('.v-edit-btn')) return;
+                    const id = el.dataset.id;
+                    openDetail(id);
+                });
+            });
+            if (isAdmin) {
+                varietyGrid.querySelectorAll('.edit').forEach(btn => {
+                    btn.addEventListener('click', (e) => { e.stopPropagation();
+                        const id = btn.dataset.id;
+                        openEditModal(id); });
+                });
+            }
+            varietyGrid.querySelectorAll('.variety-card').forEach(el => el.classList.toggle('admin-mode', isAdmin));
+        }
+
+        function openDetail(id) {
+            const variety = varieties.find(v => v.id === id);
+            if (!variety) return;
+            currentVarietyId = id;
+            detailTitle.textContent = variety.name;
+            detailLatin.textContent = variety.latin || 'Acer palmatum';
+            detailBadge.textContent = `#${varieties.indexOf(variety) + 1}`;
+            editDetailBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            galleryImages = variety.images || [];
+            let seasonsHtml = '';
+            if (variety.leafColor) {
+                const s = variety.leafColor;
+                seasonsHtml = `
+                    <div class="detail-block">
+                        <div class="block-label">🌿 季节表现</div>
+                        <div class="season-grid">
+                            ${s.spring ? `<div class="season-item"><div class="s-label">🌸 春</div><div class="s-text">${s.spring}</div></div>` : ''}
+                            ${s.summer ? `<div class="season-item"><div class="s-label">☀️ 夏</div><div class="s-text">${s.summer}</div></div>` : ''}
+                            ${s.autumn ? `<div class="season-item"><div class="s-label">🍂 秋</div><div class="s-text">${s.autumn}</div></div>` : ''}
+                            ${s.winter ? `<div class="season-item"><div class="s-label">❄️ 冬</div><div class="s-text">${s.winter}</div></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            detailContent.innerHTML = `
+                <div class="detail-block"><div class="block-label">📌 品种来源</div><div class="block-text">${variety.source || ''}</div></div>
+                ${variety.treeForm ? `<div class="detail-block"><div class="block-label">🌳 树形与长势</div><div class="block-text">${variety.treeForm}</div></div>` : ''}
+                ${variety.leafShape ? `<div class="detail-block"><div class="block-label">🍃 叶形</div><div class="block-text">${variety.leafShape}</div></div>` : ''}
+                ${seasonsHtml}
+                ${variety.value ? `<div class="detail-block"><div class="block-label">✨ 价值提炼</div><div class="block-text">${variety.value}</div></div>` : ''}
+                ${variety.other ? `<div class="detail-block"><div class="block-label">📎 其他</div><div class="block-text">${variety.other}</div></div>` : ''}
+            `;
+            switchView('detail');
+            document.getElementById('detailScroll').scrollTop = 0;
+        }
+
+        // ================================================================
+        //  画廊
+        // ================================================================
+        function openGallery() {
+            const variety = varieties.find(v => v.id === currentVarietyId);
+            if (!variety || !variety.images || variety.images.length === 0) { alert('该品种暂无实景图片。'); return; }
+            galleryImages = variety.images;
+            currentGalleryIndex = 0;
+            renderGallery();
+            switchView('gallery');
+            galleryTrack.style.transform = 'translateX(0)';
+        }
+
+        function renderGallery() {
+            galleryTrack.innerHTML = galleryImages.map((src, idx) => `
+                <div class="gallery-slide">
+                    <div class="slide-placeholder" style="background-image:url(${src}); background-size:contain; background-repeat:no-repeat; background-position:center;">
+                        <div style="position:absolute; bottom:20px; color:rgba(255,255,255,0.5); background:rgba(0,0,0,0.15); padding:4px 16px; border-radius:30px; font-size:12px; backdrop-filter:blur(4px);">${idx+1} / ${galleryImages.length}</div>
+                    </div>
+                </div>
+            `).join('');
+            dotGroup.innerHTML = galleryImages.map((_, idx) => `<span class="dot ${idx === 0 ? 'active' : ''}"></span>`)
+            .join('');
+            updateGalleryUI();
+            updateGalleryArrows();
+        }
+
+        function updateGalleryUI() {
+            const count = galleryImages.length,
+                idx = currentGalleryIndex;
+            galleryCounter.textContent = `${idx + 1} / ${count}`;
+            dotGroup.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+            arrowLeft.classList.toggle('end', idx === 0);
+            arrowRight.classList.toggle('end', idx === count - 1);
+            arrowLeft.style.opacity = idx === 0 ? '0.06' : '0.3';
+            arrowRight.style.opacity = idx === count - 1 ? '0.06' : '0.3';
+        }
+
+        function updateGalleryArrows() {
+            const idx = currentGalleryIndex,
+                count = galleryImages.length;
+            arrowLeft.style.animation = idx === 0 ? 'none' : 'pulseArrow 2s ease-in-out infinite';
+            arrowRight.style.animation = idx === count - 1 ? 'none' : 'pulseArrow 2s ease-in-out infinite';
+        }
+
+        function goGallery(delta) {
+            const count = galleryImages.length;
+            const newIdx = Math.max(0, Math.min(count - 1, currentGalleryIndex + delta));
+            if (newIdx === currentGalleryIndex) return;
+            currentGalleryIndex = newIdx;
+            galleryTrack.style.transform = `translateX(-${currentGalleryIndex * 100}%)`;
+            updateGalleryUI();
+            updateGalleryArrows();
+        }
+
+        // ================================================================
+        //  视图切换
+        // ================================================================
+        let currentView = 'list';
+
+        function switchView(target) {
+            [viewList, viewDetail, viewGallery].forEach(v => v.classList.remove('active'));
+            if (target === 'list') { viewList.classList.add('active');
+                currentView = 'list';
+                searchInput.value = '';
+                renderList(); } else if (target === 'detail') { viewDetail.classList.add('active');
+                currentView = 'detail'; } else if (target === 'gallery') { viewGallery.classList.add('active');
+                currentView = 'gallery'; }
+        }
+
+        // ================================================================
+        //  管理员
+        // ================================================================
+        toggleAdminBtn.addEventListener('click', () => {
+            if (!isAdmin) {
+                const pwd = prompt('请输入管理员密码：');
+                if (pwd === 'jhc3-2005') {
+                    isAdmin = true;
+                    toggleAdminBtn.textContent = '🔓 退出管理';
+                    toggleAdminBtn.classList.add('active');
+                    adminStatus.textContent = '管理员已登录';
+                    renderList(searchInput.value);
+                    if (currentView === 'detail' && currentVarietyId) openDetail(currentVarietyId);
+                } else { alert('密码错误'); }
+            } else {
+                isAdmin = false;
+                toggleAdminBtn.textContent = '🔒 管理员模式';
+                toggleAdminBtn.classList.remove('active');
+                adminStatus.textContent = '未登录';
+                renderList(searchInput.value);
+                if (currentView === 'detail' && currentVarietyId) openDetail(currentVarietyId);
+            }
+        });
+
+        // ================================================================
+        //  编辑
+        // ================================================================
+        function openEditModal(id) {
+            const variety = varieties.find(v => v.id === id);
+            if (!variety) return;
+            editingId = id;
+            editModalTitle.textContent = '编辑品种';
+            editName.value = variety.name || '';
+            editLatin.value = variety.latin || '';
+            editSource.value = variety.source || '';
+            editTreeForm.value = variety.treeForm || '';
+            editLeafShape.value = variety.leafShape || '';
+            editSpring.value = variety.leafColor?.spring || '';
+            editSummer.value = variety.leafColor?.summer || '';
+            editAutumn.value = variety.leafColor?.autumn || '';
+            editWinter.value = variety.leafColor?.winter || '';
+            editValue.value = variety.value || '';
+            editOther.value = variety.other || '';
+            editModalOverlay.classList.add('active');
+        }
+        editModalCancel.addEventListener('click', () => { editModalOverlay.classList.remove('active'); });
+        editModalSave.addEventListener('click', () => {
+            const name = editName.value.trim();
+            if (!name) { alert('品种名称不能为空'); return; }
+            const idx = varieties.findIndex(v => v.id === editingId);
+            if (idx !== -1) {
+                varieties[idx] = { ...varieties[idx],
+                    name,
+                    latin: editLatin.value.trim(),
+                    source: editSource.value.trim(),
+                    treeForm: editTreeForm.value.trim(),
+                    leafShape: editLeafShape.value.trim(),
+                    leafColor: { spring: editSpring.value.trim(), summer: editSummer.value.trim(), autumn: editAutumn
+                            .value.trim(), winter: editWinter.value.trim() },
+                    value: editValue.value.trim(),
+                    other: editOther.value.trim()
+                };
+                saveData(varieties);
+            }
+            editModalOverlay.classList.remove('active');
+            renderList(searchInput.value);
+            if (currentView === 'detail' && currentVarietyId) openDetail(currentVarietyId);
+        });
+
+        // ================================================================
+        //  图片管理
+        // ================================================================
+        function openImageManager() {
+            const variety = varieties.find(v => v.id === currentVarietyId);
+            if (!variety) return;
+            imageModalTitle.textContent = `实景图片管理 · ${variety.name}`;
+            renderImageGrid(variety);
+            imageModalOverlay.classList.add('active');
+        }
+
+        function renderImageGrid(variety) {
+            imageGrid.innerHTML = '';
+            const imgs = variety.images || [];
+            if (imgs.length === 0) { imageGrid.innerHTML =
+                    '<div style="width:100%;text-align:center;color:rgba(0,0,0,0.2);padding:12px 0;">暂无图片</div>'; return; }
+            imgs.forEach((src, idx) => {
+                const div = document.createElement('div');
+                div.className = 'img-item';
+                div.innerHTML =
+                    `<img src="${src}" alt="img${idx}" /><button class="del-btn" data-idx="${idx}">✕</button>`;
+                imageGrid.appendChild(div);
+                div.querySelector('.del-btn').addEventListener('click', () => {
+                    if (confirm('确定删除这张图片吗？')) {
+                        variety.images.splice(idx, 1);
+                        saveData(varieties);
+                        renderImageGrid(variety);
+                    }
+                });
+            });
+        }
+
+        imageUploadBtn.addEventListener('click', () => { imageFileInput.click(); });
+        imageFileInput.addEventListener('change', function(e) {
+            const files = this.files;
+            if (!files.length) return;
+            const variety = varieties.find(v => v.id === currentVarietyId);
+            if (!variety) return;
+            for (let f of files) {
+                const reader = new FileReader();
+                reader.onload = (ev) => { variety.images.push(ev.target.result);
+                    saveData(varieties);
+                    renderImageGrid(variety); };
+                reader.readAsDataURL(f);
+            }
+            this.value = '';
+        });
+        imageModalClose.addEventListener('click', () => { imageModalOverlay.classList.remove('active'); });
+        imageModalOverlay.addEventListener('click', (e) => { if (e.target === imageModalOverlay) imageModalOverlay.classList
+                .remove('active'); });
+        editModalOverlay.addEventListener('click', (e) => { if (e.target === editModalOverlay) editModalOverlay.classList
+                .remove('active'); });
+
+        // ================================================================
+        //  事件绑定
+        // ================================================================
+        detailGalleryBtn.addEventListener('click', () => { isAdmin ? openImageManager() : openGallery(); });
+        editDetailBtn.addEventListener('click', () => { if (currentVarietyId) openEditModal(currentVarietyId); });
+
+        badgeIcon.addEventListener('click', () => { fileInput.click(); });
+        fileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) { const data = ev.target.result;
+                    badgeImage.src = data;
+                    badgeIcon.classList.add('has-image');
+                    saveBadge(data); };
+                reader.readAsDataURL(file);
+            }
+            this.value = '';
+        });
+
+        let searchTimer = null;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => { renderList(searchInput.value); }, 150);
+        });
+
+        detailBack.addEventListener('click', () => switchView('list'));
+        galleryClose.addEventListener('click', () => switchView('detail'));
+        arrowLeft.addEventListener('click', (e) => { e.stopPropagation();
+            goGallery(-1); });
+        arrowRight.addEventListener('click', (e) => { e.stopPropagation();
+            goGallery(1); });
+
+        // 画廊触控
+        let touchStartX = 0,
+            touchStartY = 0,
+            isSwiping = false;
+        galleryContainer.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            touchStartX = t.clientX;
+            touchStartY = t.clientY;
+            isSwiping = true;
+        }, { passive: true });
+        galleryContainer.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            const t = e.touches[0],
+                dx = t.clientX - touchStartX,
+                dy = t.clientY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) e.preventDefault();
+        }, { passive: false });
+        galleryContainer.addEventListener('touchend', (e) => {
+            if (!isSwiping) return;
+            isSwiping = false;
+            const dx = e.changedTouches[0].clientX - touchStartX,
+                dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) dx < 0 ? goGallery(1) : goGallery(-1);
+        }, { passive: true });
+
+        // 鼠标拖拽
+        let mDown = false,
+            mStartX = 0,
+            mStartY = 0;
+        galleryContainer.addEventListener('mousedown', (e) => { mDown = true;
+            mStartX = e.clientX;
+            mStartY = e.clientY;
+            e.preventDefault(); });
+        document.addEventListener('mousemove', (e) => {
+            if (!mDown) return;
+            const dx = e.clientX - mStartX,
+                dy = e.clientY - mStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) e.preventDefault();
+        });
+        document.addEventListener('mouseup', (e) => {
+            if (!mDown) return;
+            mDown = false;
+            const dx = e.clientX - mStartX,
+                dy = e.clientY - mStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) dx < 0 ? goGallery(1) : goGallery(-1);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (currentView === 'gallery') {
+                if (e.key === 'ArrowLeft') { e.preventDefault();
+                    goGallery(-1); }
+                if (e.key === 'ArrowRight') { e.preventDefault();
+                    goGallery(1); }
+                if (e.key === 'Escape') { switchView('detail'); }
+            }
+            if (currentView === 'detail' && e.key === 'Escape') switchView('list');
+        });
+
+        // ================================================================
+        //  初始化
+        // ================================================================
+        loadBadge();
+        renderList();
+        console.log('📖 主播品种速查手册 · 山秋风格已加载，共 ' + varieties.length + ' 个品种');
+        console.log('🔑 管理员密码: jhc3-2005');
+        console.log('💡 数据保存在浏览器 localStorage。');
+    </script>
+</body>
+</html>

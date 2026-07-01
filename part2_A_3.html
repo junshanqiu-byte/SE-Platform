@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>3号低分枝直立疏朗 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">3</span>
+                <div>
+                    <div class="type">低分枝直立疏朗</div>
+                    <div class="sub">直立型 · 低分枝 · 单干 · 疏朗</div>
+                </div>
+            </div>
+            <div class="tagline">
+                从膝盖开始就是树，小院边界全靠它
+                <span class="light">包裹 · 遮挡 · 近景 · 小空间主角 —— 蹲下来陪你的树</span>
+            </div>
+            <div class="keyword-line">✦ 直立型 · 低 (≤0.8m) · 单干 · 疏朗 ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">包裹</span>
+                    <span class="hook">"从地面开始的拥抱"</span>
+                    <div class="desc">分枝点不到膝盖，枝叶从地面就开始了，近身就被包裹。孩子伸手就能摸到叶子，你坐在旁边不用抬头就是满眼绿色。种在墙角，从地面到树冠是连续的、不间断的绿意。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">遮挡</span>
+                    <span class="hook">"天然的隐私屏障"</span>
+                    <div class="desc">低分枝让视线从地面开始就被挡住，在你最需要的高度温柔守护。给冰冷的围墙穿一件'绿衣'，边界从此有了生命。透而不堵——挡住视线，但阳光和空气能自由穿过。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">近景</span>
+                    <span class="hook">"为近身观赏而生"</span>
+                    <div class="desc">你走近它，不是在看一棵树，是在'进入'一棵树。站着、坐着、蹲下，视线都在枝叶范围内，沉浸感十足。春天新芽、夏天叶脉、秋天红叶——细节就在你眼前。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">小空间主角</span>
+                    <span class="hook">"面积不大，气场不小"</span>
+                    <div class="desc">为十几二十平的小院子量身设计，种一棵就有了'魂'。空角落、不知道怎么用的地方，种下去立刻'活了'。茶室旁、石组旁——不抢、不压、不空，刚刚好。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">3 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">低分枝直立疏朗</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">直立型 · 低 (≤0.8m) · 单干 · 疏朗</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"从膝盖开始就是树，小院边界全靠它。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">包裹 · 遮挡 · 近景 · 小空间主角</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">亲和 · 包裹 · 遮挡 · 触手可及 · 蹲下来陪你</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">围墙边界</span><span class="tag">墙角</span><span class="tag">茶室旁</span><span class="tag">飞石路径</span><span class="tag">窗前</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">墙角空 · 边界没私密 · 树够不着 · 小院子不敢种 · 窗前挡光</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">春日触手可及 · 夏日包裹感 · 秋日近身红叶 · 冬日骨感 · 日常陪伴</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">围墙边界</span><span class="desc">枝叶从围墙底部就开始覆盖，墙不再是冷冰冰的砖，而是从地面到半空都披上了'绿衣'。</span></div>
+                <div class="scene-item"><span class="name">庭院角落</span><span class="desc">空角落、不知道怎么用的角落，种一棵低分枝，枝叶从地面就开始丰满，那个角落立刻'活了'。</span></div>
+                <div class="scene-item"><span class="name">茶室 / 窗下</span><span class="desc">茶人坐于室内，视线平视出去就是低垂的枫枝。春红夏绿秋金冬枝，四季就在眼前流转。</span></div>
+                <div class="scene-item"><span class="name">飞石 / 汀步路径旁</span><span class="desc">人在石上走，树在身侧，高度正好在膝盖到腰部。一步一石，一石一枫，行走有了陪伴。</span></div>
+                <div class="scene-item"><span class="name">入户门旁</span><span class="desc">出门时弯腰就能摸到叶子，进门时低头就看到新芽。门厅不再是'通道'，是'有陪伴的过渡'。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 墙角'空'了十几年，一直不知道怎么填</div>
+                <div class="solution">"种过高一点的树吧，太压；种过矮的灌木吧，又不够看；种花吧冬天又没了。那个角落空了十几年，每次看到都觉得'应该种点什么'，但每次都不知道种什么。"<br /><strong>→ 种一棵3号，枝叶从地面就开始了，不需要长高就能把角落'填满'。不高不压、不矮不空，一棵树让十几年的空角落变成风景角。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 边界没私密感，邻居一眼看到底</div>
+                <div class="solution">"种绿篱吧太死板，种高树吧下面还是空的——视线还是能穿过去。你坐在院子里总觉得不踏实，就是因为没有遮挡。"<br /><strong>→ 种一棵3号在边界，低分枝让视线从地面就开始被挡住。它在视线最关键的腰部位置给你挡得严严实实，私密感有了，但透气感还在。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 院子里的树'够不着'，没有互动感</div>
+                <div class="solution">"分枝点比你人还高，叶子都在头顶上，你除了抬头看一眼，跟它没有任何'接触'。树是树，你是你——你们是'陌生人'。"<br /><strong>→ 种一棵3号，伸手就能摸到叶子，孩子踮脚就能够到最低的枝条。它不是'高高在上'的树，是'蹲下来陪你'的树。你跟它之间，是有'关系'的。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点四 · 小院子不敢种树，怕'种不下'</div>
+                <div class="solution">"十几平的小院子，种大树怕把空间占满了，不种又空荡荡的。小院子的业主最怕'种错了树'。"<br /><strong>→ 3号就是为小院子准备的——它不往高处长、不占天际线，但它丰满、有体量、有存在感。小院子里种一棵，整个院子就有了'重心'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点五 · 窗前种树'挡光'，不种又'空'</div>
+                <div class="solution">"想种又怕挡光，不种又觉得空。那种'想要又不敢要'的感觉，已经陪你好几个春天了。"<br /><strong>→ 3号种在窗前，分枝点不到膝盖，树冠在窗台高度展开。窗户的上半部分留给了天空和光线，下半部分有了枫叶的陪伴。不挡光，但有景。窗前终于不用再'二选一'了。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🌱 春日触手可及</span>
+                    <div class="text">"春天，新叶从最低的枝条上冒出来，嫩红的、半透明的。你每天早上出门前，顺手摸一下那片叶子，凉凉的、软软的。它不是一棵'看'的树，是一棵'摸'的树。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🌿 夏日包裹感</span>
+                    <div class="text">"夏天的傍晚，你搬一把矮椅子坐在树旁边。低垂的枝叶在你肩膀周围形成一个'绿色的半包围圈'，风从枝叶间穿过，你在圈里面，安静、凉快、被包裹着。那种'被一棵树抱住'的感觉，高飘树给不了你。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🍁 秋日近身红叶</span>
+                    <div class="text">"到了秋天，叶子在触手可及的高度变红。你不用抬头、不用弯腰，眼睛平视过去就是满眼的红色。你伸手摘一片叶子，放在手心里——秋天的颜色，就在你掌心里。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🌳 日常陪伴</span>
+                    <div class="text">"这棵树最特别的地方是——它跟你生活在同一个高度。你不是'仰望'它，不是'俯视'它，是'平视'它。你坐在它旁边的时候，你们是'平等的'。它不是一棵树，是你院子里的'邻居'。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>定位要准：</strong>这是'蹲下来陪你'的树。介绍时用手势从地面往上比划——"枝叶从这么低的地方就开始了，你走近它，是'走进'它，不是'看到'它。"</li>
+                        <li><strong>强调'触感'和'互动'：</strong>多用"伸手就能摸到""孩子能够到""你坐在旁边的时候"这类描述，让客户感觉到这棵树和他之间是有'肢体关系'的。</li>
+                        <li><strong>针对'隐私'需求要精准：</strong>当客户提到"邻居能看到我家院子"的时候，3号是最好的答案。要讲"它在腰际到视线的高度给你最温柔的守护"——让客户感觉到被保护，而不是被围堵。</li>
+                        <li><strong>针对'小空间'要笃定：</strong>当客户说"我家院子不大"时，干脆利落地说"3号就是为小空间准备的"。小院子的客户最需要'确定感'。</li>
+                        <li><strong>价格轻描淡写：</strong>不要强调"便宜""划算"，要说"它的价值在于它和你的亲近感——那种每天都能摸到叶子的体验，是价格无法衡量的。"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 3号低分枝直立疏朗
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

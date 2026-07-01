@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>11号凤舞形 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">11</span>
+                <div>
+                    <div class="type">凤舞形</div>
+                    <div class="sub">特型类 · 低分枝/多干基部 · 枝条开张 · 如舞者长袖</div>
+                </div>
+            </div>
+            <div class="tagline">
+                枝条开张如长袖，庭院从此有舞姿
+                <span class="light">灵动 · 舒展 · 开张 · 韵律 —— 庭院中的舞者，生命喜悦的化身</span>
+            </div>
+            <div class="keyword-line">✦ 特型类 · 低分枝/多干 · 开张 · 如舞者长袖 ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">舞者之姿</span>
+                    <span class="hook">"不是在长，是在舞"</span>
+                    <div class="desc">每一根枝条都带着弧度、韵律、节奏展开——像舞者抬起了手臂。枝条向四面八方舒展，撑开巨大空间——是舞者张开的手臂。枝条之间有韵律——长与短、陡与缓，像音乐节拍。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">疏朗不瘦</span>
+                    <span class="hook">"有骨有肉，通透不空"</span>
+                    <div class="desc">枝条分布均匀，疏朗但'饱满'——空隙恰到好处。光从枝条缝隙漏下，是碎片状的、舞动的光斑。前、中、后三个层次同时存在——是'有深度的立体'。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">生机盎然</span>
+                    <span class="hook">"树是活的，舞也是活的"</span>
+                    <div class="desc">雕塑是静的，它是动的、活的、会变的。每年都在长，每年都在'编新舞'——'正在创作中的作品'。春天嫩红描舞姿，夏天浓绿让舞姿沉稳，秋天三色共舞。风来的时候——不是'被风吹动'，是'借着风在跳舞'。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">辨识度极高</span>
+                    <span class="hook">"一眼就能认出来"</span>
+                    <div class="desc">它跟所有树都不一样——它自己就是标签。客人会停下来——"这是什么树？怎么长成这样？"不需要解释，它自己就是话题——是社交空间的'破冰者'。游龙是'奇'，凤舞是'雅'——一个让人想到'美好'。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">11 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">凤舞形</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">特型类 · 低分枝/多干 · 开张 · 如舞者长袖</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"枝条开张如长袖，庭院从此有舞姿。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">舞者之姿 · 疏朗不瘦 · 生机盎然 · 辨识度极高</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">灵动 · 舒展 · 开张 · 韵律 · 生机 · 动态美</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">白墙前</span><span class="tag">茶室窗外</span><span class="tag">开阔草坪</span><span class="tag">石组旁</span><span class="tag">入口孤植</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">树太安静 · 茶室缺活的画 · 都在立正 · 白墙影子太规矩 · 院子太板</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">白墙舞影 · 茶窗滑过弧线 · 草坪独舞 · 雪中定格的舞姿</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">白墙前</span><span class="desc">舒展的枝条影子是舞动的、有弧度的——像皮影戏里的舞者，在白墙上演着永不落幕的戏。</span></div>
+                <div class="scene-item"><span class="name">茶室窗外</span><span class="desc">窗框像舞台框口，树在框里跳舞——春、夏、秋、冬，同一棵舞者穿着不同颜色的衣裳。</span></div>
+                <div class="scene-item"><span class="name">开阔草坪</span><span class="desc">一个'静'的地面托着一支'动'的舞——那棵树像正在草坪中央旋转。</span></div>
+                <div class="scene-item"><span class="name">石组旁</span><span class="desc">石的'重'托着树的'轻'，石的'静'衬着树的'动'——'静动关系'最动人。</span></div>
+                <div class="scene-item"><span class="name">入口孤植</span><span class="desc">人还没进门，先看到一棵在'舞'的树——不是迎宾的卫兵，是迎宾的舞者。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 院子里的树'太安静'，缺一个'会动'的</div>
+                <div class="solution">"你想要一点'动'——让院子不要那么'静物画'。"<br /><strong>→ 凤舞形的枝条本身就是舞动的弧线，不用风来它已经在'舞'了。你的院子从'静物画'变成'活的画'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 茶室窗前'缺一幅活的画'</div>
+                <div class="solution">"墙上的画不会变，你想要一幅'活的画'。"<br /><strong>→ 凤舞形就是那幅'活的画'——春天用嫩红画、夏天用浓绿画、秋天用火红画、冬天用墨色画。你不用换画，它自己换。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 所有树都像在'立正'</div>
+                <div class="solution">"你缺一棵'不站'的树——不是立正，是在舞动。"<br /><strong>→ 凤舞形的枝条在伸展、在流转、在起伏——像舞者被定格了一瞬间。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🎭 白墙舞影</span>
+                    <div class="text">"秋日的下午，凤舞形的影子在墙上展开，像皮影戏里的舞者。风来了，影子轻轻晃动——那支舞还没跳完。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🍵 茶窗外的舞者</span>
+                    <div class="text">"你端着茶杯，视线从这一条弧线滑到那一条——你的视线不是'看'过去的，是'滑'过去的。一杯茶喝完了，视线还没滑完。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🌿 草坪中央的独舞</span>
+                    <div class="text">"夏天的傍晚，夕阳照在凤舞形上，枝条的末端都带着金色。风来了，整棵树开始轻轻摆动——是一个舞者在草坪中央独舞。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>手势：</strong>双手从身体中央向两侧缓缓展开——"枝条这样舒展开，像舞者张开双臂。"</li>
+                        <li><strong>先讲'舒展'，再讲'舞'：</strong>先讲'枝条向四周舒展''有弧度'，让客户自己感受到'舞'。</li>
+                        <li><strong>强调'不用风也在舞'：</strong>"凤舞形不用风来就已经在舞了——它的姿态本身就是舞动的。"</li>
+                        <li><strong>愉悦感传递：</strong>凤舞形让人想到'美好'。语气要愉悦、轻快、舒展——你越轻松，客户越能感受到'愉悦感'。</li>
+                        <li><strong>价格轻描淡写：</strong>不强调价格，要说"它的价值在于它传递的'生命力'——它不是一棵树，是庭院里的一支舞。"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 11号凤舞形
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

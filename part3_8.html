@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>主景焦点树区 · 景观节点 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%; height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+            overflow-y: auto;
+        }
+        .content-wrap {
+            max-width: 920px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 20px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmerTitle 5s ease-in-out infinite; margin-top: 0.2em; margin-bottom: 0.2em; }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle { font-size: 15px; color: rgba(0, 0, 0, 0.30); font-weight: 400; margin-top: -0.2em; margin-bottom: 1.2em; letter-spacing: 0.3px; }
+        .section-badge { display: inline-block; font-size: 12px; font-weight: 500; color: #3a7a78; background: rgba(127, 193, 197, 0.10); padding: 2px 14px; border-radius: 20px; margin-bottom: 0.8em; }
+        h2 { font-size: 22px; color: #1c2e2a; margin-top: 0.2em; border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 14px; margin-bottom: 0.2em; }
+        .scene-desc { font-size: 14px; color: rgba(0, 0, 0, 0.45); margin-bottom: 1.2em; font-style: italic; padding-left: 18px; }
+        .node-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+            margin: 0.5em 0 1.2em 0;
+        }
+        .node-card {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+            display: flex; flex-direction: column;
+        }
+        .node-card .node-id {
+            font-weight: 700; color: #3a7a78; font-size: 14px;
+            display: inline-block; background: rgba(127, 193, 197, 0.12);
+            padding: 1px 12px; border-radius: 20px;
+            margin-bottom: 4px;
+            align-self: flex-start;
+        }
+        .node-card .node-name {
+            font-weight: 600; color: #1c2e2a; font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .node-card .node-tree {
+            font-size: 13px; color: #3a7a78;
+            background: rgba(127, 193, 197, 0.06);
+            padding: 2px 10px; border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 6px;
+            align-self: flex-start;
+            line-height: 1.5;
+        }
+        .node-card .node-tree strong { color: #2a5a58; font-weight: 600; }
+        .node-card .node-desc {
+            font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.68);
+            margin-bottom: 6px;
+        }
+        .node-card .node-space {
+            font-size: 12px; color: rgba(0, 0, 0, 0.40);
+            margin-top: 2px;
+            font-style: italic;
+        }
+        .node-card .node-effect {
+            font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.50);
+            margin-top: 4px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .node-card .node-feature {
+            font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.45);
+            margin-top: 3px;
+        }
+        @media (max-width: 640px) {
+            .node-grid { grid-template-columns: 1fr; }
+            #app { padding: 12px 10px 30px; }
+            .content-wrap { padding: 16px 14px; border-radius: 24px; }
+            h1 { font-size: 22px; } h2 { font-size: 19px; padding-left: 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 36px 40px; }
+            h1 { font-size: 34px; }
+        }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回首页</a>
+            </div>
+            <h1>主景 / 焦点树区</h1>
+            <p class="subtitle">J49–J57 · 枫树庭院应用节点</p>
+            <span class="section-badge">一棵树定义空间气质</span>
+            <p class="scene-desc">以一棵树或一组树为核心视觉元素，独立定义空间气质。</p>
+            <div class="node-grid">
+
+                <div class="node-card">
+                    <div class="node-id">J49</div>
+                    <div class="node-name">草坪中央 / 活动区</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，在开阔草坪中形成垂直的视觉锚点；<strong>2号·常规直立疏朗</strong> — 冠幅均衡，与草坪形成饱满的构图。</div>
+                    <div class="node-desc">草坪或活动区的正中央或黄金分割点，孤植一棵枫树，草坪与树构成简洁纯粹的构图。</div>
+                    <div class="node-effect">空间效果：草坪的大面积留白与枫树的独立形态形成"少即是多"的极致对比。树冠的形态与草坪的水平面形成垂直与水平的构图关系。</div>
+                    <div class="node-feature">景观特征：一棵树、一片草坪，构成完整的景观画面。四季变换，枫树的色彩变化成为整个草坪空间的时间刻度。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J50</div>
+                    <div class="node-name">硬质铺装广场</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 线条干净利落，与硬质铺装的现代感匹配；<strong>2号·常规直立疏朗</strong> — 冠幅规整饱满，与铺装的几何感形成呼应。</div>
+                    <div class="node-desc">灰色透水混凝土、石材或防腐木铺装的开放区域中央种植一棵枫树，树与硬质铺装形成"软与硬"的材质对比。</div>
+                    <div class="node-effect">空间效果：硬质铺装的平整与枫树的自然形态形成对比。树冠的阴影投射在硬质铺装上，随时间移动。</div>
+                    <div class="node-feature">景观特征：硬质铺装为"基座"，枫树为"雕塑"。光影在铺装面上随日光移动。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J51</div>
+                    <div class="node-name">黄金分割点孤植</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，在开阔空间中形成垂直的视觉锚点；<strong>2号·常规直立疏朗</strong> — 四向可观，树冠均衡。</div>
+                    <div class="node-desc">在开阔空间的黄金分割点位置孤植枫树，而非正中央。黄金分割比例带来比"正中央"更舒适、更自然的视觉体验。</div>
+                    <div class="node-effect">空间效果：黄金分割点的位置让枫树与空间边界形成"精确的不对称"——人站在空间中，视线会自然地落在这个位置上。</div>
+                    <div class="node-feature">景观特征：黄金分割点的"精确不对称"让空间构图达到最舒适的视觉平衡。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J52</div>
+                    <div class="node-name">轴线端头主景树</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，在轴线尽端形成垂直的"惊叹号"；<strong>2号·常规直立疏朗</strong> — 在端头形成饱满的树冠轮廓。</div>
+                    <div class="node-desc">庭院中轴线的端头位置种植主景枫树。视线沿着轴线延伸，端头的枫树成为轴线的"句号"——也是庭院序列的最高潮。</div>
+                    <div class="node-effect">空间效果：轴线是"引导线"，枫树是"终点站"。从轴线起点望去，枫树统领了整个序列——两侧的对称元素将视线推向端头。</div>
+                    <div class="node-feature">景观特征：轴线是"序列"，枫树是"高潮"。人沿着轴线前行，枫树在端头不断放大。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J53</div>
+                    <div class="node-name">地形高点孤植</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，利用地形抬升让树显得更加高耸；<strong>2号·常规直立疏朗</strong> — 在地形最高点形成饱满的树冠轮廓。</div>
+                    <div class="node-desc">在微地形的最高点孤植枫树。地形抬升让树在视觉上比实际更高，强化了主景树的"标志性"和"统领感"。</div>
+                    <div class="node-effect">空间效果：地形是"基座"，枫树是"雕塑"。地形的缓坡从四周向中心抬升，枫树在最高处如同"王冠上的宝石"。</div>
+                    <div class="node-feature">景观特征：地形抬升了树的位置，也抬升了树的"地位"。枫树成为天际线中的最高点。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J54</div>
+                    <div class="node-name">双树对景</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 两棵树形相近但不完全相同，挺拔向上形成呼应；<strong>2号·常规直立疏朗</strong> — 冠幅均衡，两树形成对话关系。</div>
+                    <div class="node-desc">在开阔空间中以一定间距种植两棵树，两棵树形相近或互补。两棵树形成"对话"关系——视线可以在两棵树之间来回移动。</div>
+                    <div class="node-effect">空间效果：两棵树之间有"间距"——这个间距是"空的"，但因为两棵树的存在而有了"内容"。空间被两棵树"拉长"了。</div>
+                    <div class="node-feature">景观特征：两棵树之间形成"空间的张力"。春、夏、秋、冬两棵树同步变色——色彩在双树之间同步流转。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J55</div>
+                    <div class="node-name">几何树池</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 枝下高通透，在树池中挺拔向上；<strong>2号·常规直立疏朗</strong> — 树冠圆润，与圆形树池形成同心圆的呼应。</div>
+                    <div class="node-desc">方形、长方形或圆形规整树池中种植枫树，树池本身成为景观元素，与铺装、草坪或建筑形成几何构图关系。</div>
+                    <div class="node-effect">空间效果：树池的几何形态与枫树的自然树形形成"人工与自然"的对比。树池围合了根系，也界定了树的空间范围。</div>
+                    <div class="node-feature">景观特征：树池材质与枫树树皮、叶片形成材质对话。枫树的姿态被树池"框定"后，更具雕塑感。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J56</div>
+                    <div class="node-name">下沉庭院中心树</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，在下沉空间中与上层视线形成互动；<strong>2号·常规直立疏朗</strong> — 冠幅饱满，从上方看效果最好。</div>
+                    <div class="node-desc">下沉式庭院或天井的中心位置种植枫树。四周被建筑或围墙围合，树在底部中央形成视觉焦点。</div>
+                    <div class="node-effect">空间效果：下沉庭院是"被围合的空间"——四面是墙、头顶是天。从室内向下看，树冠在下方形成一个彩色的"岛屿"。</div>
+                    <div class="node-feature">景观特征：有限空间因一棵树而有了上下两个维度的景观。下沉庭院的"围合"强化了树的"中心感"。</div>
+                </div>
+
+                <div class="node-card">
+                    <div class="node-id">J57</div>
+                    <div class="node-name">屋顶花园 / 露台</div>
+                    <div class="node-tree">推荐树形：<strong>1号·高飘直立疏朗</strong> — 挺拔向上，不占地面面积；<strong>3号·低分枝直立疏朗</strong> — 冠幅规整，在容器中比例协调。需选择矮生品种或通过容器控制尺寸。</div>
+                    <div class="node-desc">屋顶花园或露台中以容器种植枫树，作为屋顶空间的视觉焦点。容器是"底座"，枫树是"雕塑"。</div>
+                    <div class="node-effect">空间效果：在有限的屋顶空间中，一棵容器枫树就能定义整个空间的调性。容器材质与枫树共同构成一个完整的"微型景观"。</div>
+                    <div class="node-feature">景观特征：容器与枫树共同构成"微型景观"。容器是人工的界限，枫树是自然的主体。</div>
+                </div>
+
+            </div>
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                —— 主景 / 焦点树区 · J49–J57 ——
+            </div>
+        </div>
+    </div>
+</body>
+</html>

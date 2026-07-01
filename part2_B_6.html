@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>锦叶系 · 枫叶色彩速查卡 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .header-badge {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 4px; flex-wrap: wrap;
+        }
+        .header-badge .icon { font-size: 36px; }
+        .header-badge .title { font-size: 22px; font-weight: 700; color: #1c2e2a; letter-spacing: -0.3px; }
+        .header-badge .sub { font-size: 14px; color: rgba(0, 0, 0, 0.30); font-weight: 400; }
+
+        .tagline {
+            font-size: 18px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 12px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 14px; display: block; margin-top: 2px;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 16px 18px;
+            margin: 12px 0 20px 0;
+            border-left: 3px solid rgba(160, 120, 180, 0.3);
+            font-size: 14px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .comparison-box strong { color: #1c2e2a; }
+
+        .color-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .color-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+        .color-card .swatch {
+            width: 100%; height: 24px; border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .color-card .name { font-weight: 700; color: #1c2e2a; font-size: 16px; display: block; }
+        .color-card .sub { font-size: 12px; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 2px; }
+        .color-card .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.55); }
+        .color-card .variety { font-size: 12px; color: #8a6a9a; background: rgba(160, 120, 180, 0.08); padding: 2px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        @media (max-width: 480px) { .color-grid { grid-template-columns: 1fr; } }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .scene-item .place { font-weight: 600; color: #1c2e2a; }
+        .scene-item .rec { color: #8a6a9a; }
+        .scene-item .why { font-size: 12px; color: rgba(0, 0, 0, 0.45); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(160, 120, 180, 0.2);
+        }
+        .pain-box .q { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-box .a { font-size: 14px; color: rgba(0, 0, 0, 0.60); margin-top: 4px; }
+        .pain-box .a strong { color: #8a6a9a; }
+
+        .dream-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px; padding: 16px 18px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dream-box .title { font-weight: 600; color: #1c2e2a; font-size: 15px; display: block; margin-bottom: 4px; }
+        .dream-box .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); font-style: italic; }
+
+        h2 { font-size: 18px; color: #1c2e2a; margin-top: 22px; margin-bottom: 10px; border-left: 4px solid rgba(160, 120, 180, 0.3); padding-left: 14px; }
+        h3 { font-size: 16px; color: #2a423e; margin-top: 16px; margin-bottom: 6px; }
+
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        .keyword-line {
+            font-size: 13px; color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 1px; font-weight: 300;
+            margin-bottom: 16px;
+            padding: 6px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .header-badge .title { font-size: 18px; }
+            .tagline { font-size: 16px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .header-badge .title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="header-badge">
+                <span class="icon">🎨</span>
+                <div>
+                    <div class="title">锦叶系 · 枫叶色彩速查卡</div>
+                    <div class="sub">每一片叶子都不一样 · 树也是画 · 庭院美学顾问</div>
+                </div>
+            </div>
+            <div class="tagline">
+                每一片叶子都不一样——它是树，也是画。
+                <span class="light">你不需要成为植物学家，但你需要知道——锦叶的每一片，都是独一无二的。</span>
+            </div>
+            <div class="keyword-line">✦ 审美共鸣 × 身份确认 × 即时拥有 ✦</div>
+
+            <!-- 与普通植物的对比 -->
+            <div class="comparison-box">
+                <p><strong>与普通植物的对比 · 审美共鸣</strong><br />
+                你见过一片叶子上有白色、粉色、绿色三种颜色的树吗？没有吧。<br />
+                普通树的叶子是"纯色"的，锦叶枫不一样——一片叶子上同时有好几个颜色，白一块、粉一块、绿一块，像画家随手泼上去的。<br />
+                而且每一片都不一样——那不是一棵树，是一千幅不同的画。</p>
+            </div>
+
+            <!-- 锦叶系 -->
+            <h2>✦ 完整色彩 · 便签速查</h2>
+            <div class="color-grid">
+
+                <div class="color-card">
+                    <div class="swatch" style="background: linear-gradient(90deg, #ffffff, #90ee90, #ffffff);"></div>
+                    <span class="name">白色锦</span>
+                    <span class="sub">最清爽</span>
+                    <div class="desc">白的地方像雪，绿的地方像翡翠。像一幅水墨画，留白的地方比画的地方还有味道。</div>
+                    <span class="variety">代表：浮云、云井锦</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background: linear-gradient(90deg, #ffb6c1, #98fb98, #ffb6c1);"></div>
+                    <span class="name">粉色锦</span>
+                    <span class="sub">最浪漫</span>
+                    <div class="desc">像草莓抹茶拿铁。粉的地方像樱花、绿的地方像新叶，柔柔地揉在一起。又甜又清新。</div>
+                    <span class="variety">代表：蝴蝶、羽前锦</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background: linear-gradient(90deg, #ffffff, #ffb6c1, #ffd700, #90ee90);"></div>
+                    <span class="name">彩色锦</span>
+                    <span class="sub">最华丽</span>
+                    <div class="desc">白、粉、黄、绿，一块调色盘。一片叶子四种颜色，每一片都是一幅抽象画。</div>
+                    <span class="variety">代表：旭鹤</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background: #90ee90; border: 3px solid #ffffff; box-shadow: inset 0 0 0 1px #90ee90;"></div>
+                    <span class="name">锦边</span>
+                    <span class="sub">最精致</span>
+                    <div class="desc">边缘镶白边或粉边。像给叶子描了一道轮廓线，那种精细感是整片斑锦给不了的。</div>
+                    <span class="variety">代表：部分锦叶品种</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background: linear-gradient(135deg, #ffffff 0%, #d4f0d4 30%, #90ee90 60%, #ffffff 100%);"></div>
+                    <span class="name">斑入锦</span>
+                    <span class="sub">最自然</span>
+                    <div class="desc">斑纹是"渗"进去的。白的地方慢慢过渡到绿，粉的地方慢慢融进白。自然的过渡感最耐看。</div>
+                    <span class="variety">代表：部分斑叶品种</span>
+                </div>
+
+            </div>
+
+            <!-- 场景推荐 -->
+            <h2>✦ 场景推荐 · 身份确认</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="place">白墙前</span> → <span class="rec">锦叶枫</span><br /><span class="why">白墙是画廊的墙面，锦叶枫是挂在墙上的展品</span></div>
+                <div class="scene-item"><span class="place">茶室静观</span> → <span class="rec">锦叶枫</span><br /><span class="why">你喝完一杯茶，视线已经在几十片不同的叶子上走了一遍。那是你喝茶时的"读物"</span></div>
+                <div class="scene-item"><span class="place">阴角</span> → <span class="rec">白色锦</span><br /><span class="why">白色斑纹在暗处最清楚，越暗越明显。点亮阴角</span></div>
+                <div class="scene-item"><span class="place">配植</span> → <span class="rec">粉色锦</span><br /><span class="why">与绿色背景形成浪漫对比</span></div>
+            </div>
+
+            <!-- 痛点化解 -->
+            <h2>✦ 痛点化解 · 解药话术</h2>
+
+            <div class="pain-box">
+                <div class="q">"锦叶太个性了，怕过两年不喜欢了"</div>
+                <div class="a">→ 锦叶的魅力在于每一片都不一样，每天都有新发现。它不是"个性"，是"生动"。而且白色锦在阴角特别出彩，越暗越亮，不会腻。</div>
+            </div>
+
+            <!-- 造梦 -->
+            <h2>✦ 造梦 · 即时拥有</h2>
+
+            <div class="dream-box">
+                <span class="title">🎨 叶子博物馆</span>
+                <div class="text">你种了一棵锦叶枫，每天下班回来，你都会走到它面前，看一看今天哪片叶子最好看。今天你注意到一片白的多的，明天你注意到一片粉的多的。你每天都能发现"新叶子"。那不是一棵树，是你回家路上的"每日美术馆"。</div>
+            </div>
+            <div class="dream-box">
+                <span class="title">🌿 四季不退的斑纹</span>
+                <div class="text">别的树春天红、夏天绿、秋天变色，锦叶枫不一样——它从春天到冬天，一直有斑纹、一直有颜色。你不需要等季节，它每天都在展出。冬天叶子落尽了，斑纹没有了，但红色的枝条出来了——一年四季，它永远有东西给你看。</div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 锦叶系速查 · 审美共鸣 × 身份确认 × 即时拥有
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

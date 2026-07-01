@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>黄色系 · 枫叶色彩速查卡 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .header-badge {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 4px; flex-wrap: wrap;
+        }
+        .header-badge .icon { font-size: 36px; }
+        .header-badge .title { font-size: 22px; font-weight: 700; color: #1c2e2a; letter-spacing: -0.3px; }
+        .header-badge .sub { font-size: 14px; color: rgba(0, 0, 0, 0.30); font-weight: 400; }
+
+        .tagline {
+            font-size: 18px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 12px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 14px; display: block; margin-top: 2px;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 16px 18px;
+            margin: 12px 0 20px 0;
+            border-left: 3px solid rgba(200, 160, 60, 0.3);
+            font-size: 14px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .comparison-box strong { color: #1c2e2a; }
+
+        .color-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .color-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+        .color-card .swatch {
+            width: 100%; height: 24px; border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .color-card .name { font-weight: 700; color: #1c2e2a; font-size: 16px; display: block; }
+        .color-card .sub { font-size: 12px; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 2px; }
+        .color-card .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.55); }
+        .color-card .variety { font-size: 12px; color: #b8860b; background: rgba(200, 160, 60, 0.10); padding: 2px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        @media (max-width: 480px) { .color-grid { grid-template-columns: 1fr; } }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .scene-item .place { font-weight: 600; color: #1c2e2a; }
+        .scene-item .rec { color: #b8860b; }
+        .scene-item .why { font-size: 12px; color: rgba(0, 0, 0, 0.45); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(200, 160, 60, 0.2);
+        }
+        .pain-box .q { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-box .a { font-size: 14px; color: rgba(0, 0, 0, 0.60); margin-top: 4px; }
+        .pain-box .a strong { color: #b8860b; }
+
+        .dream-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px; padding: 16px 18px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dream-box .title { font-weight: 600; color: #1c2e2a; font-size: 15px; display: block; margin-bottom: 4px; }
+        .dream-box .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); font-style: italic; }
+
+        h2 { font-size: 18px; color: #1c2e2a; margin-top: 22px; margin-bottom: 10px; border-left: 4px solid rgba(200, 160, 60, 0.3); padding-left: 14px; }
+        h3 { font-size: 16px; color: #2a423e; margin-top: 16px; margin-bottom: 6px; }
+
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        .keyword-line {
+            font-size: 13px; color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 1px; font-weight: 300;
+            margin-bottom: 16px;
+            padding: 6px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .header-badge .title { font-size: 18px; }
+            .tagline { font-size: 16px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .header-badge .title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="header-badge">
+                <span class="icon">🌟</span>
+                <div>
+                    <div class="title">黄色系 · 枫叶色彩速查卡</div>
+                    <div class="sub">黄金枫 · 金色就是最好的定调 · 庭院美学顾问</div>
+                </div>
+            </div>
+            <div class="tagline">
+                不是枫叶，是小太阳。
+                <span class="light">你不需要成为植物学家，但你需要知道——金色在枫树上，是长在叶子里的光。</span>
+            </div>
+            <div class="keyword-line">✦ 审美共鸣 × 身份确认 × 即时拥有 ✦</div>
+
+            <!-- 与普通植物的对比 -->
+            <div class="comparison-box">
+                <p><strong>与普通植物的对比 · 审美共鸣</strong><br />
+                普通树在阴面是"更暗了"，黄金枫在阴面是"亮了"。金色在哪都是金色——不管光线好不好，它本身就是亮的。<br />
+                秋天的银杏也是黄的，但它只黄一个月。黄金枫的"金"是长在叶子上的——春天金、夏天金、秋天金，一金就是大半年。</p>
+            </div>
+
+            <!-- 黄色系 -->
+            <h2>✦ 完整色彩 · 便签速查</h2>
+            <div class="color-grid">
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffd700;"></div>
+                    <span class="name">金黄色</span>
+                    <span class="sub">最正</span>
+                    <div class="desc">像金币、像麦田。不偏绿、不偏橙，就是金色本身。一棵金黄色枫树种在院子里，整个院子都被"照亮"了。</div>
+                    <span class="variety">代表：约旦、金陵黄枫</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffa500;"></div>
+                    <span class="name">橙黄色</span>
+                    <span class="sub">最暖</span>
+                    <div class="desc">像秋天的午后阳光。比金黄色多了一点橙调，那种温暖感，像阳光照在叶子上的颜色。</div>
+                    <span class="variety">代表：黄金流泉、袖锦</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffe44d;"></div>
+                    <span class="name">亮黄色</span>
+                    <span class="sub">最扎眼</span>
+                    <div class="desc">你看我一眼就忘不掉。不是温和的黄，是院子里最亮的那一个。</div>
+                    <span class="variety">代表：金陵黄枫（春夏）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#bdb76b;"></div>
+                    <span class="name">黄绿色</span>
+                    <span class="sub">清新</span>
+                    <div class="desc">介于绿和黄之间。两种颜色各占一半，那种"说不清"的感觉最有趣。</div>
+                    <span class="variety">代表：约旦（夏季转）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff8c00;"></div>
+                    <span class="name">橙红色</span>
+                    <span class="sub">丰富</span>
+                    <div class="desc">黄橙红渐变。一片叶子上同时有黄、橙、红，三个颜色在同一片叶子上过渡。</div>
+                    <span class="variety">代表：橙之梦、约旦（秋）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffed4a;"></div>
+                    <span class="name">荧光黄</span>
+                    <span class="sub">会发光</span>
+                    <div class="desc">阳光穿过，整片叶子被点亮。那种亮度，普通黄色给不了。</div>
+                    <span class="variety">代表：部分黄金枫</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffdead;"></div>
+                    <span class="name">鹅黄色</span>
+                    <span class="sub">最嫩</span>
+                    <div class="desc">像小鹅的绒毛。温柔的、让人想摸一下的黄，春天的第一缕阳光。</div>
+                    <span class="variety">代表：部分品种春叶</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#daa520;"></div>
+                    <span class="name">金色</span>
+                    <span class="sub">华丽</span>
+                    <div class="desc">它不是"像金子"，它就是金色。秋天的枫树如果变成金色，整棵树像一座金色的雕塑。</div>
+                    <span class="variety">代表：秋叶品种</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#d4a017;"></div>
+                    <span class="name">橙金</span>
+                    <span class="sub">富贵</span>
+                    <div class="desc">橙的温暖+金的华丽。那种颜色，放在哪里都是焦点。</div>
+                    <span class="variety">代表：部分秋叶品种</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#f5e6ca;"></div>
+                    <span class="name">乳黄色</span>
+                    <span class="sub">最柔</span>
+                    <div class="desc">像奶油、像月光。淡淡的、奶白色的黄，那种"不争"的气质最安静。</div>
+                    <span class="variety">代表：花散里（全开叶）</span>
+                </div>
+
+            </div>
+
+            <!-- 场景推荐 -->
+            <h2>✦ 场景推荐 · 身份确认</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="place">阴面角落</span> → <span class="rec">金黄色</span><br /><span class="why">金黄色是"放光"的颜色，越暗越亮。那个你放弃了多年的角落，第一次"亮了"</span></div>
+                <div class="scene-item"><span class="place">窗前</span> → <span class="rec">黄色枫</span><br /><span class="why">像一盏金色的灯挂在窗外</span></div>
+                <div class="scene-item"><span class="place">草坪中央</span> → <span class="rec">三季黄</span><br /><span class="why">绿草坪中间一个金色的圆，像地上长出了一颗太阳</span></div>
+                <div class="scene-item"><span class="place">水边</span> → <span class="rec">黄色枫</span><br /><span class="why">金黄色的倒影在水面上，水蓝树金，像一幅油画</span></div>
+                <div class="scene-item"><span class="place">入口</span> → <span class="rec">黄色枫</span><br /><span class="why">每天出门看到金色，心情是亮的；每天回家看到金色，心里是暖的</span></div>
+            </div>
+
+            <!-- 痛点化解 -->
+            <h2>✦ 痛点化解 · 解药话术</h2>
+
+            <div class="pain-box">
+                <div class="q">"阴角种什么都不行，放弃那个角落了"</div>
+                <div class="a">→ 种一棵黄色枫。普通绿植在阴角是"吸光"的，越种越暗；黄色枫在阴角是"放光"的，越种越亮。</div>
+            </div>
+
+            <!-- 造梦 -->
+            <h2>✦ 造梦 · 即时拥有</h2>
+
+            <div class="dream-box">
+                <span class="title">💡 点亮阴角</span>
+                <div class="text">你家那个一直暗着的角落，种了一棵金色枫树。金黄色的叶子在阴暗处像一盏灯，整个角落被"点亮"了。你第一次觉得那个角落值得走过去看看——以前你是绕着走的，现在是专门走过去的。</div>
+            </div>
+            <div class="dream-box">
+                <span class="title">✨ 金色光斑</span>
+                <div class="text">秋天的下午，阳光穿过金色枫叶，在树下的地面上投下金色的光斑。你站在那里，光斑在你身上晃动——你整个人被金色包裹着。那种温暖，不是衣服给的，是颜色给的。</div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 黄色系速查 · 审美共鸣 × 身份确认 × 即时拥有
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

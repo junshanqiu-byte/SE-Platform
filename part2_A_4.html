@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>4号多干直立疏朗 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">4</span>
+                <div>
+                    <div class="type">多干直立疏朗</div>
+                    <div class="sub">直立型 · 一本多干 · 疏朗 · 火炬状</div>
+                </div>
+            </div>
+            <div class="tagline">
+                一本多干如火炬，向上散开不堵光
+                <span class="light">同根不同命 · 清瘦的丰富 · 有秩序的群体感</span>
+            </div>
+            <div class="keyword-line">✦ 直立型 · 一本多干 · 疏朗 · 各干直立或略斜 ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">一本多干</span>
+                    <span class="hook">"合而不同的叙事"</span>
+                    <div class="desc">从同一根主干低处分出多根次主干，下面'合'，上面'分'。比丛生更雅，因为'分'是有秩序、有源头的。视觉体量翻倍——一根基座撑起多干，像一束火炬。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">低处分出</span>
+                    <span class="hook">"从膝盖开始的丰富"</span>
+                    <div class="desc">分枝点≤0.8m，从低处就展现出多干并立的结构。视觉连续性强——从下到上都是内容，没有'空窗期'。近身观赏时，视线在粗细、高低不同的干之间游走，趣味盎然。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">各干各异</span>
+                    <span class="hook">"同根不同命"</span>
+                    <div class="desc">粗细、高低、角度各有差异，不是复制粘贴，有对话感。像大家庭，同根同源但各自走向不同高度和方向。你每年都能发现新的变化——谁长高了，谁长粗了。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">向上不堵</span>
+                    <span class="hook">"清瘦的丰富"</span>
+                    <div class="desc">各干之间的缝隙疏朗，光能穿透，视线能穿过。不是'臃肿'的丰富，是'有结构'的丰富，像工笔画。集体向上的力量感，让空间充满'生长的动势'。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">4 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">多干直立疏朗</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">直立型 · 一本多干 · 疏朗 · 各干直立或略斜</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"一本多干如火炬，向上散开不堵光。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">一本多干 · 低处分出 · 各干各异 · 向上不堵</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">火炬 · 群立 · 丰富 · 有秩序 · 清瘦</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">开阔草坪</span><span class="tag">窗前/茶室</span><span class="tag">硬质广场</span><span class="tag">几何树池</span><span class="tag">花境背景</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">单干太规矩 · 丛生太野 · 压不住草坪 · 窗前太单调 · 想要一树成林但不要乱</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">火炬之光 · 窗中群干 · 草坪上红色焰火 · 同根不同命 · 群干齐立</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">开阔草坪中央</span><span class="desc">一束火炬从草坪中央拔地而起，集体向上的力量感，是草坪上最震撼的视觉锚点。</span></div>
+                <div class="scene-item"><span class="name">窗前 / 茶室窗外</span><span class="desc">多干同时出现在窗框中，高高低低、粗粗细细，像一组竖线在窗框里展开，画面丰富而有层次。</span></div>
+                <div class="scene-item"><span class="name">硬质铺装广场</span><span class="desc">灰色硬地面上，多干如雕塑般直立，越硬的地面越能衬出多干的'生命感'。</span></div>
+                <div class="scene-item"><span class="name">几何树池</span><span class="desc">树池的规整与多干的自由向上形成对比，方与圆、人工与自然多重对话。</span></div>
+                <div class="scene-item"><span class="name">花境背景</span><span class="desc">多干从花境边缘拔地而起，成为花境的'垂直骨架'，视线从低到高被完整接住。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 单干树'太规矩'，院子里缺一棵'会分叉'的</div>
+                <div class="solution">"院子里都是直挺挺的单干树，好看是好看，但总觉得太'规矩'了，缺一点丰富感。你想要的是一棵'会分叉'的树——下面合在一起、上面分开成一束。"<br /><strong>→ 4号就是那个'会分叉'的树——同一根上分出了多根干，像一束火炬。它有单干树的挺拔，但比单干树丰富，因为'多'本身就有看头。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 丛生树太'野'，单干树又太'正'，想要'中间状态'</div>
+                <div class="solution">"丛生树有'一树成林'的效果，但有点野；单干树挺拔但太正。你想要的是一种有秩序的多干——不野，但也不板。"<br /><strong>→ 4号就是那个'中间状态'——它有明确的主干基座（所以不野），但从这个基座上分出了多根次主干（所以不板）。雅而不板，丰而不野。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 开阔草坪上种一棵单干树'压不住'</div>
+                <div class="solution">"开阔草坪上种一棵单干树，总觉得太'轻'了，压不住那片空。一棵树在那片开阔地上显得太细、太单薄。"<br /><strong>→ 种一棵4号在草坪中央——多干从低处散开，视觉体量翻了好几倍。一棵单干是'一根线'，多干是一'束'——那片开阔草地，被这一束树'镇'住了。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点四 · 窗前需要'垂直层次'，但单干太单调</div>
+                <div class="solution">"窗前想种一棵树，希望给窗框增加一些'竖线'的感觉。但单干树种下去，窗框里就一根竖线，太单调了。"<br /><strong>→ 种一棵4号在窗前——多干同时出现在窗框中，高高低低、粗粗细细，像一组垂直线条在窗框里展开。不是单干独奏，是群干齐立。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点五 · 想要'一树成林'的效果，但不喜欢丛生的'乱'</div>
+                <div class="solution">"你听过'一树成林'——觉得特别好，但丛生树的'乱'让你犹豫。你想要的是'有秩序的林'，不是'乱长的林子'。"<br /><strong>→ 4号就是'有秩序的一树成林'——所有的干都从同一根主干上分出来，下面是一个明确的核心，上面才散开。你一眼就能看懂它的结构，既有'林'的效果，又有'秩序'的美感。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🔥 火炬之光</span>
+                    <div class="text">"春天，多干同时冒新芽。每一根干上都爆出嫩红的新叶，整棵树像一束被点燃的火炬。阳光从背后照过来，新叶是半透明的——那一束多干，像一团正在燃烧的火焰。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🪟 窗中群干</span>
+                    <div class="text">"冬日的茶室里，叶子落尽了，窗外只剩下多干的骨架。窗框里，多根竖线并立，高高低低、粗粗细细，像一排站立的文人。你端着茶杯，数一数有几根干——数完一遍，再看一遍，每根的角度都不一样，百看不厌。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🍁 草坪上的红色焰火</span>
+                    <div class="text">"秋天，开阔草坪中央，多干的叶子全部变红。从远处看，那不是一棵树，是一束红色的焰火从草坪中央喷向天空。草坪的绿是底，多干的红是焰——整个院子的视觉重心，就是这一束。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🌳 同根不同命</span>
+                    <div class="text">"这棵树种下去五年后，你再回来看。当年最粗的那根'老大'可能长得更高了，当年细的那根'老二'可能追上来了一些。每一根干都有自己的成长节奏，你每年看它们，都会发现新的变化——那不是一棵树，是一个还在生长的'家族'。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>定位要准：</strong>这是'有秩序的一束'。反复强调"一本多干""同一个基座""合而不同"，让客户明白它和丛生树的本质区别。</li>
+                        <li><strong>讲'故事'不讲'结构'：</strong>多用"老大老二""兄弟姐妹""各自成长"这类比喻，让客户在情感上被触动。</li>
+                        <li><strong>强调'清瘦的丰富'：</strong>主动化解"会不会太密太堵"的顾虑——"各干之间是疏朗的、透光的，它是'清瘦的丰富'，不是'臃肿的杂乱'。"</li>
+                        <li><strong>出镜配合手势：</strong>先指基座（"这里是合"），再分开手指向上（"这里是分"）——那个"合→分"的手势比任何语言都直观。</li>
+                        <li><strong>价格匹配价值：</strong>不强调"贵"，要说"它的价值在于它的结构和故事——一棵树，就是一个家族。这种叙事感是无法复制的。"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 4号多干直立疏朗
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

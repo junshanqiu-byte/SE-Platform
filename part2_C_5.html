@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>脉纹型 · 枫叶话术速查卡 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .header-badge {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 4px; flex-wrap: wrap;
+        }
+        .header-badge .icon { font-size: 40px; }
+        .header-badge .title { font-size: 22px; font-weight: 700; color: #1c2e2a; letter-spacing: -0.3px; }
+        .header-badge .sub { font-size: 14px; color: rgba(0, 0, 0, 0.30); font-weight: 400; }
+
+        .tagline {
+            font-size: 18px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 12px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 14px; display: block; margin-top: 2px;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 16px 18px;
+            margin: 12px 0 20px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.3);
+            font-size: 14px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .comparison-box strong { color: #1c2e2a; }
+
+        .script-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .script-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+        .script-card .num { font-weight: 700; color: #3a7a78; font-size: 14px; display: block; }
+        .script-card .name { font-weight: 700; color: #1c2e2a; font-size: 16px; display: block; margin-top: 2px; }
+        .script-card .sub { font-size: 12px; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 4px; }
+        .script-card .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .script-grid { grid-template-columns: 1fr; } }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .scene-item .place { font-weight: 600; color: #1c2e2a; }
+        .scene-item .why { font-size: 12px; color: rgba(0, 0, 0, 0.45); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 8px 0;
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .info-card .label { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .info-card .value { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); }
+        .info-card .varieties { font-size: 13px; color: #3a7a78; background: rgba(127, 193, 197, 0.06); padding: 2px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 18px; color: #1c2e2a; margin-top: 22px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 16px; color: #2a423e; margin-top: 16px; margin-bottom: 6px; }
+
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        .keyword-line {
+            font-size: 13px; color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 1px; font-weight: 300;
+            margin-bottom: 16px;
+            padding: 6px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .header-badge .title { font-size: 18px; }
+            .tagline { font-size: 16px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .header-badge .title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="header-badge">
+                <span class="icon">〰️</span>
+                <div>
+                    <div class="title">脉纹型 · 枫叶话术速查卡</div>
+                    <div class="sub">细 · 耐 · 藏 —— 它的美，藏在叶脉里</div>
+                </div>
+            </div>
+            <div class="tagline">
+                普通叶子看轮廓，脉纹枫看纹路
+                <span class="light">你不需要成为植物学家，但你需要知道——有一种枫叶，美在叶脉里。</span>
+            </div>
+            <div class="keyword-line">✦ 与普通叶子不同 · 立体纹理 · 近观细节 · 精致耐看 · 越看越有 ✦</div>
+
+            <!-- 对比共鸣 -->
+            <div class="comparison-box">
+                <p><strong>与普通叶子的对比 · 审美共鸣</strong><br />
+                你拿一片普通叶子，对着光看——叶脉是模糊的、是淡的，不注意看根本看不见。<br />
+                你再拿起一片脉纹枫的叶子——叶脉粗壮、清晰、凸起！像血管一样在叶面上铺开。阳光照过来的时候，叶脉凸起的地方亮、叶肉凹下去的地方暗——<strong>整片叶子像一幅浮雕</strong>。<br />
+                普通叶子是"平"的，脉纹枫的叶子是"立体"的。</p>
+            </div>
+
+            <!-- 核心话术 三重对比 -->
+            <h2>✦ 核心话术 · 三重对比</h2>
+            <div class="script-grid">
+
+                <div class="script-card">
+                    <span class="num">1 · 纹理感</span>
+                    <span class="name">立体 vs 平面</span>
+                    <span class="sub">"你拿一片普通叶子，对着光看——叶脉是模糊的、是淡的，不注意看根本看不见。你再拿起一片脉纹枫的叶子——叶脉粗壮、清晰、凸起！像血管一样在叶面上铺开。阳光照过来的时候，叶脉凸起的地方亮、叶肉凹下去的地方暗——整片叶子像一幅浮雕。普通叶子是'平'的，脉纹枫的叶子是'立体'的。"</span>
+                </div>
+
+                <div class="script-card">
+                    <span class="num">2 · 近观价值</span>
+                    <span class="name">细节 vs 远看</span>
+                    <span class="sub">"普通树是'远看'的——站在十米外看树形、看轮廓。脉纹枫不一样——它是'近看'的。你站在一米内，低头看一片叶子，叶脉的走向、粗细、分叉、颜色变化，本身就是一幅画。那种'越看越有'的细节感，是任何普通树都没有的。"</span>
+                </div>
+
+                <div class="script-card">
+                    <span class="num">3 · 精致度</span>
+                    <span class="name">耐心 vs 一眼</span>
+                    <span class="sub">"为什么脉纹枫适合种在茶室旁边、座椅旁边？——因为你坐下来的时候，你有时间慢慢看。普通叶子看一眼就看完了，没有什么可看的。脉纹枫的一片叶子，够你看三分钟——叶脉从哪里分叉、往哪里走、粗的细的怎么交织，每一片都不一样。那不是一棵树，是一本'翻不完的画册'。"</span>
+                </div>
+
+            </div>
+
+            <!-- 审美感觉 & 场景匹配 -->
+            <h2>✦ 审美感觉 &amp; 场景匹配</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="place">精致细腻</span><span class="why">叶脉如浮雕，近观细节丰富耐人寻味</span></div>
+                <div class="scene-item"><span class="place">茶室静观</span><span class="why">坐下来慢慢看，一片叶子看三分钟</span></div>
+                <div class="scene-item"><span class="place">新中式</span><span class="why">精致细节感，与新中式的品质追求契合</span></div>
+                <div class="scene-item"><span class="place">现代简约</span><span class="why">清晰的纹理线条，具有几何美感</span></div>
+                <div class="scene-item"><span class="place">座椅旁·步道边</span><span class="why">近身观赏的最佳选择，越看越有</span></div>
+            </div>
+
+            <!-- 形态特征 & 代表品种 -->
+            <h2>✦ 形态特征 &amp; 代表品种</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <span class="label">📐 形态特征</span>
+                    <div class="value">叶片观赏重点不在裂片形状，<br />而在<strong>叶脉的纹理</strong>——叶脉清晰、粗壮、凸起，<br />脉纹本身就是主要的观赏对象。</div>
+                </div>
+                <div class="info-card">
+                    <span class="label">🎨 审美感觉</span>
+                    <div class="value">精致 · 细腻 · 耐看 · 立体 · 有细节</div>
+                </div>
+                <div class="info-card" style="grid-column: 1 / -1;">
+                    <span class="label">🌿 代表品种</span>
+                    <div class="value" style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        <span style="background: rgba(127,193,197,0.08); padding:2px 10px; border-radius:12px; font-size:13px; color:#3a7a78;">紫精灵</span>
+                        <span style="background: rgba(127,193,197,0.08); padding:2px 10px; border-radius:12px; font-size:13px; color:#3a7a78;">女神</span>
+                        <span style="background: rgba(127,193,197,0.08); padding:2px 10px; border-radius:12px; font-size:13px; color:#3a7a78;">女精灵</span>
+                        <span style="background: rgba(127,193,197,0.08); padding:2px 10px; border-radius:12px; font-size:13px; color:#3a7a78;">琥珀精灵</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 脉纹型速查 · 与普通叶子不同 · 立体纹理 · 近观细节 · 精致耐看 · 越看越有
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

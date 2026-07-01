@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>第四章 种植养护 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%;
+            height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8;
+            color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 {
+            width: 400px;
+            height: 400px;
+            top: -120px;
+            right: -100px;
+            background: rgba(127, 193, 197, 0.25);
+        }
+        .bg-blur-circles .c2 {
+            width: 350px;
+            height: 350px;
+            bottom: -80px;
+            left: -80px;
+            background: rgba(95, 168, 166, 0.20);
+        }
+        .bg-blur-circles .c3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(167, 212, 210, 0.15);
+        }
+        #app {
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            min-height: -webkit-fill-available;
+            z-index: 1;
+            padding: 20px 20px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+            overflow-y: auto;
+        }
+        .content-wrap {
+            max-width: 820px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .top-mini .brand {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(0, 0, 0, 0.20);
+            text-transform: uppercase;
+        }
+        .top-mini .home-link {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.25);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .home-link:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.40);
+        }
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-top: 1.8em;
+            margin-bottom: 0.4em;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em;
+            margin-bottom: 0.3em;
+        }
+        @keyframes shimmerTitle {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        h2 {
+            font-size: 26px;
+            color: #1c2e2a;
+            margin-top: 2em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4);
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a423e;
+            margin-top: 1.6em;
+        }
+        h4 {
+            font-size: 17px;
+            color: #2a423e;
+            margin-top: 1.4em;
+            font-weight: 600;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+            margin-top: -0.2em;
+            margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.75);
+            margin-bottom: 1.2em;
+        }
+        strong {
+            color: rgba(0, 0, 0, 0.85);
+            font-weight: 600;
+        }
+        em {
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.55);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            margin: 2em 0;
+        }
+        ul,
+        ol {
+            padding-left: 1.6em;
+            margin-bottom: 1.2em;
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.75);
+        }
+        li {
+            margin-bottom: 0.4em;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1.5em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 360px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600;
+            color: #1c2e2a;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .insight-box,
+        .script-box,
+        .teaching-box {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 1.5em 0;
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid;
+        }
+        .insight-box {
+            background: rgba(127, 193, 197, 0.08);
+            border-left-color: #7fc1c5;
+        }
+        .script-box {
+            background: rgba(255, 255, 255, 0.30);
+            border-left-color: #6baa9e;
+        }
+        .teaching-box {
+            background: rgba(110, 155, 181, 0.08);
+            border-left-color: #6e9bb5;
+        }
+        .insight-box p:last-child,
+        .script-box p:last-child,
+        .teaching-box p:last-child {
+            margin-bottom: 0;
+        }
+        .insight-box strong,
+        .script-box strong,
+        .teaching-box strong {
+            color: rgba(0, 0, 0, 0.80);
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 1em 0;
+        }
+        .summary-item {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .summary-item strong {
+            color: #1c2e2a;
+        }
+        .question-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .question-list li {
+            padding: 10px 0 10px 32px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235fa8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>') left center no-repeat;
+            background-size: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .question-list li:last-child {
+            border-bottom: none;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 1em 0;
+        }
+        .card-item {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.70);
+            transition: all 0.2s ease;
+        }
+        .card-item strong {
+            color: #1c2e2a;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.15);
+            color: #3a7a78;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 1px 10px;
+            border-radius: 20px;
+            margin-right: 6px;
+        }
+        @media (max-width: 480px) {
+            #app {
+                padding: 12px 12px 30px;
+            }
+            .content-wrap {
+                padding: 20px 16px;
+                border-radius: 24px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+            h2 {
+                font-size: 22px;
+                padding-left: 12px;
+            }
+            h3 {
+                font-size: 18px;
+            }
+            p,
+            ul,
+            ol {
+                font-size: 15px;
+            }
+            .insight-box,
+            .script-box,
+            .teaching-box {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+            table {
+                font-size: 13px;
+                min-width: 280px;
+            }
+            th,
+            td {
+                padding: 6px 10px;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-mini .home-link {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+        }
+        @media (min-width: 800px) {
+            .content-wrap {
+                padding: 48px 52px;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            h2 {
+                font-size: 30px;
+            }
+            p {
+                font-size: 17px;
+            }
+        }
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+        }
+        .footer-note strong {
+            color: rgba(0, 0, 0, 0.20);
+            font-weight: 500;
+        }
+        .chapter-badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(127, 193, 197, 0.6);
+            letter-spacing: 1px;
+            margin-right: 8px;
+        }
+        .emoji-icon {
+            font-size: 1.2em;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+    </div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <!-- 顶部导航 -->
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="home-link" onclick="window.location.href='plat.html';">← 返回平台</a>
+            </div>
+
+            <!-- 主标题 -->
+            <h1>第四章 日本枫树的种植养护</h1>
+            <p class="subtitle">— 从"买回家"到"养得好"的完整解决方案 —</p>
+
+            <!-- §1 引言 -->
+            <h2>§1. 引言：为什么主播要懂种植养护？</h2>
+            <p>在直播间里，客户问得最多的问题往往不是"这棵树多少钱"，而是：</p>
+            <ul>
+                <li>"收到苗之后怎么处理？直接种还是先缓苗？"</li>
+                <li>"种在哪里最合适？我家院子朝北行不行？"</li>
+                <li>"用什么土？坑挖多大？种多深？"</li>
+                <li>"多久浇一次水？为什么叶子焦了？"</li>
+                <li>"施什么肥？什么时候剪？"</li>
+                <li>"叶子长白粉了怎么办？枝条变黑了是什么病？"</li>
+            </ul>
+            <p>这些问题的背后，是客户最真实的需求——<strong>他们不仅要买到一棵好树，更要确保这棵树能在自己家活得好、长得美。</strong></p>
+            <p><strong>学完这一章，你应该能做到：</strong></p>
+            <ul>
+                <li>指导客户完成从收货到定植的全过程（缓苗、选位、备土、挖坑、种植、定根水）</li>
+                <li>准确回答客户关于浇水、施肥、修剪的高频问题</li>
+                <li>诊断焦叶、闷根、黑杆等常见问题并提供解决方案</li>
+                <li>区分真菌病害与细菌病害，推荐正确的防治措施</li>
+                <li>根据不同季节给出针对性的养护建议</li>
+                <li>在客户心中建立"你不仅卖树，更懂养树"的专业信任</li>
+            </ul>
+
+            <!-- §2 繁殖技术 -->
+            <h2>§2. 繁殖技术：一棵好树的"出身"</h2>
+            <p>在开始讲种植和养护之前，先理解一个问题——<strong>你卖出去的这棵树，是怎么来的？</strong>这关系到客户问的"为什么有的便宜有的贵""籽播苗和嫁接苗有什么区别"等核心问题。</p>
+            <p>日本枫树的繁殖方式，决定了这棵树的<strong>性状稳定性、生长速度、抗病能力，以及价格</strong>。</p>
+
+            <h3>2.1 有性繁殖——籽播与实生苗</h3>
+            <p>籽播就是把种子种下去，长出来的苗叫实生苗。鸡爪槭的种子有生理休眠特性，直接播种几乎不发芽，需要经过<strong>低温层积处理</strong>——把种子和湿沙混合，放在3-5℃的环境中沙藏40-90天，打破休眠后才能播种。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>种子需要"睡一觉"才能醒。低温层积就是模拟冬天，让种子以为过了冬，春天到了再种下去才会发芽。</p>
+            </div>
+            <p><strong>实生苗的优缺点：</strong></p>
+            <ul>
+                <li><strong>优点：</strong>繁殖量大、成本低、根系发达健壮</li>
+                <li><strong>缺点：</strong>后代性状高度分离——同一批种子种出来的苗，叶色、叶形、生长速度各不相同，无法保证与母树一致</li>
+            </ul>
+            <p><strong>用途定位：</strong></p>
+            <ul>
+                <li>主要用作嫁接砧木（培育"青枫"砧木）</li>
+                <li>作为新品种选育的素材库——无数精品品种就是从成千上万棵实生苗中偶然筛选出来的</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"籽播苗就像'开盲盒'，你买的时候是一棵小苗，种五六年长大了，发现叶子颜色跟你想的不一样。虽然便宜，但时间成本搭进去了。我们卖的是嫁接苗，母树什么样，苗就什么样，性状有保证。"</p>
+            </div>
+
+            <h3>2.2 无性繁殖——嫁接（核心）</h3>
+            <p>嫁接是日本枫树商业化生产的<strong>绝对主流</strong>。它将优良品种的枝条（接穗）嫁接到另一植株（砧木）上，通过形成层紧密结合，使两者愈合成一株新植物。</p>
+            <p><strong>嫁接成活的关键四要素：</strong></p>
+            <ul>
+                <li><strong>形成层对齐</strong>：砧木与接穗的形成层必须紧密对齐</li>
+                <li><strong>切口平滑</strong>：切面平整光滑，减少破损和毛刺</li>
+                <li><strong>绑扎保湿</strong>：嫁接后立即绑扎固定、套袋保湿</li>
+                <li><strong>工具卫生</strong>：刀具锋利并严格消毒，防止病菌传播</li>
+            </ul>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>嫁接就像"器官移植"——要把供体的枝条接到受体上，关键是"血管"（形成层）要对齐，切口要平整，包扎要严密，手术刀要消毒。任何一步出问题，移植就失败。</p>
+            </div>
+            <p><strong>为什么必须用嫁接？</strong></p>
+            <ul>
+                <li>只有通过嫁接等无性繁殖方式，才能100%保持园艺品种的优良性状（叶色、叶形、树形）</li>
+                <li>可结合强健砧木的优势，增强品种的适应性和抗性</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"我们直播间卖的都是嫁接苗。嫁接苗是'复刻版'——母树什么样，苗就什么样。籽播苗是'开盲盒'，虽然便宜，但种出来可能就不是你想要的那个品种了。"</p>
+            </div>
+
+            <h3>2.3 砧木选择——决定树的"底盘"</h3>
+            <p>砧木就是嫁接的"底座"，它的健壮程度决定了整棵树的健康和生长速度。生产上统称为"青枫"的砧木包括鸡爪槭实生苗、秀丽槭等。一般选择1-2年生、地径8mm以上的健壮实生苗作砧木。</p>
+            <p><strong>不同砧木的亲和力对比：</strong></p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>砧木类型</th><th>亲和力</th><th>生长速度</th><th>抗病性</th></tr></thead>
+                    <tbody>
+                        <tr><td>鸡爪槭实生苗（普通青枫）</td><td>★★★★★</td><td>★★★★★</td><td>★★☆☆☆</td></tr>
+                        <tr><td>抗病型鸡爪槭砧木</td><td>★★★★☆</td><td>★★★☆☆</td><td>★★★★★</td></tr>
+                        <tr><td>秀丽槭</td><td>★★★★☆</td><td>★★★★☆</td><td>★★★★☆</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>砧木与抗病性的关系（重要！）：</strong></p>
+            <p>这里需要先澄清一个概念：<strong>"青枫"和"鸡爪槭"在植物学上是同一个物种</strong>——都是鸡爪槭（<em>Acer palmatum</em>）。但在苗圃行业中，这两个名称被用来区分两种不同选育方向的砧木：</p>
+            <ul>
+                <li><strong>普通青枫砧木（鸡爪槭实生苗）</strong>：通过种子繁殖获得的实生苗。根系发达、亲和力强、长势旺盛，是目前应用最广泛的砧木。因其以种子繁殖，种群内个体间基因存在较大差异，绝大多数个体的长势快但<strong>抗病性偏弱</strong>，尤其在黄萎病、黑杆面前容易感染。</li>
+                <li><strong>抗病型鸡爪槭砧木</strong>：在长期筛选和对比试验中，部分鸡爪槭个体展现出对黄萎病更强的天然抗性。以此为母本采种培育的砧木，或通过特定株系的扦插/组培扩繁的砧木，<strong>抗黑杆能力更强</strong>，是更安全的选择，但生长速度相对较慢。</li>
+            </ul>
+            <p><strong>选择建议：</strong></p>
+            <ul>
+                <li><strong>黄萎病高发区、重茬地</strong>：优先选择抗病型鸡爪槭砧木</li>
+                <li><strong>健康土壤、追求长势</strong>：普通青枫砧木亦可，注意预防</li>
+            </ul>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>普通青枫砧木和抗病型鸡爪槭砧木，就像同一款车的两个配置版本——普通青枫是"高功率版"，跑得快但油耗高、耐用性一般；抗病型鸡爪槭是"耐久版"，提速稍慢但更皮实、更省心。选哪个，取决于你看重的是短期生长速度还是长期健康稳定。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"我们的精品苗都是嫁接在特定砧木上的。普通青枫砧木长得快，但抗病性弱；抗病型鸡爪槭砧木虽然慢一点，但更健康、更耐用。这就像选车——不仅看外观，更要看底盘。底盘扎实，跑得才稳。黄萎病高发地区，一定要选抗病型鸡爪槭砧木。"</p>
+            </div>
+
+            <h3>2.4 嫁接时机与方法</h3>
+            <p>日本枫树全年有两个最佳嫁接期：</p>
+            <ul>
+                <li><strong>早春嫁接（2月下旬-3月中旬）</strong>：树液开始流动前，成活率最高</li>
+                <li><strong>夏季嫁接（6-8月）</strong>：第二次生长高峰期，适合绿枝接</li>
+            </ul>
+            <p><strong>核心原则：树液开始流动后不宜嫁接。</strong>春季树液流动后（3月中旬）嫁接成活率只有46.84%，而在树液流动前嫁接成活率最高。</p>
+            <p><strong>四种主要嫁接方法：</strong></p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>方法</th><th>特点</th><th>适用场景</th></tr></thead>
+                    <tbody>
+                        <tr><td>切接</td><td>最常见，操作简便，成活率高</td><td>早春嫁接，砧木较粗时</td></tr>
+                        <tr><td>劈接</td><td>对接穗和砧木粗细匹配要求低</td><td>砧木较粗、接穗较细时</td></tr>
+                        <tr><td>腹接</td><td>不剪断砧木，保留部分枝叶</td><td>夏季嫁接，树液流动期</td></tr>
+                        <tr><td>靠接</td><td>两者都保留根系，愈合后断开</td><td>亲和力差的组合</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>嫁接后管理的关键：套袋保湿！</strong></p>
+            <p>套袋保湿的成活率可达<strong>42.86%</strong>，而不套袋的成活率仅<strong>6.45%</strong>。可见，套袋保湿是决定嫁接成败的关键操作。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"嫁接苗贵有贵的道理——从选砧木、削接穗、对齐形成层，到套袋保湿、定期检查，每一道工序都要求精细。一棵成品苗至少需要5-8年才能出圃，时间成本在那里摆着。"</p>
+            </div>
+
+            <h3>2.5 其他无性繁殖方法</h3>
+            <p><strong>高压繁殖（空中压条）——适合家庭DIY</strong></p>
+            <p>选一根筷子粗的枝条，在晚春季节环剥一圈皮，用湿水苔包起来，外面再包上黑塑料遮光，8-16周就能生根，剪下来就是一棵新苗，100%保留母树性状。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"自己在家想繁殖日本枫，可以试试高压繁殖，成功率比较高。选一根筷子粗的枝条，环剥一圈皮，用湿水苔包起来，2-4个月就能生根。但扦插难度很大，不建议尝试。"</p>
+            </div>
+            <p><strong>扦插——商业化不常用</strong></p>
+            <p>日本枫树扦插生根困难，成活率低、生长缓慢。基部伤口处理配合生根激素是必需的，仅用激素不经伤口处理，生根率无法突破30%。</p>
+            <p><strong>组织培养——高端品种扩繁方向</strong></p>
+            <p>组培苗无砧木、无变异保持问题，可从根本上解决砧木萌芽引发的返祖；无病虫害，便于长距离运输，是高端品种扩繁的主流方向。</p>
+
+            <h3>2.6 四种繁殖方式对比总结</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>方式</th><th>性状稳定性</th><th>速度</th><th>成本</th><th>主要用途</th></tr></thead>
+                    <tbody>
+                        <tr><td>籽播</td><td>极低（高度分离）</td><td>慢</td><td>低</td><td>砧木生产、育种素材</td></tr>
+                        <tr><td>嫁接</td><td>极高（100%复制）</td><td>中</td><td>中</td><td>商业化生产（主流）</td></tr>
+                        <tr><td>高压</td><td>极高（100%复制）</td><td>中</td><td>低</td><td>家庭繁殖、母本扩繁</td></tr>
+                        <tr><td>组培</td><td>极高（100%复制）</td><td>快</td><td>高</td><td>高端品种、脱毒苗</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- §3 种植技术 -->
+            <h2>§3. 种植技术：从缓苗到定根</h2>
+            <p>这一节是客户收到苗木后最需要指导的环节。每一步都有讲究，每一步都是主播建立专业信任的机会。</p>
+
+            <h3>3.1 种植时间选择——时机决定成活率</h3>
+            <p>全年有两个黄金种植窗口和一个安全窗口：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>季节</th><th>时间</th><th>成活率</th><th>特点</th></tr></thead>
+                    <tbody>
+                        <tr><td>春季</td><td>3-5月（萌芽前）</td><td>★★★★★</td><td>树液流动前，易缓苗</td></tr>
+                        <tr><td>秋季</td><td>9-11月（落叶后）</td><td>★★★★★</td><td>地温尚暖，根系先适应</td></tr>
+                        <tr><td>夏季</td><td>6-8月</td><td>★★☆☆☆</td><td>高温蒸发大，慎种</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>为什么秋季种植更好？</strong>秋季土壤温度仍有利于根系活动，而地上部分生长减缓，能量集中供给根部。根系在入冬前可完成初步定植，来年春季爆发力更强。</p>
+            <p><strong>不同容器的种植适用性：</strong></p>
+            <ul>
+                <li><strong>容器苗</strong>（控根容器/美植袋）：根系完整无损伤，<strong>几乎可全年移栽</strong>，无缓苗期。无纺布美植袋透气性强，有效避免窝根烂根。</li>
+                <li><strong>裸根苗/土球苗</strong>：根系损伤严重，只宜在春季萌芽前或秋季落叶后种植，需精细养护。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"秋季种植其实比春季更好。春天种下去，夏天就要面对高温考验；秋天种下去，根系有一个冬天的时间慢慢适应，来年春天一爆发就稳稳的。"</p>
+            </div>
+
+            <h3>3.2 种植地点选择——合适的位置是成功的一半</h3>
+            <p><strong>光照条件：半阴半阳最佳</strong></p>
+            <p>日本枫树喜欢半日照到半遮荫的位置。最佳朝向是<strong>朝东或东北</strong>——上午有柔和日光，下午避开烈日暴晒。</p>
+            <ul>
+                <li>强光直射是叶片焦边的头号元凶，锦叶品种和羽叶型品种最敏感</li>
+                <li>长期光照不足会叶色暗淡、徒长、抗性下降</li>
+            </ul>
+            <p><strong>避风原则：防止干热风伤害</strong></p>
+            <p>日本枫树叶片较薄，干热风会加速水分蒸发，导致焦叶和生长不良。应避开风口、过道、无遮挡的开阔地。优选建筑物东侧、围墙内侧、大树东侧。</p>
+            <p><strong>避开积水区</strong></p>
+            <p>日本枫树根系浅、怕涝，绝对不能种在低洼易积水处。</p>
+            <p><strong>与建筑的安全距离</strong></p>
+            <p>日本枫树根系细小、纤维状，不会损坏状态良好的地基。种植时不需过多考虑地基安全和地面破坏问题，但需要考虑与建筑保持一定的冠幅需要伸展和通风的距离。</p>
+
+            <h3>3.3 缓苗管理——收到苗后第一步</h3>
+            <p>缓苗是让苗木从苗圃环境过渡到新环境的适应期。</p>
+            <p><strong>是否需要缓苗的判断：</strong></p>
+            <ul>
+                <li><strong>容器苗</strong>：根系完整，可跳过缓苗直接定植</li>
+                <li><strong>裸根苗/土球苗</strong>：必须缓苗，让根系适应新环境</li>
+            </ul>
+            <p><strong>缓苗操作方法：</strong></p>
+            <ul>
+                <li><strong>放置位置</strong>：通风良好、有散射光、避风处</li>
+                <li><strong>光照管理</strong>：避免直射光，特别是中午强光</li>
+                <li><strong>水分管理</strong>：保持土壤湿润（但不可过湿），可向叶片喷雾增湿</li>
+                <li><strong>缓苗时间</strong>：一般3-7天，以叶片恢复挺立舒展为标志</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"收到苗后先拆包装检查。叶子有点蔫是正常的，运输过程中闷到了，放阴凉通风处缓两三天就好了。不要一收到就暴晒、不要急着施肥。等叶子挺起来了，再逐步见光，再考虑种植或换盆。"</p>
+            </div>
+
+            <h3>3.4 土壤准备——打好生长基础</h3>
+            <p>日本枫树对土壤的核心要求可概括为四个关键词：<strong>疏松、透气、排水好、弱酸性</strong>。</p>
+            <p><strong>pH值要求：</strong></p>
+            <ul>
+                <li>理想pH范围：5.5-6.5（微酸性）</li>
+                <li>适应范围：pH5.5-7.5均可生长</li>
+                <li>碱性土壤易导致缺铁性黄叶</li>
+            </ul>
+            <p><strong>排水要求（地栽）：</strong></p>
+            <p>排水不良是日本枫树种植失败的第二大原因。种植前务必进行排水测试——在种植坑位置挖一个洞、灌满水，观察排水速度。如果数小时内仍未排干，必须改良土壤或起高垄栽培。</p>
+            <p><strong>地栽土壤配比：</strong></p>
+            <p>日本枫树地栽最安全的做法是<strong>用原土回填</strong>，而不是用富配土。园艺师的经验法则是"洞里不放糖"——在种植穴中混入大量改良剂会阻碍根系向外扩展。</p>
+            <ul>
+                <li>原则：用原土回填，而非富配土</li>
+                <li>原土条件差时改良：园土：腐叶土：粗河沙 = 2:2:1</li>
+                <li>严重黏土：必须起高垄（15-20cm）+大量混入粗砂/松鳞（约30%-40%）</li>
+                <li>严重沙土：混入腐叶土、泥炭土增加保水保肥能力（约20%-30%）</li>
+            </ul>
+            <p><strong>盆栽土壤配比：</strong></p>
+            <p>严禁直接用园土，必须配制疏松透气的种植介质。</p>
+            <ul>
+                <li><strong>黄金配方</strong>：泥炭土：珍珠岩：椰糠 = 5:3:2（体积比）</li>
+                <li>加入松鳞可增强透气性</li>
+                <li>盆栽需更频繁检查干湿情况，但切记盆底不可积水</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"地栽的话，用原土回填最安全——不要太富养。如果土太黏，混些腐叶土和粗砂改良；南方黏土重的地方，最好起高垄种。盆栽必须用配好的营养土，泥炭、珍珠岩、椰糠按5:3:2混合，千万不能用院子里的黏土直接种。"</p>
+            </div>
+
+            <h3>3.5 拆除容器与土球绑扎物</h3>
+            <p><strong>土球绑扎物——必须完全拆除！</strong></p>
+            <p>土球布、绑扎绳、塑料薄膜等包裹根球的材料，<strong>必须全部拆除，不可带布入土</strong>。这些材料会阻碍水分交换和根系向周边土壤伸展，时间长了土球和周围土壤变成两个"隔层"，根系无法突破，最终导致环根甚至闷根死树。</p>
+            <p><strong>美植袋——不要拆除！</strong></p>
+            <p><strong>原则：美植袋不要拆，除非是很有经验的种植者。</strong></p>
+            <p>美植袋（无纺布控根容器）不同于普通塑料盆或土球布，它具有以下特点：</p>
+            <ul>
+                <li><strong>可自然降解</strong>：无纺布材料在土壤中会逐渐分解，不会长期阻碍根系生长</li>
+                <li><strong>保护根系完整</strong>：袋内根系已适应袋内环境，拆袋极易造成土球松散、毛细根大量断裂</li>
+                <li><strong>降低移栽损伤</strong>：带袋入土，根系无需经历"裸根-重新适应"的过程，成活率更高</li>
+            </ul>
+            <p><strong>常见误区：</strong>有些客户以为"美植袋必须拆掉才能长根"，实际上恰恰相反——<strong>美植袋本身就是设计为可降解的容器，带袋种植是标准做法</strong>。强行拆袋反而会损伤根系，增加缓苗难度甚至导致死苗。</p>
+            <p><strong>美观处理：</strong>美植袋入土后，如果袋口高出地面影响美观，可以用剪刀将<strong>露出地面的袋口部分</strong>剪掉，<strong>但不要撕扯或整体剥离</strong>。剪掉高出部分即可，既不伤根系，也不影响观赏。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"美植袋要不要拆？听我一句：<strong>不要拆</strong>！有些客户以为袋子要拆掉根才能长出来，其实美植袋本身就是可降解的，带袋种下去，根会自己穿透袋子往外长。你一拆袋，土球散了，毛细根断了，反而伤根。如果袋口冒出土面不好看，用剪刀把露出来的部分剪掉就行，别撕扯、别拆袋！"</p>
+            </div>
+
+            <h3>3.6 种植深度——适当浅种、高种，根颈必须露出来！</h3>
+            <p>这是日本枫树种植中<strong>最关键、也最容易被忽视</strong>的原则。广大枫友那些生长不良的枫树，最常见的原因就是种植过深。</p>
+            <p><strong>核心原则：适当浅种、高种，让根颈高出地面，绝对不能低于地面。</strong></p>
+            <p><strong>什么是根颈？</strong>根颈是树干和根系交接处的膨大部位，位置通常在嫁接口以下数厘米处，是树皮向根过渡的分界点。</p>
+            <p><strong>种植深度标准：</strong></p>
+            <ul>
+                <li><strong>根颈必须露出土面</strong>，高出地面至少1-2厘米</li>
+                <li><strong>宁可种浅，不可种深</strong>——种浅了可以培土，种深了很难补救</li>
+                <li><strong>微土丘种植</strong>：种好后根球顶面应略高出周围地表，形成微微的土丘，有利于排水和根际透气</li>
+            </ul>
+            <p><strong>为什么不能种深？</strong></p>
+            <ul>
+                <li>根颈埋入土中会导致树皮长期处于湿润环境，引发皮层腐烂</li>
+                <li>土壤中的病原菌更容易从根颈伤口侵入</li>
+                <li>根系缺氧，易闷根死树</li>
+            </ul>
+            <p><strong>错误参照警示：</strong>切勿以嫁接口为参照！根颈通常在嫁接口下方数厘米处。如果误将嫁接口作为"露出"的参照点，根颈仍然可能被埋在土下。</p>
+            <p><strong>判断方法：</strong>沿主干向下摸，找到树干开始向根扩散的膨大部位（即树皮与根交接处），这个位置必须露出土面。</p>
+            <p><strong>补救措施：</strong>如果发现已种植过深且树处于休眠期（12月至次年2月），可小心挖起重新定植。严重环根的大树恢复难度很高，<strong>及早处理是关键</strong>。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"种多深？记住一个原则：<strong>宁浅勿深，根颈必须露出来！</strong>就是树干和根系交接处那个膨大的地方，要高出地面一两厘米。很多人种枫树种死，第一原因就是埋太深，树干泡在土里闷烂了。宁可种浅一点，以后培点土，也别一次种深了——种深了神仙都救不回来。"</p>
+            </div>
+            <p><strong>修枝摘叶：</strong>土球苗/生苗移栽时，需要剪除约1/4-1/3的枝叶，目的减少蒸腾面积，减轻根系负担，提高移栽成活率。我们家出售的容器苗一个非常大的优势，就是在移栽的时候，不需要修枝摘叶，可以全冠移栽，即栽即成景，不需要为了保证存活率而去牺牲树形和观赏性。</p>
+            <p><strong>回填：</strong>用原土回填，分层回填，每填一层轻轻压实。切勿用脚猛踩或工具大力压实，这会严重破坏土壤团粒结构，降低透气性。</p>
+
+            <h3>3.7 定根水（第一次浇水）</h3>
+            <p>种植完成后<strong>必须立即浇透定根水</strong>。</p>
+            <ul>
+                <li><strong>作用</strong>：排除土壤中的空气空隙，使土壤与根系紧密接触</li>
+                <li><strong>浇水量</strong>：缓慢浇灌，直到水从坑底自然渗出</li>
+                <li><strong>浇水后检查</strong>：土壤会自然下沉，再检查一次根颈是否仍然露出</li>
+            </ul>
+
+            <h3>3.8 覆土与覆盖</h3>
+            <p>定根水浇完后，在根球外圈的地表覆盖5-7cm厚的有机覆盖物（碎树皮、松针等），有助于保水、调温、抑草。</p>
+            <p><strong>⚠️ 关键：覆盖物必须与主干保持约5-8cm的距离，不可直接接触树皮！</strong></p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"种完后马上浇透一次定根水，让水慢慢渗下去，把土壤里的空隙填满。以后就'见干见湿'——土表面干了再浇，浇就浇透。最怕的不是干，是盆底长期积水闷根。"</p>
+            </div>
+
+            <!-- §4 日常养护 -->
+            <h2>§4. 日常养护：浇水、施肥与修剪</h2>
+            <p>种下去只是第一步，把树种好、养美才是长期功夫。这一节涵盖客户最常问的三大问题：<strong>多久浇一次水？施什么肥？什么时候剪？</strong></p>
+
+            <h3>4.1 浇水管理——"见干见湿"的核心法则</h3>
+            <p>浇水是日本枫树养护中看似最简单、实则最容易出错的一环。许多客户反映"我的枫树叶子焦了""为什么叶子蔫了"，往往不是缺水，而是<strong>水浇多了根闷了</strong>。</p>
+            <p><strong>浇水核心原则：见干见湿</strong></p>
+            <p>日本枫树喜欢湿润但不涝的环境。浇水的黄金法则是"见干见湿"——土壤表面干透了再浇，浇就要浇透。</p>
+            <p><strong>"见干"的判断方法：</strong></p>
+            <ul>
+                <li>将手指插入盆土约2-3cm（一个指节深度），感觉干燥即可浇水</li>
+                <li>切忌按固定天数机械浇水</li>
+                <li>最科学的方法是"摸土法"——每次浇水前用食指插进土里探一下，干则浇，湿则等</li>
+            </ul>
+            <p><strong>"见湿"的操作要点：</strong>浇水时缓慢浇灌，直到水从盆底排水孔持续流出（地栽直到水自然渗透至根系下方），确保整个根球被充分湿润。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>枫树的根需要"呼吸"。浇水就像给人喝水——渴了就大口喝，但每口之间要间隔一段时间。如果一直含着水不咽下去，就喘不过气了。</p>
+            </div>
+            <p><strong>干湿循环的生理意义：</strong>根系需要"干湿交替"的呼吸节奏。长期过湿时，土壤空隙被水分填满，根系缺氧→活力下降→叶片萎蔫、焦枯→严重时腐烂→整株死亡。长期过干时，毛细根最先受损死亡→叶片失水焦边。</p>
+            <p><strong>不同栽植方式的浇水差异：</strong></p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>栽植方式</th><th>浇水频率</th><th>注意事项</th></tr></thead>
+                    <tbody>
+                        <tr><td>地栽（首年）</td><td>见干见湿，视天气而定</td><td>根系恢复后，第二年起基本可自然降水</td></tr>
+                        <tr><td>地栽（第二年及以后）</td><td>基本不需人工浇水</td><td>极端干旱时需补水</td></tr>
+                        <tr><td>盆栽</td><td>见干见湿，夏季需频繁检查</td><td>盆土干得快，注意防晒</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"地栽枫树的头一年，我们需要关注一下土壤的水分和树的状况，该浇水要浇水。通常从地栽第二年开始，根系适应和恢复良好了，基本就不用人工再给树浇水了，依靠自然降水，树就可以获得足够的水分。当然，遇到极端气候，我们该浇还是要浇。"</p>
+            </div>
+
+            <h3>4.2 焦叶与浇水的关系</h3>
+            <p><strong>焦叶是客户最常见的反馈之一。</strong>焦叶的根本原因是叶片失水速度超过根系供水速度。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"叶子焦了，先别急着打药。摸一下土——土干了是缺水，浇透水就行；土湿叶子还焦，那是根闷了，千万别再浇水了，赶紧停水、松土、移到通风处。很多人看叶子焦了以为是病，拼命打药，结果越治越糟。"</p>
+            </div>
+
+            <h3>4.3 施肥管理——"少即是多"的低氮原则</h3>
+            <p>日本枫树本身是慢生树种，对肥料的需求远低于许多速生观赏树种。施肥的原则是"少即是多"——施少了可能长得慢一点，但施多了轻则叶片焦枯、叶色变绿，重则烧根死树。</p>
+            <p><strong>肥料需求基本原则：</strong></p>
+            <ul>
+                <li><strong>低氮原则</strong>：氮肥促进枝叶生长，但对日本枫树而言，过量氮肥会导致枝叶徒长、叶片变大但颜色变浅。对于红色品种，过量氮肥会严重抑制花青素合成，使春红不艳、秋红不烈。</li>
+                <li><strong>理想配比</strong>：低氮磷钾的缓释肥，选择NPK比例低于10-10-10或更低的低氮配方。</li>
+                <li><strong>微量元素</strong>：优质肥料中应包含镁（Mg）、铁（Fe）等微量元素。</li>
+            </ul>
+            <p><strong>三个关键施肥窗口：</strong></p>
+            <ul>
+                <li><strong>早春（2-3月）</strong>：萌芽前施一次缓释肥，为全年生长打基础</li>
+                <li><strong>生长季（5-6月）</strong>：薄施稀薄液肥（浓度减半），每月一次</li>
+                <li><strong>秋季（9-10月）</strong>：改施磷钾肥，停氮肥，促进枝条木质化</li>
+            </ul>
+            <p><strong>不施肥的情况：</strong></p>
+            <ul>
+                <li>新栽后3个月内</li>
+                <li>换盆后2个月内</li>
+                <li>夏季高温期（7-8月）</li>
+                <li>树势衰弱时（黄叶、焦叶严重期）</li>
+                <li>锦叶品种过量施肥会加重返祖退锦</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"日本枫树其实挺耐贫瘠的，施肥太多反而坏事。记住三个节点：早春一次缓释肥，生长季每月一次稀薄液肥（浓度减半），秋天以后改磷钾肥、停氮肥。锦叶品种最好别施肥，容易退锦。"</p>
+            </div>
+
+            <h3>4.4 修剪管理——"休眠期是唯一窗口"</h3>
+            <p>日本枫树与一般花木最大的不同在于：<strong>生长期严禁重剪</strong>。这是许多新手养死日本枫树的原因之一——春季看到枝叶长得太密，随手一剪，结果树干上流了很多树液，树势一落千丈。</p>
+            <p><strong>修剪时间：</strong></p>
+            <ul>
+                <li><strong>冬季休眠期（11月-2月）</strong>：唯一适合重剪的窗口，树液停止流动，伤口不流液</li>
+                <li><strong>夏季（6-8月）</strong>：仅可进行轻度疏剪（去除过密细枝、枯枝）</li>
+                <li><strong>春季（3-5月）</strong>：禁止修剪！树液流动旺盛，剪口大量流液</li>
+            </ul>
+            <p><strong>为什么生长期不能重剪？</strong>日本枫树在春季树液流动活跃期，修剪会造成伤口大量流出树液（称为"流液"或"bleeding"）。这种看似透明的液体实际上是树木输送水分和养分的汁液，大量流失会严重削弱树势。日本枫树属于流液特别旺盛的树种。</p>
+            <p><strong>修剪工具与伤口管理：</strong></p>
+            <ul>
+                <li>工具必须锋利，修剪前后用75%酒精消毒刀刃</li>
+                <li>剪口应在芽点上方约0.5cm处，以45度角斜剪</li>
+                <li>直径大于1cm的剪口，涂抹含杀菌剂的伤口愈合膏</li>
+            </ul>
+            <p><strong>修剪量限制——"五分之一安全法则"</strong></p>
+            <p>一次去除的总枝量不应超过树冠的1/5（20%）。日本枫树生长缓慢，一次去枝过多会导致树势虚弱，多年难以恢复。</p>
+            <p><strong>四种必须剪除的枝条：</strong></p>
+            <ul>
+                <li><strong>砧木萌蘖</strong>：嫁接口以下长出的枝条（必须从根部剪除）</li>
+                <li><strong>枯枝病枝</strong>：任何枯死、病害枝条</li>
+                <li><strong>交叉枝</strong>：互相摩擦、遮挡光线的枝条</li>
+                <li><strong>内膛过密枝</strong>：树冠内部过密、影响通风的细弱枝</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"嫁接口以下冒出来的枝条要不要剪？不但要剪，还要趁早从根上剪掉！那是砧木上长出来的青枫（鸡爪槭原种），长势比接穗旺。你不剪掉，过两年它就覆盖了整棵树，你的红叶品种就变成青枫了。这叫'返祖'，是所有嫁接苗都可能遇到的问题。"</p>
+            </div>
+
+            <!-- §5 庭院养护 -->
+            <h2>§5. 庭院养护：遮阳、保暖、除草与盆栽管理</h2>
+
+            <h3>5.1 夏季遮阳管理——烈日下的守护</h3>
+            <p>日本枫树原产于亚洲林下层，在自然环境中位于高大乔木的荫蔽之下，接受的是斑驳的散射光。这种生态习性决定了它对强光直射的耐受能力极低。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>日本枫树天生是"林下居民"，习惯了头顶有大树挡着。你突然把它拉到空旷地暴晒，就像让一个从小生活在阴凉处的人突然去沙漠——晒不伤才怪。</p>
+            </div>
+            <p><strong>耐日晒不等于喜欢暴晒！</strong>某些品种（如"袖锦""血红"）对强光的耐受能力确实比"红舞姬""橙之梦"等更强，但绝不意味着它能在烈日下健康生长。很多在苗圃大棚里长大的枫树，长期生活在部分遮阴的环境中，突然移栽到业主全日照的庭院环境里，叶片根本来不及适应。我们家的苗，从嫁接开始，就一直在露天的环境里适应和生长，锻炼它们对于各种不利外界环境的耐受力，全面提升抗性，包括耐晒能力。</p>
+            <p><strong>遮阳网的选型与架设：</strong></p>
+            <ul>
+                <li><strong>遮光率</strong>：40%-60%（视品种而定，锦叶品种取上限）</li>
+                <li><strong>架设时间</strong>：5月中旬-9月中旬（南方可延长至10月）</li>
+                <li><strong>架设高度</strong>：网与树冠之间保持50cm以上距离</li>
+            </ul>
+            <p><strong>⚠️ 架设要点：</strong>网与树冠之间保持50cm以上距离，不可直接搭在枝叶上。黑色遮阳网本身吸热，直接搭在枝叶上会灼伤叶片。</p>
+            <p><strong>自然遮阴——最理想的方式</strong></p>
+            <p>日本枫树最理想的种植地点是<strong>房屋东侧或东北侧</strong>：早晨接受数小时的柔和直射光，中午以后进入建筑的阴影区，成功避开每天最强烈的午后暴晒。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"夏天的太阳太毒了，日本枫的嫩叶子受不了。用遮阳网挡一下，或者种在大树东边，上午晒下午凉。不用全天遮，早上透光让叶子光合作用就够了。小苗要遮得更严实些，成株遮一半就行。"</p>
+            </div>
+
+            <h3>5.2 冬季保暖——从盆栽室内到地栽覆盖</h3>
+            <p><strong>为什么枫树不能太暖？</strong>所有日本枫树都需要一段自然低温休眠期才能维持正常的生理节律。如果冬天放在暖气房内（温度持续高于10-12℃），会打乱休眠节律，植株无法积累完成休眠所需的需冷量。来年春天新芽萌发不齐、新叶萎缩、生长发育迟缓。</p>
+            <p>黄河以南绝大多数地区都可以在户外正常过冬，不需要额外的过冬措施；黄河以北地区，则需要采取适当的过冬措施。</p>
+            <p><strong>盆栽越冬：</strong></p>
+            <ul>
+                <li>移入室内或无供暖的冷棚（0-10℃为宜）</li>
+                <li>盆身用无纺布或旧衣物包裹防冻裂</li>
+                <li>盆底垫泡沫板隔绝地面寒气</li>
+                <li>整个冬季只需在盆土完全干透时轻微补水</li>
+            </ul>
+            <p><strong>地栽越冬：</strong></p>
+            <ul>
+                <li>入冬前浇透封冻水</li>
+                <li>根部覆盖4-6英寸（10-15cm）厚的稻草、松鳞、碎树皮</li>
+                <li>覆盖范围至少延伸至树冠外围（滴水线）</li>
+                <li><strong>覆盖物必须与主干保持5-8cm距离！</strong></li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"冬天枫树放在车库里，没光行不行？没关系。枫树冬天落叶后进入休眠期，不需要光合作用。放在冰点以上、不供暖的车库或地下室正好。最怕的是冬天放在暖气房里，强制生长又没叶子，储备的养分都耗光了，开春就弱了。"</p>
+            </div>
+
+            <h3>5.3 大雪与冻雨防护</h3>
+            <p>羽叶垂枝型品种在暴雪天气中枝条负载大，易压裂。及时轻摇树枝抖落积雪，不可用力敲打。</p>
+
+            <h3>5.4 两广/温暖区养护专题</h3>
+            <p>两广（广东、广西）部分冬季温暖，接近亚热带地区的日本枫树，因为气温不够低，无法完成完整的生理休眠，会出现<strong>冬季叶片不变色、不落叶</strong>的现象（术语叫"滞干枯叶"——叶片干枯但不脱落）。</p>
+            <p><strong>养护建议：</strong></p>
+            <ol>
+                <li><strong>不要强行摘叶</strong>：强行撕扯干枯叶片可能损伤芽点</li>
+                <li><strong>春天酌情人工辅助</strong>：如果到3-4月新芽已萌动但老叶仍未脱落，用剪刀剪去枯叶（保留0.5-1cm叶柄基部）</li>
+                <li><strong>人工落叶促休眠</strong>：在12月-1月之间，用人工方式促使树体强制休眠</li>
+                <li><strong>品种选择是关键</strong>：两广炎热地区可优先选择春叶观赏效果好的品种</li>
+            </ol>
+            <p><strong>人工落叶促休眠（强制脱叶法）——具体操作：</strong></p>
+            <p>在12月至1月之间，用人工方式促使树体强制休眠：</p>
+            <ul>
+                <li><strong>操作方法</strong>：用酒精消毒后的锋利剪刀，将枯黄老叶的<strong>叶柄剪断，保留0.5-1cm的叶柄基部</strong>，保护芽点不受损伤。摘叶应在<strong>清晨枝条含水量最饱满时</strong>进行，保留靠近芽点的1-2片健康老叶辅助光合，以防过度摘叶引发应激性二次萌发。</li>
+                <li><strong>辅助手段</strong>：摘叶前1-2周开始<strong>控水</strong>（仅最低气温低于8℃时才浇少量水），同时<strong>完全停施氮肥</strong>，仅可少量补充磷钾肥（0.1%磷酸二氢钾溶液）促进枝条木质化。</li>
+                <li><strong>养护注意</strong>：不要强行撕扯干枯叶片。让老叶自然脱落或在春季新芽萌发时自然顶落，是最安全的方式。如果到3-4月新芽已萌动但老叶仍未脱落，再用剪刀剪去叶柄（保留基部短桩），避免整片叶连芽扯下。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"两广的客户朋友们注意了，你们那冬天不够冷，枫树可能不落叶，来年长势会受影响。12月到1月，用消毒过的剪刀，把老叶的叶柄剪断，<strong>留半厘米左右的小桩</strong>，别伤到芽。同时<strong>控水、停氮肥</strong>，帮它'强制关机'。这样操作后，来年春天新芽才饱满、红叶才鲜艳。"</p>
+            </div>
+
+            <h3>5.5 冬季冷风防护——被忽视的"隐形杀手"</h3>
+            <p>冬季低温固然是威胁，但长期持续的干冷大风才是导致日本枫树"缩枝""失枝"乃至整株枯死的更重要原因。</p>
+            <p><strong>什么是"冬季冷风干缩"？</strong>冬季持续吹来干燥冷风时，风会加速枝条表面水分蒸发。由于休眠期根系几乎处于"停工"状态，无法及时补充水分，导致枝条内部水分持续流失、细胞脱水。春季萌芽时，枝条完全不发新芽或新芽极少，轻轻一折就"啪"一下脆断。</p>
+            <p><strong>预防措施：</strong></p>
+            <ol>
+                <li><strong>设置挡风屏障</strong>：在迎风面用木桩+麻袋布搭建挡风墙</li>
+                <li><strong>包裹枝条</strong>：小树/幼树用无纺布将整株树冠轻轻束拢后包裹</li>
+                <li><strong>盆栽移动</strong>：冬季将盆栽移至避风位置（墙角、廊下）</li>
+                <li><strong>选位避风</strong>：种植前选好避风位置，是最根本的方法</li>
+            </ol>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"我的枫树冬天没有冻死，但春天很多枝条不发新芽，轻轻一折就断，怎么回事？这是冬季干冷风造成的——枝条里的水分被风吹干了。很多枫树不是冻死的，是被风吹干的。冬天在迎风方向立一块挡风布，盆栽直接搬到避风的位置就行。"</p>
+            </div>
+
+            <h3>5.6 除草管理——手工拔除，严禁化学</h3>
+            <p><strong>化学除草剂是日本枫树养护中的"红线"！</strong></p>
+            <p>日本枫树对多数化学除草剂高度敏感，极易药害致死：</p>
+            <ul>
+                <li><strong>2,4-D和麦草畏</strong>：严禁在树下施用，会引起叶片扭卷、畸形、分枝枯萎</li>
+                <li><strong>草甘膦（Roundup）</strong>：被叶片吸收后传导至全株，导致植株逐渐死亡</li>
+                <li><strong>其他除草剂</strong>：对日本枫树均有不同程度伤害</li>
+            </ul>
+            <p><strong>最安全的方法：手工拔除 + 覆盖抑制</strong></p>
+            <p>在盆土表面或地栽树基部覆盖2-4英寸（5-10cm）松鳞、碎树皮、稻草等有机物，可以有效抑制一年生杂草的生长。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"千万别在枫树周围用除草剂，一喷准出事。叶子卷、枝条枯、整棵树废掉都有可能。实在管不了杂草就铺一层树皮或者松鳞，杂草长不出来了，树也舒服了。"</p>
+            </div>
+
+            <h3>5.7 盆栽管理——给庭院受限者的系统指南</h3>
+            <p><strong>盆器选择：</strong></p>
+            <ul>
+                <li>首选：透气性良好的陶盆、多孔控根盆、加仑盆</li>
+                <li>避免：无釉瓷盆、玻璃盆、金属盆（夏季升温快、透气性差）</li>
+                <li>选择足量的排水孔，确保浇水后水分迅速排出</li>
+            </ul>
+            <p><strong>尺寸选择：</strong>换盆时选择比原盆直径仅大5-8cm的花盆即可。切忌直接跳入过大的花盆。正常换盆路径：1加仑→2加仑→3加仑→5加仑→7加仑，逐级放大。</p>
+            <p><strong>盆土配比（重申）：</strong></p>
+            <ul>
+                <li>黄金配方：泥炭土：珍珠岩：椰糠 = 5:3:2</li>
+                <li>全年禁止使用未经消毒的园土或黏土</li>
+            </ul>
+            <p><strong>夏季盆土降温：</strong>黑色盆壁在烈日下吸收大量热量，贴近盆壁的毛细根最先被烫伤。措施：</p>
+            <ul>
+                <li>将盆栽放在木质平台或草皮上，不要直接放水泥地上</li>
+                <li>夏季中午用浅色布包裹盆壁反射阳光</li>
+                <li>套盆种植（小盆放入稍大的空盆中隔热）</li>
+            </ul>
+
+            <!-- §6 病虫害防治 -->
+            <h2>§6. 病虫害防治——诊断与综合防治</h2>
+            <p>日本枫树属于"精致植物"，比大多数乡土树种更容易受到病虫害侵袭。但<strong>大多数严重病害发生在集中种植的幼树上，只要种植方式合理，成年的枫树几乎不会受到病虫害影响。</strong></p>
+
+            <h3>6.1 外因与内因——病虫害发生的根本逻辑</h3>
+            <p><strong>内因（主体因素）：</strong></p>
+            <ul>
+                <li>植株本身的抗病性（品种差异显著）</li>
+                <li>树势强弱、树龄大小</li>
+            </ul>
+            <p><strong>外因（环境与管理因素）：</strong></p>
+            <ul>
+                <li>环境条件（温湿度、通风、光照）</li>
+                <li>栽培管理水平（水肥管理、修剪）</li>
+                <li>病原体的存在</li>
+                <li>传播媒介（工具、昆虫、风雨）</li>
+            </ul>
+
+            <h3>6.2 真菌与细菌——两类完全不同的病原体</h3>
+            <p>日本枫树的病害可致命也可不致命。<strong>准确定性是真菌还是细菌病害，是制定有效防治措施的第一步！</strong></p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>对比维度</th><th>真菌病害</th><th>细菌病害</th></tr></thead>
+                    <tbody>
+                        <tr><td>典型症状</td><td>粉状物、霉状物、斑点、黑色孢子</td><td>水渍状病斑、脓状分泌物（菌脓）</td></tr>
+                        <tr><td>病斑形态</td><td>多呈圆形、角形、有清晰边缘</td><td>多呈不规则水渍状，边缘不清晰</td></tr>
+                        <tr><td>传播方式</td><td>孢子随风、水、昆虫传播</td><td>借风雨、工具、昆虫传播</td></tr>
+                        <tr><td>防治药物</td><td>代森锌、三唑酮、多菌灵等杀菌剂</td><td>铜制剂（波尔多液）、抗生素类</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"先判断是真菌还是细菌——真菌有粉有霉有黑点，细菌有水渍带脓状。看症状就能快速判断，用错药等于白费。"</p>
+            </div>
+
+            <h3>6.3 致命性病害</h3>
+
+            <h4>黄萎病（Verticillium Wilt）/"枫树癌症"</h4>
+            <p>黄萎病是由土壤中的轮枝菌引起的严重真菌性血管枯萎病，通过根系侵入，堵塞木质部导管，阻碍水分输送。</p>
+            <p><strong>典型症状：</strong></p>
+            <ul>
+                <li>一侧树冠或个别枝条突然萎蔫死亡</li>
+                <li>叶片边缘开始枯萎→整枝枯萎→严重时整棵树干枯</li>
+                <li><strong>将枝条劈开，木质部边材出现蓝绿色至棕色或黑色的条纹（重要诊断依据）</strong></li>
+                <li>一年或几年内死亡</li>
+            </ul>
+            <p><strong>传播方式：</strong></p>
+            <ul>
+                <li>通过污染的工具（嫁接刀、修枝剪）传播</li>
+                <li>通过带病土壤和苗木传播</li>
+                <li>微菌核在土壤中可存活10年以上</li>
+            </ul>
+            <p><strong>防治措施（目前没有可靠的治疗方法，预防是关键！）：</strong></p>
+            <ol>
+                <li>加强栽培管理，保持树体健康</li>
+                <li>工具消毒：修剪前后严格消毒</li>
+                <li>剪除病枝至健康组织以下至少15cm，并销毁</li>
+                <li>轮作：在已知感染的地块与非易感作物轮作</li>
+                <li>重症植株及时移除并销毁</li>
+            </ol>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"日本枫树黄萎病目前没有特效药，但可以'防'——从选对砧木开始，抗病型鸡爪槭砧木比普通青枫砧木抗病强；根颈露出来别埋深了；最关键的是工具消毒——剪完病枝的剪刀用酒精擦一下，再剪下一棵。"</p>
+            </div>
+
+            <h4>根腐病（Root Rot）</h4>
+            <p>根腐病是"闷根"的最严重后果——客户最常犯的浇水错误，最终会以根腐病的形式表现出来。</p>
+            <p><strong>典型症状：</strong></p>
+            <ul>
+                <li>土湿叶萎，浇水后不恢复</li>
+                <li>挖出根系见黑褐色腐烂、无白色新根、散发酸臭味</li>
+                <li>从下往上黑杆</li>
+            </ul>
+            <p><strong>诱因：</strong></p>
+            <ul>
+                <li>土壤排水不良、长期积水</li>
+                <li>黏重板结、过量浇水</li>
+                <li>使用未腐熟有机肥</li>
+            </ul>
+            <p><strong>防治：</strong></p>
+            <ul>
+                <li>预防：起高垄栽培、使用疏松介质、控制浇水</li>
+                <li>治疗：挖开根部晾晒、切除腐烂部分、换新土重新栽</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"怎么判断根腐病还是缺水？简单粗暴的办法：看土干湿。缺水是土干叶焦，浇水就能恢复；根腐病是土湿叶焦，浇水也没用。再扒开表土看一眼根系——健康的根是白色的、硬的；烂根是黑褐色、一捏就软烂。这个一目了然。"</p>
+            </div>
+
+            <h4>黑杆——导致枝条枯死的整类症状群</h4>
+            <p>"黑杆"并非某一种特定病害，而是整类症状的统称——只要是枝条从健康变为黑褐色并逐步枯死的现象，客户都会叫它"黑杆"。</p>
+            <p>但不同的"黑杆"表现，对应着完全不同的病因：</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>表现</th><th>大概率病因</th><th>处理方式</th></tr></thead>
+                    <tbody>
+                        <tr><td>从上往下黑，木质部有棕黑色条纹</td><td>黄萎病</td><td>剪到健康组织以下15cm，工具消毒</td></tr>
+                        <tr><td>从下往上黑，根系黑烂</td><td>根腐病</td><td>脱盆修根、换新土、控水</td></tr>
+                        <tr><td>枝条脆断、干枯、无病斑</td><td>冬季冷风干缩</td><td>剪除枯枝，来年加强挡风</td></tr>
+                        <tr><td>局部黑斑、有脓状物</td><td>细菌性溃疡</td><td>剪除病部，铜制剂喷洒</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>快速判断方法：</strong>"从上往下黑，剖开枝条看木质部——<strong>有棕黑色条纹</strong>是黄萎病，没条纹的看根系——<strong>根系黑烂</strong>是根腐病，<strong>枝条脆断</strong>是冬天被风吹干的。三种'黑杆'，三种处理方式。"</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"枝条变黑了，先别慌。看它怎么黑的——从上往下黑，剪开枝条看木质部有没有棕黑色条纹，有就是黄萎病，目前没有特效药，剪到健康组织以下15公分；从下往上黑，是根烂了，需要脱盆修根换土；枝条脆断不发新芽，那是冬天被干冷风吹抽条了，剪掉枯枝就行，不是病。"</p>
+            </div>
+
+            <h3>6.4 常见非致命性病害</h3>
+
+            <h4>炭疽病</h4>
+            <p><strong>典型症状：</strong>红褐色至紫褐色斑点→扩大成不规则尖角状坏死区域（受叶脉限制）→潮湿时有粉红色黏孢子团。</p>
+            <p><strong>防治：</strong>剪除并焚毁死亡枝条；春季萌芽前喷洒预防性药剂；预防比治疗容易得多。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"叶子长了一堆角形褐斑，边缘不规则，中间还有点发白，这是炭疽病。最典型特征是病斑呈尖角状、多角形——因为受叶脉限制，所以长不成圆形。潮湿的时候病斑上会有粉红色的黏孢子团。"</p>
+            </div>
+
+            <h4>白粉病</h4>
+            <p><strong>典型症状：</strong>叶片出现白色粉末状斑块，可覆盖整个叶片，随后斑块上出现黑色圆形斑点。</p>
+            <p><strong>诱因：</strong>潮湿地区、通风不良、过度遮阴、氮肥过量。</p>
+            <p><strong>防治：</strong>疏枝以加强通风透光（最有效）；喷雾防治可用65%代森锌可湿性粉剂500倍液、25%三唑酮乳油1500倍液等。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"叶子上一层白粉，像面粉一样，擦得掉，是白粉病。主要是通风不好。先疏枝——把树冠里面过密的细枝、交叉枝剪掉，让风能吹进去。通风改善了，白粉病自己就会退。基本不用打药。"</p>
+            </div>
+
+            <h4>叶斑病</h4>
+            <p><strong>典型症状：</strong>圆形或近圆形"蛙眼斑"（中央浅色、边缘深色）。</p>
+            <p><strong>防治：</strong>秋季彻底清扫并销毁病落叶；改善通风；一般不需要用药。</p>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"叶子有圆形褐斑，中间浅边缘深，是叶斑病。不伤树，通风好、落叶清干净，明年基本就没了。"</p>
+            </div>
+
+            <h3>6.5 细菌性感染</h3>
+            <p>细菌性病害（如丁香假单胞菌引起的细菌性溃疡）的症状是<strong>水渍状病斑，有时有脓状分泌物</strong>。</p>
+            <p><strong>防治要点：</strong>预防为主，避免伤口，加强通风，及时销毁病株。</p>
+
+            <h3>6.6 虫害</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>虫害</th><th>危害特征</th><th>防治方法</th></tr></thead>
+                    <tbody>
+                        <tr><td>蚜虫</td><td>嫩叶卷曲、发黄，分泌蜜露</td><td>喷施苦参碱、吡虫啉等</td></tr>
+                        <tr><td>红蜘蛛</td><td>叶片背面密布细小白点，严重时叶片枯黄</td><td>喷施阿维菌素、哒螨灵</td></tr>
+                        <tr><td>介壳虫</td><td>枝干上固定不动的褐色"小壳"</td><td>冬季喷施石硫合剂，生长期用噻嗪酮</td></tr>
+                        <tr><td>天牛</td><td>树干上有蛀孔，木屑排出</td><td>人工钩杀幼虫，注射农药</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>6.7 综合防治原则</h3>
+            <ol>
+                <li><strong>预防为主，综合防治</strong>：选择健壮苗木、合理栽培环境、科学水肥管理、加强通风透光</li>
+                <li><strong>工具卫生</strong>：修剪工具必须严格消毒</li>
+                <li><strong>及时清除病源</strong>：发现病枝立即剪除并销毁</li>
+                <li><strong>正确诊断</strong>：准确区分真菌和细菌病害，对症下药</li>
+                <li><strong>注重砧木选择</strong>：普通青枫砧木更易黑杆，使用抗病型鸡爪槭砧木可有效降低发病率</li>
+            </ol>
+            <div class="script-box">
+                <p><strong>🎤 直播间话术：</strong>"与其他木本观赏植物相比，日本枫树很少会有病害。大多数严重病害发生在集中种植的幼树上，只要种植方式合理，生长环境合适，成年的枫树几乎不会受到病虫害影响。"</p>
+            </div>
+
+            <!-- §7 本章总结 -->
+            <h2>§7. 本章总结 · 核心要点速记</h2>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>1. 繁殖方式：</strong>籽播是"开盲盒"，嫁接是"复刻版"，组培是"基因复印版"。我们卖的是嫁接苗——母树什么样，苗就什么样。</div>
+                <div class="summary-item"><strong>2. 砧木选择：</strong>普通青枫砧木长得快但抗病弱，抗病型鸡爪槭砧木长得慢但抗病强——两者是同一物种下的不同选育方向。底盘扎实，跑得才稳。黄萎病高发区必须选抗病型鸡爪槭砧木。</div>
+                <div class="summary-item"><strong>3. 种植时间：</strong>春季3-5月或秋季9-11月。秋季种植优于春季——地温尚暖，根系可适应，来年春天爆发力强。</div>
+                <div class="summary-item"><strong>4. 种植位置：</strong>朝东或东北，上午阳光下午遮阴；避风、不积水、与建筑保持2米以上。</div>
+                <div class="summary-item"><strong>5. 土壤要求：</strong>微酸性（pH5.5-6.5）。地栽用原土回填，黏土起高垄；盆栽用泥炭：珍珠岩：椰糠=5:3:2。</div>
+                <div class="summary-item"><strong>6. 美植袋处理：</strong><strong>不要拆袋</strong>，带袋入土，剪掉高出地面的袋口即可。拆袋极易损伤根系。</div>
+                <div class="summary-item"><strong>7. 种植深度——最重要原则：</strong>适当浅种、高种，根颈必须高出地面。宁可种浅勿种深。</div>
+                <div class="summary-item"><strong>8. 定根水：</strong>种后立即浇透，不可拖延。</div>
+                <div class="summary-item"><strong>9. 浇水：</strong>干透浇透——手指戳土，干了再浇，浇到盆底出水。千万别"每天浇一点"。</div>
+                <div class="summary-item"><strong>10. 施肥：</strong>低氮、薄肥、冬不施。三个窗口——早春缓释肥、春末稀薄液肥、秋季磷钾肥。</div>
+                <div class="summary-item"><strong>11. 修剪：</strong>冬季休眠期重剪（11月-2月），生长期严禁重剪。单次不超树冠20%。</div>
+                <div class="summary-item"><strong>12. 遮阳：</strong>遮光率40%-60%，网离树冠50cm以上。黑网不能直接搭叶子上。</div>
+                <div class="summary-item"><strong>13. 越冬：</strong>北方盆栽移入不供暖车库，地栽覆盖4-6英寸。不要放暖气房。</div>
+                <div class="summary-item"><strong>14. 两广养护：</strong>12-1月人工剪叶柄促休眠（留0.5-1cm小桩），同时控水停氮肥。</div>
+                <div class="summary-item"><strong>15. 除草：</strong>严禁化学除草剂，只能手工拔除。</div>
+                <div class="summary-item"><strong>16. 病虫害：</strong>焦叶先摸土（分清缺水还是闷根），黑杆看四种模式对症处理，杀菌杀螨要分清，预防重于治疗。</div>
+            </div>
+
+            <!-- §8 自测题 -->
+            <h2>§8. 自测题 · 巩固与深化</h2>
+
+            <h3>基础题（必须掌握）</h3>
+            <ol class="question-list">
+                <li>籽播苗和嫁接苗有什么区别？为什么嫁接苗更贵？</li>
+                <li>普通青枫砧木和抗病型鸡爪槭砧木有什么区别？分别适合什么场景？</li>
+                <li>日本枫树的最佳种植季节是什么时候？为什么秋季种植比春季更有优势？</li>
+                <li>种植地点选择有哪些关键原则？（至少说出4点）</li>
+                <li>日本枫树理想的土壤pH值范围是多少？为什么不能偏碱性？</li>
+                <li>地栽种植坑的标准尺寸是多少？为什么要"宽而浅"而不是"窄而深"？</li>
+                <li>什么是根颈？为什么种植时根颈必须露出土面？</li>
+                <li>美植袋种植时应如何处理？为什么？</li>
+                <li>定根水的作用是什么？种完后为什么要立即浇透？</li>
+                <li>浇水的黄金法则是哪四个字？如何判断该不该浇水？</li>
+                <li>日本枫树修剪的最佳时间是什么时候？为什么生长期不能重剪？</li>
+                <li>夏季遮阳网应该如何架设？遮光率一般选多少？</li>
+                <li>为什么不能在日本枫树周围使用化学除草剂？</li>
+                <li>两广地区枫树冬季不落叶，应该怎么处理？</li>
+                <li>真菌病害和细菌病害如何快速区分？</li>
+            </ol>
+
+            <h3>进阶题（优秀主播应掌握）</h3>
+            <ol class="question-list">
+                <li>客户说"叶子焦了，我每天都浇水"，你会如何诊断和处理？</li>
+                <li>新栽苗出现焦叶，客户怀疑是苗的问题，你如何解释？</li>
+                <li>枝条变黑有哪四种情况？分别如何判断和处理？</li>
+                <li>北方客户问"冬天枫树放在暖气房里行不行"，你如何回答？</li>
+                <li>客户问"嫁接口以下长出来的小枝条要剪吗"，你如何解释？</li>
+                <li>从"干湿循环"的角度解释为什么长期过湿的盆土会导致根系死亡。</li>
+                <li>白粉病为什么"疏枝通风"比打药更有效？</li>
+                <li>客户问"地栽和盆栽浇水有什么区别"，请从根系分布和水分管理角度解释。</li>
+            </ol>
+
+            <!-- §9 话术速查卡 -->
+            <h2>§9. 话术速查卡 · 养护场景</h2>
+            <div class="card-grid">
+                <div class="card-item"><strong>收到苗处理</strong>"收到先拆包装检查，叶子有点蔫正常。放阴凉通风处缓两三天，叶子挺起来了再逐步见光。"</div>
+                <div class="card-item"><strong>美植袋处理</strong>"美植袋不要拆！带袋种，根会自己穿透袋子往外长。拆袋伤根。袋口冒土就剪掉露出的部分。"</div>
+                <div class="card-item"><strong>种植深度</strong>"根颈必须露出来！树干和根交接处膨大的部位，要高出土面一两厘米。宁浅勿深。"</div>
+                <div class="card-item"><strong>浇水原则</strong>"干透浇透——手指戳土，干了再浇，浇到盆底出水。别每天浇一点，那是闷根。"</div>
+                <div class="card-item"><strong>焦叶诊断</strong>"叶子焦了先摸土：土干是缺水，浇透；土湿叶还焦是根闷了，停水松土通风。"</div>
+                <div class="card-item"><strong>黑杆判断</strong>"枝条变黑看三种：从上往下黑+木质部有棕黑条纹=黄萎病；从下往上黑=根腐；脆断干枯=冷风干缩。"</div>
+                <div class="card-item"><strong>施肥要点</strong>"低氮薄肥，三个窗口：早春缓释肥、生长季稀薄液肥、秋季磷钾肥。锦叶品种少施肥。"</div>
+                <div class="card-item"><strong>冬季养护</strong>"北方盆栽放不供暖车库，地栽覆盖4-6英寸覆盖物。别放暖气房，会打乱休眠。"</div>
+                <div class="card-item"><strong>两广养护</strong>"12-1月用剪刀剪叶柄留0.5cm小桩，控水停氮肥，帮它'强制关机'。"</div>
+                <div class="card-item"><strong>砧木萌蘖</strong>"嫁接口以下冒出来的枝条，趁早从根部剪掉。那是砧木长出来的，不剪会返祖。"</div>
+                <div class="card-item"><strong>夏季遮阳</strong>"遮光40%-60%，网离树冠50cm以上。黑网不能直接搭叶子上，会烫伤。"</div>
+                <div class="card-item"><strong>除草红线</strong>"千万别用除草剂！一喷准出事。铺树皮或松鳞压草，手工拔最安全。"</div>
+            </div>
+
+            <!-- 页脚 -->
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                —— 第四章 完 —— 山秋枫树园 · 主播培训讲义
+            </div>
+
+        </div>
+        <!-- end content-wrap -->
+    </div>
+    <!-- end app -->
+</body>
+</html>

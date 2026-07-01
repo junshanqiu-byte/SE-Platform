@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>10号游龙形 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">10</span>
+                <div>
+                    <div class="type">游龙形</div>
+                    <div class="sub">特型类 · 天然扭曲 · 蜿蜒如龙 · 独一无二</div>
+                </div>
+            </div>
+            <div class="tagline">
+                蜿蜒如龙天然长，白墙投影最出神
+                <span class="light">蜿蜒 · 游走 · 稀缺 · 活的雕塑 —— 每一棵都是大自然的孤品</span>
+            </div>
+            <div class="keyword-line">✦ 特型类 · 天然扭曲 · 蜿蜒如龙 · 独一无二 ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">天然扭曲</span>
+                    <span class="hook">"每一棵都是大自然的孤品"</span>
+                    <div class="desc">扭曲是品种自带的天然特性，不是人工蟠扎。你找不到两棵一样的——买的是'这一棵'。人工扭曲是'死'的，天然扭曲是'活'的——会继续长、继续扭。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">游龙之姿</span>
+                    <span class="hook">"枝条如龙身在庭院中游走"</span>
+                    <div class="desc">枝条先往左走一段，再往右拐回来——像龙在游走。你能找到'龙头'、'龙身'、'龙尾'——那不是一棵树，是一个故事。你的视线会顺着扭曲走——从这道弯到那道弯，像在追踪一条龙。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">收藏级</span>
+                    <span class="hook">"它不是'绿化树'，是'藏品'"</span>
+                    <div class="desc">苗圃里一千棵中可能只有一两棵是游龙形。你看到的那道弯，可能是它花了两年时间才扭出来的。朋友来了会问'这是什么树？'——自带话题，是'镇院之宝'。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">四季皆可观</span>
+                    <span class="hook">"叶在时看叶，叶落时看骨"</span>
+                    <div class="desc">春天嫩红的叶子沿着扭曲的枝条排列，像龙身上长了鳞片。秋天每一道弯上的叶子颜色不同——同一棵树上看到秋天不同阶段。冬天叶子落尽，扭曲的枝条完全暴露——那是它最好看的季节。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">10 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">游龙形</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">特型类 · 天然扭曲 · 蜿蜒如龙 · 独一无二</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"蜿蜒如龙天然长，白墙投影最出神。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">天然扭曲 · 游龙之姿 · 收藏级 · 四季皆可观</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">蜿蜒 · 游走 · 稀缺 · 抽象之龙 · 活的雕塑</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">白墙前</span><span class="tag">茶室窗外</span><span class="tag">石组旁</span><span class="tag">入口孤植</span><span class="tag">转角</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">全院规矩缺破格 · 茶室缺可凝视的线条 · 想要独一份 · 传统龙太俗 · 冬天断档</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">龙游白墙 · 茶窗观龙 · 转角遇龙 · 雪中游龙</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">白墙前</span><span class="desc">白墙为纸，游龙为墨——扭曲的枝条像一条黑色的龙在白纸上游走，影子在白墙上'游'一整天。</span></div>
+                <div class="scene-item"><span class="name">茶室窗外</span><span class="desc">蜿蜒扭曲的枝条——不是'植物'，是'可以看的书法'。顺着扭曲走一遍，茶刚好喝了一口。</span></div>
+                <div class="scene-item"><span class="name">石组旁</span><span class="desc">石在'蹲'，龙在'游'——'静'与'动'的对照，是庭院里最有张力的关系。</span></div>
+                <div class="scene-item"><span class="name">入口孤植</span><span class="desc">人还没进门，先看到一条'龙'在门口蜿蜒。不是迎宾，是'镇院'。</span></div>
+                <div class="scene-item"><span class="name">转角</span><span class="desc">转角是'转折'，龙也是'转折'——两个'转'在同一个位置相遇。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 庭院里全是'规矩'的树，缺'破格'之物</div>
+                <div class="solution">"找不到任何让你'停下来多看一眼'的东西。"<br /><strong>→ 种一棵游龙形——它是院子里唯一'不守规矩'的东西，像一条闯入花园的龙。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 想要'别人家没有的'树</div>
+                <div class="solution">"你想要的不是'好看'，是'只有我家有'。"<br /><strong>→ 每一棵的扭曲都不一样，你买走这一棵，世上就没有第二棵一模一样的。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 传统'龙'造型太俗，想要'雅'的龙</div>
+                <div class="solution">"不要具象的龙，要抽象的龙——有龙的神，没有龙的形。"<br /><strong>→ 它没有告诉你'我是龙'，但它让你想到了'龙'。那是被发现的美，不是被强加的美。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🐉 龙游白墙</span>
+                    <div class="text">"冬天的下午，影子在白墙上蜿蜒、盘绕、游走。你看了三分钟——影子没停过，它一直在动。那不是影子，是一条在白墙上'游'了一整天的龙。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🍵 茶窗观龙</span>
+                    <div class="text">"秋天，一根枝条上同时挂着三个季节——这道弯上是红的，下一道弯上还是黄的。你的视线顺着那道弯走过去——红、黄、绿，像走了一条彩色的路。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🔄 转角遇龙</span>
+                    <div class="text">"你每天回家，走到那个转角都会'遇'到它。一年后你熟悉了它每一道弯；三年后它多了一道弯。它不是你回家路上的树，是你回家路上的'老朋友'。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>定位：</strong>'孤品级的收藏'。反复强调"每一棵都不一样""你买的是'这一棵'"。</li>
+                        <li><strong>强调'天然'而非'人工'：</strong>"这不是人工绑出来的，是它自己长成这样的。人工扭曲是'死'的，天然扭曲是'活'的。"</li>
+                        <li><strong>先讲'抽象之龙'，再讲'具象之龙'：</strong>先讲'扭曲''蜿蜒'这些自然的线条感，再让客户自己'发现'它是龙。</li>
+                        <li><strong>'镇院之宝'：</strong>"它不是种在院子里的树，是'陈列'在院子里的艺术品。"</li>
+                        <li><strong>价格轻描淡写：</strong>不强调价格，要说"它的价值在于它的'唯一性'——你买走的是一棵世界上独一无二的树。"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 10号游龙形
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

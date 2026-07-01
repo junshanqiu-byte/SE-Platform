@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>红色系 · 枫叶色彩速查卡 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .header-badge {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 4px; flex-wrap: wrap;
+        }
+        .header-badge .icon { font-size: 36px; }
+        .header-badge .title { font-size: 22px; font-weight: 700; color: #1c2e2a; letter-spacing: -0.3px; }
+        .header-badge .sub { font-size: 14px; color: rgba(0, 0, 0, 0.30); font-weight: 400; }
+
+        .tagline {
+            font-size: 18px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 12px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 14px; display: block; margin-top: 2px;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 16px 18px;
+            margin: 12px 0 20px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.3);
+            font-size: 14px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .comparison-box strong { color: #1c2e2a; }
+
+        .color-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .color-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+        .color-card .swatch {
+            width: 100%; height: 24px; border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .color-card .name { font-weight: 700; color: #1c2e2a; font-size: 16px; display: block; }
+        .color-card .sub { font-size: 12px; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 2px; }
+        .color-card .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.55); }
+        .color-card .variety { font-size: 12px; color: #3a7a78; background: rgba(127, 193, 197, 0.06); padding: 2px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        @media (max-width: 480px) { .color-grid { grid-template-columns: 1fr; } }
+
+        .period-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .period-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 14px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            text-align: center;
+        }
+        .period-card .emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+        .period-card .name { font-weight: 700; color: #1c2e2a; font-size: 15px; display: block; }
+        .period-card .time { font-size: 12px; color: rgba(0, 0, 0, 0.30); }
+        .period-card .desc { font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.50); margin-top: 4px; }
+        .period-card .rep { font-size: 11px; color: #3a7a78; margin-top: 4px; }
+        @media (max-width: 480px) { .period-grid { grid-template-columns: 1fr; } }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .scene-item .place { font-weight: 600; color: #1c2e2a; }
+        .scene-item .rec { color: #3a7a78; }
+        .scene-item .why { font-size: 12px; color: rgba(0, 0, 0, 0.45); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.2);
+        }
+        .pain-box .q { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-box .a { font-size: 14px; color: rgba(0, 0, 0, 0.60); margin-top: 4px; }
+        .pain-box .a strong { color: #3a7a78; }
+
+        .dream-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px; padding: 16px 18px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dream-box .title { font-weight: 600; color: #1c2e2a; font-size: 15px; display: block; margin-bottom: 4px; }
+        .dream-box .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); font-style: italic; }
+
+        h2 { font-size: 18px; color: #1c2e2a; margin-top: 22px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 16px; color: #2a423e; margin-top: 16px; margin-bottom: 6px; }
+
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        .keyword-line {
+            font-size: 13px; color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 1px; font-weight: 300;
+            margin-bottom: 16px;
+            padding: 6px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .header-badge .title { font-size: 18px; }
+            .tagline { font-size: 16px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .header-badge .title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="header-badge">
+                <span class="icon">🍁</span>
+                <div>
+                    <div class="title">红色系 · 枫叶色彩速查卡</div>
+                    <div class="sub">主角色 · 一二十种红 · 庭院美学顾问</div>
+                </div>
+            </div>
+            <div class="tagline">
+                你见过几种红色？枫树有一二十种。
+                <span class="light">你不需要成为植物学家，但你需要知道——红色有很多种，枫树都有。</span>
+            </div>
+            <div class="keyword-line">✦ 审美共鸣 × 身份确认 × 即时拥有 ✦</div>
+
+            <!-- 与普通植物的对比 -->
+            <div class="comparison-box">
+                <p><strong>与普通植物的对比 · 审美共鸣</strong><br />
+                普通树是"背景绿"——出门满眼都是深浅不一的绿。枫树是"主角色"——红得丰富、红得有层次。<br />
+                花会谢，樱花两周、牡丹十天，一场雨就没了。枫叶的红色是"长"在叶子上的，春天红、夏天紫、秋天金红，一季接一季，持续好几个月。<br />
+                花是转瞬即逝的惊艳，枫叶是细水长流的陪伴。</p>
+            </div>
+
+            <!-- 12种红色 -->
+            <h2>✦ 完整色彩 · 便签速查</h2>
+            <div class="color-grid">
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#e60000;"></div>
+                    <span class="name">鲜红色</span>
+                    <span class="sub">最正</span>
+                    <div class="desc">不偏不倚，像国旗、像红领巾，就是红色本来的样子。</div>
+                    <span class="variety">代表：三季红、红舞姬</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff3b3b;"></div>
+                    <span class="name">亮红色</span>
+                    <span class="sub">会发光</span>
+                    <div class="desc">叶子自己在发光，阳光下不是"涂"上去的，是叶子自带的亮度。</div>
+                    <span class="variety">代表：三季红（秋）、血红</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#8b1a1a;"></div>
+                    <span class="name">暗红色</span>
+                    <span class="sub">有分量</span>
+                    <div class="desc">像红酒、像红木，越看越有味道，时间沉淀下来的颜色。</div>
+                    <span class="variety">代表：血红（夏）、三季红（夏）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#6a0dad;"></div>
+                    <span class="name">紫红色</span>
+                    <span class="sub">贵族气</span>
+                    <div class="desc">红得克制、有分寸。紫红配白墙，设计师最爱的配色。</div>
+                    <span class="variety">代表：紫叶鸡爪槭、血红</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff2400;"></div>
+                    <span class="name">猩红色</span>
+                    <span class="sub">最有精神</span>
+                    <div class="desc">像火苗最旺的那一截，活泼的、有劲儿的红，不沉闷。</div>
+                    <span class="variety">代表：出猩猩</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff4500;"></div>
+                    <span class="name">火红色</span>
+                    <span class="sub">烧起来</span>
+                    <div class="desc">秋天最极致的红。整棵树像被点着了，但不是灾难，是盛宴。</div>
+                    <span class="variety">代表：大孟（秋）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffb6c1;"></div>
+                    <span class="name">粉红色</span>
+                    <span class="sub">少女</span>
+                    <div class="desc">淡淡的、嫩嫩的。春天新叶是粉红色，整棵树冒"粉红泡泡"。</div>
+                    <span class="variety">代表：部分锦叶品种春叶</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff7f24;"></div>
+                    <span class="name">橙红色</span>
+                    <span class="sub">最暖</span>
+                    <div class="desc">像壁炉里的火光，温暖、亲切，让人想靠近。</div>
+                    <span class="variety">代表：橙之梦、约旦</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#c04000;"></div>
+                    <span class="name">胭脂红</span>
+                    <span class="sub">中国红</span>
+                    <div class="desc">温润典雅，像宣纸上的一抹朱砂，不刺眼、不霸道。</div>
+                    <span class="variety">代表：中华小叶红</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#a0522d;"></div>
+                    <span class="name">铜红色</span>
+                    <span class="sub">最低调</span>
+                    <div class="desc">不争不抢，但耐看。像老铜器上的锈色，那种"旧"的感觉最迷人。</div>
+                    <span class="variety">代表：青龙</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff1a8c;"></div>
+                    <span class="name">荧光红</span>
+                    <span class="sub">不真实</span>
+                    <div class="desc">亮到发光。阳光穿过，整片叶子半透明、发光，像科幻片。</div>
+                    <span class="variety">代表：部分品种特定光下</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#722f37;"></div>
+                    <span class="name">酒红色</span>
+                    <span class="sub">有故事</span>
+                    <div class="desc">像陈年红酒，颜色里藏着年份，要盯着看才能读出层次。</div>
+                    <span class="variety">代表：血红</span>
+                </div>
+
+            </div>
+
+            <!-- 观赏期 -->
+            <h2>✦ 观赏期 · 三类节奏</h2>
+            <div class="period-grid">
+                <div class="period-card">
+                    <span class="emoji">🌿</span>
+                    <span class="name">三季红</span>
+                    <span class="time">6-8个月</span>
+                    <div class="desc">春、夏、秋三季保持红色。你不需要等到秋天才能看，一年三季都是红的。</div>
+                    <div class="rep">代表：三季红、血红、红舞姬</div>
+                </div>
+                <div class="period-card">
+                    <span class="emoji">🍂</span>
+                    <span class="name">两季红</span>
+                    <span class="time">4-6个月</span>
+                    <div class="desc">春、秋两季红色，夏季转绿。春天一抹惊喜，夏天一片清凉，秋天一次震撼。</div>
+                    <div class="rep">代表：出猩猩、中华小叶红</div>
+                </div>
+                <div class="period-card">
+                    <span class="emoji">🍁</span>
+                    <span class="name">秋色红</span>
+                    <span class="time">1-2个月</span>
+                    <div class="desc">仅秋季变红。春夏两季安安静静地绿着，到了秋天一夜烧起来。</div>
+                    <div class="rep">代表：大孟、鸡爪槭原种</div>
+                </div>
+            </div>
+
+            <!-- 场景推荐 -->
+            <h2>✦ 场景推荐 · 身份确认</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="place">窗前</span> → <span class="rec">两季红 / 秋色红</span><br /><span class="why">四季四幅画，不挡光有景</span></div>
+                <div class="scene-item"><span class="place">白墙前</span> → <span class="rec">紫红 / 深红</span><br /><span class="why">白墙为纸，红枫为画</span></div>
+                <div class="scene-item"><span class="place">草坪中央</span> → <span class="rec">三季红 / 秋色红</span><br /><span class="why">绿草坪上红色的焦点</span></div>
+                <div class="scene-item"><span class="place">水边</span> → <span class="rec">秋色红</span><br /><span class="why">上下对称，虚实相生</span></div>
+                <div class="scene-item"><span class="place">入口</span> → <span class="rec">三季红</span><br /><span class="why">每天回家都有红树在等</span></div>
+                <div class="scene-item"><span class="place">路径两侧</span> → <span class="rec">三季红</span><br /><span class="why">红色隧道，四季有节奏</span></div>
+            </div>
+
+            <!-- 痛点化解 -->
+            <h2>✦ 痛点化解 · 解药话术</h2>
+
+            <div class="pain-box">
+                <div class="q">"红色太常见了，不想跟别人一样"</div>
+                <div class="a">→ 那就不要红色。粉色、紫色、锦叶——枫树不只有红色，你不需要跟别人一样。</div>
+            </div>
+            <div class="pain-box">
+                <div class="q">"怕只有秋天才好看"</div>
+                <div class="a">→ 选三季红，春天红、夏天红、秋天还红。或者冬观枝，四季轮着来。</div>
+            </div>
+            <div class="pain-box">
+                <div class="q">"怕颜色太跳不搭"</div>
+                <div class="a">→ 选铜红色，红得不跳，雅雅地融进去。或墨绿，有分寸不抢戏。</div>
+            </div>
+
+            <!-- 造梦 -->
+            <h2>✦ 造梦 · 即时拥有</h2>
+
+            <div class="dream-box">
+                <span class="title">🔥 秋日火红</span>
+                <div class="text">十月的傍晚，红枫像一团燃烧的火焰，夕阳穿过半透明的红叶。你站在树下，满眼都是红色。你会忍不住拍照发给朋友，他们回你："你家院子也太夸张了吧。"</div>
+            </div>
+            <div class="dream-box">
+                <span class="title">🌿 三季常红</span>
+                <div class="text">春天嫩红，夏天深红，秋天火红。一年三季，每次推开院门，第一眼就是它。不是"秋天的惊喜"，是"每天的日常"。</div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 红色系速查 · 审美共鸣 × 身份确认 × 即时拥有
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

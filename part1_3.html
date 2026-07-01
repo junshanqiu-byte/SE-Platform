@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>第三章 生理习性与形态分类 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%;
+            height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8;
+            color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 {
+            width: 400px;
+            height: 400px;
+            top: -120px;
+            right: -100px;
+            background: rgba(127, 193, 197, 0.25);
+        }
+        .bg-blur-circles .c2 {
+            width: 350px;
+            height: 350px;
+            bottom: -80px;
+            left: -80px;
+            background: rgba(95, 168, 166, 0.20);
+        }
+        .bg-blur-circles .c3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(167, 212, 210, 0.15);
+        }
+        #app {
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            min-height: -webkit-fill-available;
+            z-index: 1;
+            padding: 20px 20px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+            overflow-y: auto;
+        }
+        .content-wrap {
+            max-width: 820px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .top-mini .brand {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(0, 0, 0, 0.20);
+            text-transform: uppercase;
+        }
+        .top-mini .home-link {
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.25);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .home-link:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.40);
+        }
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-top: 1.8em;
+            margin-bottom: 0.4em;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em;
+            margin-bottom: 0.3em;
+        }
+        @keyframes shimmerTitle {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        h2 {
+            font-size: 26px;
+            color: #1c2e2a;
+            margin-top: 2em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4);
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a423e;
+            margin-top: 1.6em;
+        }
+        h4 {
+            font-size: 17px;
+            color: #2a423e;
+            margin-top: 1.4em;
+            font-weight: 600;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+            margin-top: -0.2em;
+            margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.75);
+            margin-bottom: 1.2em;
+        }
+        strong {
+            color: rgba(0, 0, 0, 0.85);
+            font-weight: 600;
+        }
+        em {
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.55);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            margin: 2em 0;
+        }
+        ul,
+        ol {
+            padding-left: 1.6em;
+            margin-bottom: 1.2em;
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.75);
+        }
+        li {
+            margin-bottom: 0.4em;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1.5em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 360px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600;
+            color: #1c2e2a;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .insight-box,
+        .script-box,
+        .teaching-box {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 1.5em 0;
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid;
+        }
+        .insight-box {
+            background: rgba(127, 193, 197, 0.08);
+            border-left-color: #7fc1c5;
+        }
+        .script-box {
+            background: rgba(255, 255, 255, 0.30);
+            border-left-color: #6baa9e;
+        }
+        .teaching-box {
+            background: rgba(110, 155, 181, 0.08);
+            border-left-color: #6e9bb5;
+        }
+        .insight-box p:last-child,
+        .script-box p:last-child,
+        .teaching-box p:last-child {
+            margin-bottom: 0;
+        }
+        .insight-box strong,
+        .script-box strong,
+        .teaching-box strong {
+            color: rgba(0, 0, 0, 0.80);
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 1em 0;
+        }
+        .summary-item {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .summary-item strong {
+            color: #1c2e2a;
+        }
+        .question-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .question-list li {
+            padding: 10px 0 10px 32px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235fa8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>') left center no-repeat;
+            background-size: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .question-list li:last-child {
+            border-bottom: none;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 1em 0;
+        }
+        .card-item {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.70);
+            transition: all 0.2s ease;
+        }
+        .card-item strong {
+            color: #1c2e2a;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        .number-badge {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.15);
+            color: #3a7a78;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 1px 10px;
+            border-radius: 20px;
+            margin-right: 6px;
+        }
+        @media (max-width: 480px) {
+            #app {
+                padding: 12px 12px 30px;
+            }
+            .content-wrap {
+                padding: 20px 16px;
+                border-radius: 24px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+            h2 {
+                font-size: 22px;
+                padding-left: 12px;
+            }
+            h3 {
+                font-size: 18px;
+            }
+            p,
+            ul,
+            ol {
+                font-size: 15px;
+            }
+            .insight-box,
+            .script-box,
+            .teaching-box {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+            table {
+                font-size: 13px;
+                min-width: 280px;
+            }
+            th,
+            td {
+                padding: 6px 10px;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-mini .home-link {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+        }
+        @media (min-width: 800px) {
+            .content-wrap {
+                padding: 48px 52px;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            h2 {
+                font-size: 30px;
+            }
+            p {
+                font-size: 17px;
+            }
+        }
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+        }
+        .footer-note strong {
+            color: rgba(0, 0, 0, 0.20);
+            font-weight: 500;
+        }
+        .chapter-badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(127, 193, 197, 0.6);
+            letter-spacing: 1px;
+            margin-right: 8px;
+        }
+        .tree-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            margin: 0.5em 0 1em 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .tree-type-grid .item {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .tree-type-grid .item .label {
+            font-weight: 600;
+            color: #1c2e2a;
+        }
+        @media (max-width: 480px) {
+            .tree-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+    </div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <!-- 顶部导航 -->
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="home-link" onclick="window.location.href='plat.html';">← 返回平台</a>
+            </div>
+
+            <!-- 主标题 -->
+            <h1>第三章 日本枫树的生理习性与形态分类</h1>
+            <p class="subtitle">— Japanese maples · 生理生态 · 遗传变异 · 形态分类 —</p>
+
+            <!-- §1 引言 -->
+            <h2>§1. 引言：为什么主播要掌握生理习性与形态分类？</h2>
+            <p>在直播间里，你每天都会面对客户的各种问题：</p>
+            <ul>
+                <li>"这棵树能长多高？种在窗前会不会挡光？"</li>
+                <li>"这个叶子的形状为什么跟别的枫树不一样？"</li>
+                <li>"这个颜色是春天有还是秋天有？"</li>
+                <li>"种下去之后怎么养护？叶子焦了怎么办？"</li>
+                <li>"我家在北方，冬天会不会冻死？"</li>
+                <li>"为什么有些品种价格差这么多？"</li>
+                <li>"斑锦品种为什么会退锦？"</li>
+            </ul>
+            <p>这些问题看似零散，实际上都指向两个核心知识板块：<strong>生理习性</strong>和<strong>形态分类</strong>。</p>
+            <p><strong>生理习性</strong>让你知道这棵树需要什么、怕什么、怎么养——这是专业主播的"养树"能力。<strong>形态分类</strong>让你看到一棵树就能说出它的树形归属、叶形类型、叶色特征——这是专业主播的"识树"能力。这些知识背景，让我们在拿到一棵枫树的时候，不会犯基本的常识性错误，树立专业形象，并且也是成功塑品所必须掌握的基础知识。</p>
+            <p>学完这一章，你应该能做到：</p>
+            <ul>
+                <li>能系统讲解日本枫树的完整植物学特征</li>
+                <li>能系统讲解日本枫树的光照、温度、水分、土壤、根系、生长等生理习性</li>
+                <li>能简单讲解叶色变化的生理机制和遗传变异的核心原理</li>
+                <li>能简单回应客户关于养护、焦叶、耐寒、闷根、返祖等高频问题</li>
+                <li>深刻理解<strong>树形优先于品种，优先于叶色、叶形</strong>的价值排序，并在直播中准确传达</li>
+                <li>看到一棵枫树，能快速判断它的树形归属（12类中的哪一类）</li>
+                <li>能准确描述六种叶形的形态特征</li>
+                <li>能准确定位叶色的具体色型，进行准确的描述</li>
+            </ul>
+
+            <!-- §2 分类学定位 -->
+            <h2>§2. 分类学定位 · 科与属</h2>
+            <p>日本枫树（<em>Japanese Maples</em>）在植物分类系统中属于<strong>无患子目（Sapindales）</strong>、<strong>无患子科（Sapindaceae）</strong>、<strong>槭属（Acer）</strong>。槭属是一个庞大的家族，全世界约有200多种，主要分布在北温带地区。我们熟悉的糖枫（<em>Acer saccharum</em>，产枫糖浆的树种）、元宝枫（<em>Acer truncatum</em>）都是它的近亲。（注：传统分类曾将槭属独立为"槭树科"，APG分类系统现归入无患子科。两者为不同分类体系下的处理，不影响植物学本质。）</p>
+            <p>为什么说它"出身不凡"？因为在槭属这个大家族中，日本枫树是出了名的"颜值担当"。它的叶片掌状分裂，形态极为优雅，秋季变色尤为绚丽，这使得它在园艺界备受宠爱。了解它的分类地位，能帮助我们理解它的许多生理特征——比如它为什么喜欢温带气候、为什么叶片那么薄、为什么对水分敏感——这些都是它在漫长进化中形成的家族印记。</p>
+            <div class="insight-box">
+                <p><strong>🌿 通俗理解：</strong>把植物分类想象成"人类族谱"——无患子目是"姓氏"，无患子科是"大家族"，槭属是"直系亲属"，而日本枫树就是这位"家族里最有艺术气质的小儿子"。</p>
+            </div>
+
+            <!-- §3 完整植物学特征 -->
+            <h2>§3. 完整植物学特征</h2>
+
+            <h3>3.1 树形 —— 小型落叶乔木或灌木</h3>
+            <p>日本枫树通常被描述为<strong>小型落叶乔木或灌木</strong>。成株高度一般在<strong>5~8米</strong>，树冠呈圆润的伞状或展开状，枝条纤细，层次分明。这种"小巧"的身材，是它长期适应林下环境的结果——在森林下层，它不需要长得太高，但需要尽可能多地捕捉穿过林冠的散射光，这也是枫树飘逸感的来源。</p>
+            <p>作为<strong>温带植物</strong>，日本枫树的生命节律与四季变化紧密相扣。春天萌发新叶，夏天进行旺盛的光合作用，秋天叶片衰老变色，冬天进入休眠。这种"落叶"习性并不是"死亡"，而是一种聪明的"冬眠"策略——通过落叶减少水分蒸发和能量消耗，安全度过寒冷的冬季。</p>
+
+            <h3>3.2 叶形 —— 掌状分裂的艺术</h3>
+            <p>日本枫树最标志性的特征就是它的<strong>掌状分裂叶片</strong>。叶片通常有<strong>5~11个</strong>裂片，裂片呈披针形或卵形，边缘有锯齿。根据裂片的深浅和形状，园艺上又细分为<strong>鸡爪枫</strong>（裂片较深）、<strong>羽扇枫</strong>（裂片更细长，如羽毛）等不同类型。叶片的细腻纹理和精致轮廓，使其在春夏季节就极具观赏性，而到了秋季，它们更是变色的主角。（关于叶形的系统分类，详见本章§8.2。）</p>
+
+            <h3>3.3 叶色 —— 从春到秋的色彩变奏曲</h3>
+            <p>日本枫树的叶色是其最迷人的特征之一。它的叶色变化贯穿整个生长季：</p>
+            <ul>
+                <li><strong>春季</strong>：新叶初展，常呈鲜艳的红色、橙色或黄绿色，充满生机。</li>
+                <li><strong>夏季</strong>：叶片逐渐转为稳定的绿色（大多数品种）或紫红色（如红叶品种），进入旺盛的光合作用期。</li>
+                <li><strong>秋季</strong>：随着气温下降和日照缩短，叶片中的叶绿素分解，花青素和类胡萝卜素显现，呈现出从金黄到深红的渐变色彩，这是日本枫树最高光的时刻。</li>
+            </ul>
+            <p>除上述季节变化外，园艺品种还拥有<strong>锦叶（斑叶）</strong>、<strong>紫叶</strong>、<strong>线叶</strong>等多种叶形、叶色变异，大大丰富了它的观赏维度。</p>
+
+            <h3>3.4 花 —— 春季的紫色点缀</h3>
+            <p>日本枫树在春季（4-5月）开<strong>紫色或紫红色的小型杂性花</strong>（雄花与两性花同株），构成伞房花序，簇生于枝条顶端。花与嫩叶同时出现，紫色小花点缀在红色新叶之间，形成春季独特的色彩层次。</p>
+
+            <h3>3.5 翅果 —— 槭树最独特的标志性特征</h3>
+            <p><strong>翅果是槭属（Acer）植物最核心的识别特征。</strong>由两枚相连的小坚果组成，每枚各带一只薄膜状翅膀，形似一对翅膀。鸡爪槭的翅果张开成钝角（&gt;90°）。翅果嫩时紫红色，成熟后淡棕黄色，9-10月成熟。秋风起时旋转飘落，形成"风媒传播"的独特景观。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"怎么知道买的是真枫树？看秋天有没有'小翅膀'——翅果。两粒小果子带着一对翅膀，成熟后会像竹蜻蜓一样旋转飘落。这是枫树独有的特征。"</p>
+            </div>
+
+            <h3>3.6 枝干 —— 冬季的骨架之美</h3>
+            <p>日本枫树的枝干在冬季落叶后展现出独特的观赏价值。还有一些品种的枝条在冬季会呈现出鲜艳的色彩，成为寒冷季节里的视觉焦点。</p>
+            <ul>
+                <li><strong>'珊瑚阁'</strong>：冬季珊瑚红枝。</li>
+                <li><strong>'美峯'</strong>：冬季金黄色枝。</li>
+                <li><strong>'冬之火'</strong>：冬枝火红橙色。</li>
+                <li><strong>'Japanese Sunrise'</strong>：冬枝多色渐变（红-黄-橙）。</li>
+                <li><strong>'美岛绿'</strong>：冬枝嫩绿。</li>
+            </ul>
+            <p>关于冬观枝的系统色系分类，详见本章§8.1。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"冬天叶子落完了，很多客户觉得树'秃了'不好看。但其实好树形冬天才是最有味道的时候，还有的品种比如'珊瑚阁'，冬天枝条是珊瑚红色的，整棵树像一件红珊瑚雕塑。树形骨架好的枫树，一年四季都是景。"</p>
+            </div>
+
+            <h3>3.7 树皮 —— 随时间沉淀的肌理</h3>
+            <p>日本枫树幼年时期的树皮光滑，成龄后逐渐粗糙，出现纵裂纹。需要注意的是，枫树的树皮较薄，修剪时需防机械损伤，夏天也需防范暴晒损伤。</p>
+            <p>另有一些<strong>荒皮性</strong>的枫树品种（如荒皮红叶、荒皮右近），幼树即具有老松干式皲裂粗皮，非常适合用于打造禅意景观或制作盆景。</p>
+
+            <!-- §4 植物生理习性 -->
+            <h2>§4. 植物生理习性 · 生存的智慧</h2>
+            <p>前面我们了解了日本枫树的"外貌"，接下来要深入它的"内在"——它是如何生活的？它的每一个器官、每一个生长阶段背后，都藏着怎样的生理机制？这一章，我们将从物候节律、光照、水分、土壤、温度和遗传变异等多个维度，解读日本枫树的生存智慧。</p>
+
+            <h3>4.1 物候节律 · 生命周期的时钟</h3>
+            <p>物候学（Phenology）研究的是生物的生命活动与季节变化的关系。日本枫树的一年，可以用几个关键阶段来描绘：</p>
+            <ul>
+                <li><strong>萌芽展叶期（3-4月）</strong>：随着气温回升，冬芽开始膨大，嫩叶破壳而出，此时叶色常呈鲜艳的红色或黄绿色，这是初春最美的时刻。嫩叶的红色来自<strong>花青素</strong>，它能保护幼嫩组织免受早春紫外线的伤害。</li>
+                <li><strong>旺盛生长期（5-8月）</strong>：叶片完全展开，进行高效的光合作用，为植株积累养分。此时叶色转为稳定的绿色（或品种特有的紫红色）。</li>
+                <li><strong>秋色叶期（10-11月）</strong>：随着日照缩短和昼夜温差加大，叶片中的叶绿素分解，花青素和类胡萝卜素显现，造就了红、橙、黄交织的秋色盛宴。这是叶片衰老的生理过程，也是一场华丽的谢幕。</li>
+                <li><strong>休眠期（12-2月）</strong>：落叶后，植株进入深度休眠状态，代谢活动降至最低，以抵抗严寒。此时树液流动减缓，抗冻能力增强。</li>
+            </ul>
+            <div class="insight-box">
+                <p><strong>🌱 通俗理解：</strong>它像一位懂得"休养生息"的艺术家：春天作画（长新叶），夏天工作（光合储能），秋天展示画作（变色），冬天闭门休息（休眠）。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户问枫树一年四季有什么看头？你就告诉他：春天看嫩芽红，夏天看绿叶幽，秋天看变色秀，冬天看骨架美。枫树没有'丑季'，每个季节都有不同的美。"</p>
+            </div>
+
+            <h3>4.2 光照生理 · 耐阴与光适应的平衡</h3>
+            <p>日本枫树是典型的<strong>耐阴植物</strong>，这意味着它在林下散射光环境中生长良好。它的叶片结构——较薄的角质层、较多的叶绿体——使其在低光照下仍能高效地进行<strong>光合作用</strong>。</p>
+            <p>然而，它并非完全不喜阳光。许多园艺品种在<strong>全日照</strong>下叶色会更鲜艳（尤其是红色品种），但夏季烈日加上干热风容易导致<strong>叶片焦边</strong>（叶缘枯焦）。这是因为强光会加速<strong>蒸腾作用</strong>，导致叶片失水超过根系吸水能力，造成水分失衡。因此，在栽培中，<strong>半荫环境</strong>（上午光照、下午遮荫）往往是理想选择。</p>
+            <div class="insight-box">
+                <p><strong>☀️ 通俗理解：</strong>它像一位喜欢"散射光"的读书人：明亮但不刺眼的光线最舒适；中午的大太阳会把它"晒伤"（叶片焦边）。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"很多客户问我：'枫树种在哪儿最好？'我一般会告诉他们：东边或者南边有树挡一下、上午晒太阳、下午有遮阴的位置最理想。半阴半阳，叶子颜色最正。"</p>
+            </div>
+            <p><strong>叶形耐晒差异：</strong>掌叶枫组总体较耐晒，其中的小叶形品种相对更耐晒，而羽叶组和锦叶组通常耐晒能力较弱。</p>
+
+            <h4>4.2.1 抗逆性综合分级（耐晒 + 耐热）</h4>
+            <p>以下分级同时适用于<strong>抗强光暴晒</strong>和<strong>抗高温热害</strong>两个维度，两者高度正相关。其中第1级为最强，第4级为最弱。</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>等级</th><th>特征</th><th>代表品种</th></tr></thead>
+                    <tbody>
+                        <tr><td>第1级（最强）</td><td>极耐晒耐热，几乎不焦叶</td><td>'田向山'、'血红'、'帝王一号'</td></tr>
+                        <tr><td>第2级（较强）</td><td>耐晒耐热，轻微焦边可恢复</td><td>'三季红'、'出猩猩'、'红舞姬'</td></tr>
+                        <tr><td>第3级（中等）</td><td>需适度遮阴，夏季需保护</td><td>'约旦'、'橙之梦'、'袖锦'</td></tr>
+                        <tr><td>第4级（最弱）</td><td>极易焦叶，必须半荫养护</td><td>'蝴蝶'、'羽前锦'、'红七变化'</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>色彩耐晒/耐热性对比（参考）：</strong>'三季红'＞'二季红'＞'黄金枫'＞'绿叶枫'＞'羽毛枫'＞'锦叶'</p>
+            <p>夏季遮阳方案：搭设<strong>30%-50%</strong>遮阳网，1-2年生幼苗需<strong>50%-70%</strong>。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户如果问'什么品种最皮实好养'，你可以直接推荐第1级品种——'田向山''血红''帝王一号'。晒不焦、热不坏，对新手特别友好。如果客户特别喜欢锦叶品种像'蝴蝶'，那一定要提醒他：半阴养，别暴晒。"</p>
+            </div>
+
+            <h3>4.3 焦叶的多重诱因与防治</h3>
+            <p>焦叶的根本原因是<strong>叶片失水速度超过根系吸水速度</strong>。诱因包括：干旱、过湿闷根、干燥大风、烈日暴晒、晚春霜冻、盐雾、施肥不当等。</p>
+            <ul>
+                <li><strong>防治：</strong>遮阳网（30%-50%）；见干见湿浇水；避风种植；避免肥害等。</li>
+                <li><strong>已焦叶：</strong>严重受损叶片自然脱落，秋季统一清理病叶并销毁。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户一看到焦叶就慌，觉得树要死了。你可以告诉他：焦叶不是病，是树在'喊渴'。要么是太阳太猛，要么是风太干，要么是根闷了。先排查这三个原因，对症处理就行。"</p>
+            </div>
+
+            <h3>4.4 温度适应性 · 温带气候的忠实追随者</h3>
+            <p>日本枫树是典型的<strong>温带植物</strong>，它对温度有着一套精妙的适应策略：</p>
+            <ul>
+                <li><strong>秋色对温差的需求</strong>：秋季白天温暖、夜晚凉爽的<strong>大温差</strong>是花青素大量合成的关键信号，这也是秋色绚烂的气候原因。如果秋季温度过高或温差过小，秋色会大打折扣，比如在我国南方的部分省份地区。</li>
+                <li><strong>耐寒性</strong>：它能耐受<strong>-20°C至-25°C</strong>的低温，部分品种甚至可以耐受<strong>-29°C至-34°C</strong>，这源于其细胞在冬季的<strong>抗寒生理调节</strong>——积累可溶性糖和抗冻蛋白，降低细胞液冰点，防止冰晶刺伤细胞。</li>
+                <li><strong>不耐酷暑</strong>：夏季高温（尤其是干热风）会加速蒸腾作用，导致水分失衡，引发叶片焦枯。在夏季炎热地区，适当遮荫和增加湿度是保护它的关键。</li>
+            </ul>
+            <p><strong>注意：</strong>地上盆栽由于根系缺乏足够的土壤保护，耐寒能力大幅下降，<strong>绝大多数品种</strong>仅能耐寒至<strong>-9℃</strong>左右。<strong>部分耐寒性较弱的品种（如锦叶类、羽毛类）盆栽时建议不低于-5℃</strong>。</p>
+            <p><strong>夏季耐热性对比（参考）：</strong>'三季红'＞'二季红'＞'黄金枫'＞'绿叶枫'＞'羽毛枫'＞'锦叶'（抗焦叶能力递减）。具体品种分级详见§4.2.1抗逆性综合分级。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"北方客户问得最多的问题就是'冬天会不会冻死'。你可以明确告诉他：地栽的话，-20℃到-25℃都没问题。但如果是盆栽，冬天要把盆保护起来，因为盆壁薄，根没土壤保温。北方春天还要防干冷风，那是焦叶的一大元凶。"</p>
+            </div>
+
+            <h3>4.5 水分与土壤生理 · 喜湿怕涝的根系需求</h3>
+            <p>日本枫树的根系以<strong>浅根系</strong>为主，须根发达，主根不明显。这种根系结构决定了它对土壤通气性要求极高。</p>
+            <ul>
+                <li><strong>水分需求</strong>：它喜欢湿润的土壤环境，但<strong>极其不耐水涝</strong>。一旦土壤积水，根系无法进行正常的<strong>呼吸作用</strong>，容易导致烂根甚至整株死亡。同时，它还偏好<strong>较高的空气湿度</strong>，这与叶片较薄、保水能力弱有关。</li>
+                <li><strong>土壤偏好</strong>：它喜欢<strong>疏松、富含有机质、排水良好的微酸性至中性土壤</strong>（pH 5.5~7.0）。酸性环境有利于其吸收铁、锰等微量元素，若土壤偏碱，容易出现缺铁性黄化（叶脉间失绿）。</li>
+            </ul>
+            <div class="insight-box">
+                <p><strong>💧 通俗理解：</strong>它的根像"挑剔的呼吸者"：既怕渴（喜湿润），又怕淹（不耐涝），还需要"呼吸新鲜空气"（疏松土壤）。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"枫树养护最核心的一条是'怕涝不怕旱'。你可以教客户一个口诀：'土干了再浇，浇就浇透'。永远不要天天浇水，那是把根泡在水里，闷根比干旱更容易要了树的命。"</p>
+            </div>
+
+            <h3>4.6 根系特征 —— 浅根·怕涝·不破坏地基</h3>
+            <p><strong>浅根系：</strong>以纤维状须根为主，水平伸展，无明显主根。对土壤透气性要求极高。</p>
+            <p><strong>是否破坏地基？</strong>不会。根系细小，生长在表层土壤，与建筑地基不在同一深度。</p>
+            <p><strong>闷根（根系缺氧）——高频问题：</strong></p>
+            <ul>
+                <li><strong>症状：</strong>叶片焦枯、发黄、萎蔫，浇水无效；新芽发黑；根系黑褐色软腐。</li>
+                <li><strong>诱因：</strong>浇水过频、盆器不当、土壤板结、种植过深、夏季高温高湿。</li>
+                <li><strong>处理：</strong>轻度——停水、松土、通风；中度——脱盆修根、换新土；重度——挽救成功率低。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户说'我每天都浇水，为什么叶子还蔫了'，这时候你就可以判断可能是闷根了。你可以告诉他：'摸一下土，如果土是湿的但叶子还是蔫的，那就是根泡坏了。先停水、松土、通风，别再浇了。'"</p>
+            </div>
+
+            <h3>4.7 生长速度与寿命</h3>
+            <p>日本枫树的生长速度属于<strong>慢至中等</strong>，幼树期生长稍快，成龄后逐渐放缓。这种慢生长特性使其木质致密，树形紧凑。在适宜条件下，它的<strong>寿命可达100年以上</strong>，是长寿的观赏树种。慢生性和长寿性意味着它需要稳定的环境，频繁移栽或环境剧烈变化都会对它造成较大压力。</p>
+            <p>慢生原因：遗传（林下树种）、能量分配（花青素与精致叶形）、人工驯化（保留矮生基因）。</p>
+            <p><strong>成型时间参考：</strong>从嫁接成活的小苗（约30-50cm）到具备完整树形骨架（可出圃的观赏规格），<strong>直立类约需5-7年，斜飘类约需6-8年，垂枝类和特型类因造型复杂，通常需要8-10年</strong>。这是枫树作为慢生树的典型节奏，也是其价格较高的原因之一。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户问'为什么这么小一棵这么贵'，你可以告诉他：枫树从嫁接成活到能出圃，最短也要五六年。时间成本摆在这儿——这五六年的养护、修剪、造型，每一道工序都是人工。贵的不是苗，是时间。"</p>
+            </div>
+
+            <!-- §5 叶色变化的生理机制 -->
+            <h2>§5. 叶色变化的生理机制 —— 花青素与叶绿素的博弈</h2>
+            <p><em>植物生理学 · 本节从分子层面解释枫树"为什么变色"，帮助主播在专业客户面前建立深度信任。</em></p>
+
+            <h3>5.1 叶色的分子机制</h3>
+            <p>枫树的叶色受<strong>花青素</strong>与<strong>叶绿素</strong>两大色素家族的动态博弈调控，不同季节各有主导色素登场，呈现出完全不同的色彩面貌。</p>
+
+            <h4>春季 —— 花青素登场</h4>
+            <p>春季新叶呈现红色或紫色，是因为叶片在展开过程中大量合成<strong>花青素</strong>。此时气温尚低，强烈的紫外线可能损伤幼嫩组织的DNA，而花青素扮演了"天然防晒剂"的角色——它吸收蓝绿光和紫外线，保护叶肉细胞内的叶绿体前体免受光氧化伤害。</p>
+            <p>春季新叶中占主导的花青素类型为<strong>飞燕草素类花青素</strong>（<em>Delphinidin derivatives</em>），呈现红紫色调。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>春天的新叶就像刚出生的婴儿，皮肤很嫩，怕晒伤。花青素就是给嫩叶涂的一层"防晒霜"，同时它本身就是红色的，所以新叶看起来红红的。等叶子长结实了，这层"防晒霜"就慢慢退场，让位给绿色的叶绿素去干活。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户问'为什么春天新叶子是红的'，你可以告诉他：嫩叶在给自己涂'防晒霜'呢。花青素能挡住紫外线，保护幼嫩组织。等叶子长结实了，就开始全力生产叶绿素，叶子就慢慢变绿了。"</p>
+            </div>
+
+            <h4>夏季 —— 叶绿素主导</h4>
+            <p>随着气温升高和日照增强，叶片发育成熟，<strong>叶绿素</strong>的合成速度超过花青素的降解速度，叶绿素逐渐占据主导。叶绿素是光合作用的核心色素，负责捕获光能并驱动二氧化碳与水合成有机物。此时叶片转为绿色，标志着植株进入全年光合效率最高的生长期。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>夏天是枫树的"工作时间"。叶绿素是它的"生产机器"，绿色就是机器开动时的颜色。这时候叶子全力进行光合作用，为整棵树积累养分，为秋天的变色和来年的生长储备能量。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"夏天叶子变绿，是枫树在'上班'——叶绿素负责把阳光、水和二氧化碳变成树的养分，是整个夏天最忙的生产线。"</p>
+            </div>
+
+            <h4>秋季 —— 花青素重新登场</h4>
+            <p>秋季随着日照缩短和气温下降，叶绿素因不稳定而迅速分解（其合成速度远低于分解速度），绿色褪去。与此同时，叶片中原本被叶绿素"掩盖"的<strong>类胡萝卜素</strong>（呈现黄色至橙色）开始显现。更重要的是，秋季凉爽的夜晚与晴朗的白天构成<strong>大温差</strong>，促使叶片中可溶性糖积累，这些糖分在强光条件下被转化为<strong>矢车菊素-3-O-葡萄糖苷</strong>（<em>Cyanidin-3-O-glucoside</em>，花青素的一种），与类胡萝卜素共同作用，呈现出从金黄到火红的丰富秋色。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>秋天就像一场"谢幕演出"——叶绿素干完了一年的活，准备下班，绿色消退。舞台上的"幕布"拉开之后，原来被挡住的两个演员露出来了：一个是黄色的类胡萝卜素（一直就在叶片里，只是夏天被绿色遮住了），另一个是新上场的红色花青素（由秋天积累的糖分转化而来）。红、黄两个演员同时在台上，就有了我们看到的秋色。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"秋天叶子变色，是因为叶绿素分解了，原本被它盖住的黄色露了出来，同时秋天昼夜温差大，白天攒下的糖分在夜里变成了红色花青素。黄加红，就是秋天的颜色。温差越大，颜色越正。"</p>
+            </div>
+
+            <h4>📌 三大色素四季博弈总结</h4>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"枫叶的颜色，本质上是一场'色素接力赛'——春天花青素打头阵（红色防晒），夏天叶绿素唱主角（绿色光合），秋天叶绿素退场后，花青素和类胡萝卜素联袂谢幕（黄红秋色）。四季轮转，色素更替，就是枫树的一整年。"</p>
+            </div>
+
+            <h3>5.2 影响叶色的三大环境因素</h3>
+            <ul>
+                <li><strong>光照：</strong>不足则返绿，过强则褪色或焦叶，春秋柔和日照最佳。</li>
+                <li><strong>温度/温差：</strong>大温差（昼15-25℃/夜5-10℃）花青素合成最盛；秋夜凉爽有利于糖分积累，秋色更艳。</li>
+                <li><strong>湿度：</strong>60%-80%相对湿度下叶色饱和度最高；干旱则暗淡焦边。</li>
+            </ul>
+            <p><strong>⚠️ 重要区分："返绿"与"返祖"是两回事。</strong></p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户说'我的红枫叶子变绿了，是不是不对版'，你先别着急。你问他：'是整棵树都变绿了，还是一根枝条变绿了？'整棵树变绿大概率是光照不够，挪个位置晒晒太阳就红回来了；如果只有一根枝条变绿、其他枝条还是红的，那是返祖，得剪掉。"</p>
+            </div>
+
+            <!-- §6 遗传·变异·返祖 -->
+            <h2>§6. 遗传·变异·返祖 —— 丰富性与稳定性的博弈</h2>
+            <p><em>遗传学基础 · 日本枫树超过<strong>4800</strong>个品种的背后，是鸡爪槭与生俱来的遗传不稳定性。本节是回应价格异议的核心知识。</em></p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户可能好奇'枫树怎么有这么多品种'。你可以告诉他：鸡爪槭的基因天生就不稳定，容易变异。目前全世界登录的日本枫树品种已经超过<strong>4800</strong>个，而且每年还在增加。每一个品种都是园艺家从成千上万棵变异苗里挑出来的'尖子生'。"</p>
+            </div>
+
+            <h3>6.1 鸡爪槭变异的三大遗传机制</h3>
+            <p>日本枫树之所以能产生超过<strong>4800</strong>个品种，根源在于鸡爪槭的基因组具有<strong>天然的遗传不稳定性</strong>。以下三大机制，是它"天生爱变"的科学基础。</p>
+
+            <h4>机制一：杂合性高 —— 基因组合中有大量"备用选项"</h4>
+            <p><strong>科学解释：</strong>鸡爪槭基因组中约有<strong>90.32%</strong>为重复基因。这意味着它的绝大多数基因都有"备份"，这些备份在序列上存在细微差异，为自然变异和人工选育提供了极其丰富的遗传素材。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>就像一副扑克牌里，别人只有一套54张，而鸡爪槭有50多套相同的牌叠在一起。每一套牌里的同一张牌花色和数字都不太一样——这就意味着，洗牌的时候有无数种排列组合的可能。园艺家就是在海量的排列组合中，挑出最漂亮的那一种，固定下来成为新品种。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"鸡爪槭的基因里有一种'数学天赋'——别的树只有一份基因图纸，它有几十份，而且每一份都略有不同。这就意味着它天生容易产生各种变异，给园艺家提供了源源不断的新品种素材。"</p>
+            </div>
+
+            <h4>机制二：转座子活跃 —— 基因里的"跳跃者"</h4>
+            <p><strong>科学解释：</strong>转座子（<em>Transposon</em>，俗称"跳跃基因"）是一类可以在基因组内自主移动的DNA序列。当它"跳"到某个基因附近时，可能增强、削弱甚至改变该基因的表达，从而引起叶色、叶形等性状的改变。鸡爪槭的转座子尤其活跃，这是它品种丰富的核心原因之一。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>想象一本书，里面的文字本来是固定的。但鸡爪槭这本书里，有一些<strong>活字</strong>可以自己移动位置。某个控制"叶子颜色"的段落旁边，突然跳进来一个字——"不"。于是"叶子红"就变成了"叶子不红"，颜色就变了。这些活字在不同位置跳动，就会产生千变万化的排列组合。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"鸡爪槭的基因组里有一群'不安分的跳跃基因'，它们会自己挪位置，跳到不同的地方，改变叶子的颜色、形状。这就是为什么同一棵树上可能长出不同颜色的枝条，也是新品种层出不穷的根本原因。"</p>
+            </div>
+
+            <h4>机制三：频繁芽变 —— 枝条层面的"突然变异"</h4>
+            <p><strong>科学解释：</strong>芽变（<em>Bud Sport</em>）是指分生组织（生长点）在细胞分裂过程中发生的体细胞突变。这种突变会通过细胞分裂传递下去，导致该芽发育而成的枝条表现出与母株不同的性状。如果该性状具有观赏价值，就可以通过嫁接等手段固定为新品种。</p>
+            <div class="insight-box">
+                <p><strong>🌰 通俗理解：</strong>一棵枫树有成千上万个芽，每个芽都在不断分裂生长。偶尔，某一个芽在分裂时"抄错稿子"——长出来的叶子颜色或形状和母株不一样了。这就是<strong>芽变</strong>。园艺家发现了这根"不一样"的枝条，把它剪下来嫁接到砧木上，就诞生了一个全新的品种。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"枫树的每个芽都是一个'微型工厂'，偶尔有个工厂在生产时'出了错'，长出一根完全不一样的枝条。园艺家就是把这种'美丽的错误'截取下来，通过嫁接固定成新品种。现在全世界<strong>4800</strong>多个品种，绝大多数都是这么来的。"</p>
+            </div>
+
+            <h4>📌 三大机制对比总结</h4>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"枫树为什么品种这么多？因为它的基因天生就不稳定——有几十套不同的基因副本（杂合性高），有会自己跳位置的跳跃基因（转座子），再加上每个芽都可能长出不一样的枝条（芽变）。园艺家就是从这些'美丽的意外'中，通过嫁接固定出了<strong>4800</strong>多个品种。"</p>
+            </div>
+
+            <h3>6.2 返祖（退锦） —— 品种稳定性的挑战</h3>
+            <p>日本枫树有着多达4800多个丰富的园艺品种，这些品种大多是通过<strong>无性繁殖（嫁接、扦插）</strong>来保持其优良性状的。但有性繁殖（播种）则会产生大量变异后代，这也是新品种培育的重要途径。</p>
+            <p><strong>什么是"返祖"？（重要！）</strong></p>
+            <p>很多园艺品种的日本枫树，是人工选育出来的"变异"品种——比如叶色特别红、叶型特别细裂的。但这些"变异"在遗传上并不总是稳定的。有时，在植株的某根枝条上，会"冒"出一根和它"祖先"（即普通的鸡爪槭，<em>Acer palmatum</em>）长得一样的枝条。这根枝条的叶子可能是绿色的、叶型也更普通，生长势往往比变异部分更强。这就叫<strong>"返祖"</strong>，是<strong>基因的"回忆"和"跳转"</strong>。</p>
+            <p><strong>⚠️ 与"返绿"的区别（回顾§5.2）：</strong></p>
+            <ul>
+                <li><strong>返绿</strong>是整棵树光照不足，颜色变淡变绿，增加光照即可恢复。</li>
+                <li><strong>返祖</strong>是某一根枝条基因跳回原始型，长出完全不同的绿叶，必须剪除。</li>
+            </ul>
+            <p><strong>如何应对返祖？</strong>当发现返祖枝条时，需要<strong>及时将其从基部修剪掉</strong>。如果不处理，这根返祖枝会因为生长势更强而逐渐"吃掉"整个植株，使你的宝贝枫树变回一棵普通的绿枫。</p>
+            <div class="insight-box">
+                <p><strong>🧬 通俗理解：</strong>返祖就像"家族里的叛逆孩子"：一个家族（品种）里突然出了一个长得像"曾祖父"的成员（绿叶子、普通叶型），而且这个"叛逆孩子"长得特别壮实，如果不及时"请"走它（修剪掉），它会把整个家族都带跑偏。</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户如果问'斑锦品种会不会变回去'，你可以明确告诉他：不干预的话大概率会。锦叶品种本质上是一种'美丽的基因错误'，它是不稳定的。如果某根枝条长出了全绿叶，那就是返祖了，必须第一时间从基部剪掉，不然这棵树的基因会被'带偏'，最后整棵变回普通绿枫。"</p>
+            </div>
+
+            <!-- §7 树形分类 -->
+            <h2>§7. 树形分类 —— 骨架价值</h2>
+            <p><em>学习重点 · 本节核心论断：树形是枫树在庭院造景运用中最核心的价值，其次才是品种所具有的独特叶色，最后是叶形。这是专业选树的底层逻辑。</em></p>
+            <p><strong>📌 编号说明：</strong>以下编号（1-12号）是本章后续内容（包括自测题和话术）中统一使用的树形代号，建议主播熟记。</p>
+
+            <h3>7.1 为什么树形是第一位的？</h3>
+            <p><strong>庭院造景的本质是空间塑造，而树形决定空间结构。</strong></p>
+            <p>客户买一棵树种在院子里，首先解决的是"这个位置放什么"的空间问题——树形决定了树在空间中的角色、尺度、气质和功能。一棵树的树形，决定了它能不能放在客户想要的位置、能不能满足客户的空间需求。</p>
+            <p><strong>树形优先于叶色的三个核心原因：</strong></p>
+            <ul>
+                <li><strong>树形的核心参数不可改变，叶色可以选配。</strong>一棵树的<strong>核心树形参数</strong>——分枝点高度、主干倾斜度、杆数关系——是由基因和生长方式决定的，种下去之后不会改变。高飘就是高飘，低分枝就是低分枝，不会从高飘变成低分枝。但<strong>总体量（高度和冠幅）</strong>会随树龄和环境有适度浮动。而叶色可以通过品种选择来搭配。树形是"骨架"，叶色是"衣裳"。</li>
+                <li><strong>树形决定了树与空间的关系。</strong>高飘树下能过人，视线通透，适合入口、窗前；低分枝从地面开始就有枝叶，适合边界、墙角；斜飘有方向感，适合引导视线；临水形极限探水，必须有水才能出效果。</li>
+                <li><strong>树形决定了树的长期观赏价值。</strong>一棵树的树形是它一年四季都在展示的东西——冬天叶子落尽了，树形还在；春天新叶还没长出来，树形还在。树形是"全年无休"的观赏要素。</li>
+            </ul>
+            <div class="insight-box">
+                <p><strong>第一树形</strong> · 骨架 · 空间 · 四季<br />
+                <strong>第二叶色</strong> · 妆容 · 季节 · 情绪<br />
+                <strong>第三叶形</strong> · 细节 · 个性 · 辨识</p>
+            </div>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"买枫树，先看树形，再看品种、叶色，最后看叶形。树形是骨架——它决定了这棵树在你家院子里扮演什么角色、放在什么位置、跟空间发生什么关系。叶色是妆容——它决定了一年四季你看到什么颜色。叶形是细节——它决定了叶子长什么样、有多精致。骨架不对，妆容再好也白搭。"</p>
+            </div>
+
+            <h3>7.2 客户选树的决策逻辑</h3>
+            <p>客户在直播间选树，实际决策顺序是这样的：</p>
+            <ol>
+                <li><strong>位置：</strong>"我有个位置想种树"——窗前、草坪中央、水边、墙角、入口……</li>
+                <li><strong>树形：</strong>"这个位置适合什么树形？"——不挡光的？有方向感的？能遮挡视线的？能形成倒影的？……</li>
+                <li><strong>叶色：</strong>"我想要什么颜色？"——红色、金色、粉色、紫色、锦叶……</li>
+                <li><strong>叶形：</strong>"叶子的形状有什么讲究？"——掌叶经典、羽毛仙气、团扇禅意……</li>
+            </ol>
+            <p>每一步都是筛选——树形不对，后面就不用看了。这就是为什么树形是枫树最核心的价值：<strong>树形决定了客户能不能"用"这棵树，叶色和叶形决定了客户有多"喜欢"这棵树。</strong></p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户进直播间常常第一眼被颜色吸引，但你要引导他先看树形。你可以这样问：'您这个位置是在哪里？窗前还是草坪中央？'——先帮他把位置定下来，再推荐合适的树形。树形对了，颜色只是锦上添花。"</p>
+            </div>
+
+            <h3>7.3 12种树形的植物学分类</h3>
+            <p>以下是从植物学角度对12种核心树形的系统归纳，包含形态特征及分枝规律。</p>
+            <p>需要说明的是，在自然界里和市场上，枫树树形的类别远比12种复杂，比如有适合做工程苗的树形，有丛生、矮生的树形，垂枝型也有更多的树形形态。我们在这里列举学习的12种树形，是我们针对庭院造景需求筛选过后的树形，是我们苗圃里实际在售的树形，那些不适合庭院造景的我们没有的树形，主播无须学习了解。</p>
+
+            <h4>直立类（1-4号）</h4>
+            <p><strong>共同特征：</strong>主干明显直立向上，树冠整体呈柱状、伞状或瓶状。</p>
+            <div class="tree-type-grid">
+                <div class="item"><span class="label">1号·高飘直立疏朗：</span>分枝点≥1.5m，树冠疏朗透光。</div>
+                <div class="item"><span class="label">2号·常规直立疏朗：</span>分枝点0.8-1.5m，树冠规整饱满。</div>
+                <div class="item"><span class="label">3号·低分枝直立疏朗：</span>分枝点≤0.8m，枝叶从近地面展开。</div>
+                <div class="item"><span class="label">4号·多干直立疏朗：</span>一本多干，从同一根基部发出2根及以上次主干。</div>
+            </div>
+            <p><strong>📌 注意：</strong>我们家树形的冠幅都是<strong>疏朗</strong>的，这是我们有意识的修剪养护方向——追求透光透景、轻盈飘逸的审美。如果您想要冠幅特别饱满、遮荫效果特别好的树，我们家的树就不太能满足要求。这不是枫树本身长不饱满，而是我们选择了疏朗的养护方向。</p>
+
+            <h4>斜飘类（5-8号）</h4>
+            <p><strong>共同特征：</strong>主干倾斜≥15°，整体有明确的方向感。</p>
+            <div class="tree-type-grid">
+                <div class="item"><span class="label">5号·高分枝斜飘：</span>分枝点≥1.5m，倾斜15-45°，引导远景。</div>
+                <div class="item"><span class="label">6号·中分枝斜飘：</span>分枝点0.8-1.5m，倾斜15-45°，引导近景。</div>
+                <div class="item"><span class="label">7号·低分枝双杆斜飘：</span>分枝点≤0.8m，两杆同向V形岔开。</div>
+                <div class="item"><span class="label">8号·多杆斜飘：</span>3根以上主干同向非平行，群体感最强。</div>
+            </div>
+
+            <h4>垂枝类（9号）</h4>
+            <p><strong>9号·低接龙爪垂枝：</strong>嫁接口极低（≤15cm），枝干卷曲宛如龙身，叶面层层叠落，形如龙爪，如层云。</p>
+
+            <h4>特型类（10-12号）</h4>
+            <div class="tree-type-grid">
+                <div class="item"><span class="label">10号·游龙形：</span>枝条自然扭曲蜿蜒，如龙身游走。</div>
+                <div class="item"><span class="label">11号·凤舞形：</span>枝条向四周开张舒展，如舞者长袖。</div>
+                <div class="item"><span class="label">12号·临水形：</span>主干倾斜≥45°，极致探向水面。</div>
+            </div>
+            <p><strong>辨认树形的实用口诀：</strong>"一看分枝高度（高/中/低），二看杆数（单/双/多），三看倾斜度（直/斜/垂/特）。"</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户如果不知道选什么树形，你可以按位置给他推荐：窗前选1号高飘不挡光，草坪中央选2号常规大气，墙角选3号低分枝丰满，水边选12号临水形出倒影。树形选对了，树就'长'在了它该在的位置上。"</p>
+            </div>
+
+            <!-- §8 叶色与叶形 -->
+            <h2>§8. 叶色与叶形 —— 妆容与细节</h2>
+            <p><em>分类学要点 · 在树形之后，叶色是第二位的价值，叶形是第三位的。本节从植物学角度系统讲解色系组成和叶形分类。</em></p>
+
+            <h3>8.1 叶色 —— 色彩科学分类</h3>
+            <p>枫树的叶色极为丰富，从浓烈的猩红、酒红，到明亮的金黄、橙黄，再到多色交错的斑锦和粉彩，几乎涵盖了除蓝色以外的所有色调。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户问'有没有特别一点的颜色'，你可以告诉他：枫树的颜色比你能想到的丰富得多——红的就有鲜红、酒红、猩红、胭脂红好多种，还有粉色、紫色、金黄色，甚至一片叶子上白绿粉三色交织的锦叶品种。总有一款能打动他。"</p>
+            </div>
+
+            <h4>红色系</h4>
+            <ul>
+                <li><strong>鲜红色：</strong>最纯正的红。</li>
+                <li><strong>亮红色：</strong>带光泽感。</li>
+                <li><strong>暗红色/深红色：</strong>浓郁深沉。</li>
+                <li><strong>猩红色：</strong>鲜红带橙调。</li>
+                <li><strong>火红色：</strong>如火焰。</li>
+                <li><strong>胭脂红：</strong>温润典雅。</li>
+                <li><strong>铜红色：</strong>红中带棕。</li>
+                <li><strong>酒红色：</strong>红偏紫。</li>
+                <li><strong>橙红色：</strong>红偏黄。</li>
+            </ul>
+            <p>按观赏期：<strong>三季红</strong>（春/夏/秋）、<strong>两季红</strong>（春秋红、夏绿）、<strong>秋色红</strong>（仅秋红）。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户如果问'红的能红多久'，你可以按观赏期告诉他：三季红的品种从春天到秋天都是红的；两季红的春天和秋天红、夏天变绿；秋色红的只有秋天变色。想要长期红就选三季红。"</p>
+            </div>
+
+            <h4>粉色系</h4>
+            <ul>
+                <li><strong>全粉：</strong>新叶几乎全粉，如'泰勒'（春）。</li>
+                <li><strong>鲑鱼粉：</strong>粉红带橙调，如'威尔逊粉爱人'、'月升'。</li>
+                <li><strong>珊瑚粉：</strong>类似珊瑚的粉橙色，如'魔幻珊瑚'。</li>
+                <li><strong>粉白斑锦：</strong>粉色与白色或绿色斑纹交织，如'蝴蝶'、'羽前锦'。</li>
+            </ul>
+
+            <h4>紫色系</h4>
+            <ul>
+                <li><strong>深紫：</strong>浓郁如天鹅绒，如'紫鬼'。</li>
+                <li><strong>紫红：</strong>紫中带红，如'塞娜'。</li>
+                <li><strong>荧光紫：</strong>带透明发光感，如'天成时雨'（特定光照）。</li>
+            </ul>
+
+            <h4>黄色系（黄金枫）</h4>
+            <ul>
+                <li><strong>金黄色：</strong>最正的黄色，如'约旦'（春）、'金陵黄枫'（春）。</li>
+                <li><strong>橙黄色：</strong>金中带橙，如'黄金流泉'、'袖锦'。</li>
+                <li><strong>亮黄色：</strong>鲜亮明快，如'金陵黄枫'（夏）。</li>
+                <li><strong>黄绿色：</strong>绿转黄过渡，如'约旦'（夏）。</li>
+            </ul>
+
+            <h4>锦叶系</h4>
+            <ul>
+                <li><strong>白色锦：</strong>白绿相间，如'浮云'、'云井锦'。</li>
+                <li><strong>粉色锦：</strong>粉绿交织，如'蝴蝶'、'羽前锦'。</li>
+                <li><strong>彩色锦：</strong>多色交织，如'旭鹤'。</li>
+                <li><strong>锦边：</strong>叶缘镶白边或粉边。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"锦叶品种是枫树里的'奢侈品'——一片叶子同时有绿色、白色、粉色，每一片都不一样。但这些品种也是最娇气的，光照太强会焦，光照不够会退锦，养护需要细心。适合喜欢挑战的资深玩家。"</p>
+            </div>
+
+            <h4>冬观枝（完整色系）</h4>
+            <ul>
+                <li><strong>红色枝：</strong>珊瑚红，如'珊瑚阁'。</li>
+                <li><strong>黄色枝：</strong>金黄或橙黄，如'美峯'。</li>
+                <li><strong>多色枝：</strong>红黄渐变，如'日本日出'。</li>
+                <li><strong>绿色枝：</strong>嫩绿，如'美岛绿'。</li>
+            </ul>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"如果你想让客户冬天也有景可看，推荐'珊瑚阁'——冬天珊瑚红枝配白雪，特别上镜；或者'美峯'——金黄色枝条，冬天像镀了一层金。冬观枝品种是枫树里的'隐藏彩蛋'。"</p>
+            </div>
+
+            <h3>8.2 叶形 —— 六种植物学形态</h3>
+            <ul>
+                <li><strong>掌叶型：</strong>掌状分裂，裂片放射状展开，形如手掌。代表：'出猩猩'、'红舞姬'、'大孟'。</li>
+                <li><strong>羽毛形（羽叶型）：</strong>裂刻极深（≥90%），再羽状细裂，呈蕾丝状。代表：'青龙'、'绯红皇后'。</li>
+                <li><strong>团扇型：</strong>近圆形，裂刻极浅（约1/3），叶缘圆钝。代表：'约旦'、'金隐'。</li>
+                <li><strong>羽扇型：</strong>掌状深裂（11裂），裂片宽大带粗锯齿。代表：'舞孔雀'。</li>
+                <li><strong>脉纹型：</strong>叶脉粗壮凸起，清晰如浮雕。代表：'紫精灵'、'女神'。</li>
+                <li><strong>异形叶：</strong>线状、卷曲、无柄等非常规形态。代表：'琴系'、'狮子头'、'朱华羽衣'。</li>
+            </ul>
+            <p><strong>叶形辨认要点：</strong>一看裂刻深度（浅/中/深/全裂），二看裂片宽度（宽/窄/线状），三看边缘（光滑/锯齿/圆钝）。</p>
+            <div class="script-box">
+                <p><strong>直播间话术：</strong>"客户问'叶子有什么讲究'，你可以这样介绍：喜欢飘逸仙气的选羽毛形，比如'青龙'；喜欢圆润可爱的选团扇形，比如'约旦'；喜欢个性狂野的选异形叶，比如'狮子头'。叶形是锦上添花的细节，选对了更有辨识度。"</p>
+            </div>
+
+            <!-- §9 本章总结 -->
+            <h2>§9. 本章总结 · 核心要点速记</h2>
+            <p>本章从植物学角度系统拆解了日本枫树的<strong>生理习性</strong>与<strong>形态分类</strong>两大知识板块。以下为最核心的10条结论，主播须烂熟于心：</p>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>1. 价值排序铁律：</strong>树形 &gt; 叶色 &gt; 叶形。树形决定空间骨架，叶色决定季节情绪，叶形决定细节辨识度。</div>
+                <div class="summary-item"><strong>2. 12种树形四类归位：</strong>直立类（1-4号）、斜飘类（5-8号）、垂枝类（9号）、特型类（10-12号）。核心辨认维度：分枝高度、杆数、倾斜度。</div>
+                <div class="summary-item"><strong>3. 植物学身份：</strong>无患子科·槭属，温带落叶小乔木。翅果是槭属独有"身份证"。</div>
+                <div class="summary-item"><strong>4. 物候节律：</strong>萌芽展叶→旺盛生长→秋色叶→休眠。秋色需要<strong>大温差</strong>才能充分激发花青素。</div>
+                <div class="summary-item"><strong>5. 光照与耐阴：</strong>喜半荫，忌烈日暴晒。抗逆性分级（1级最强，4级最弱），夏季遮阳（30%-50%）是防焦叶的关键。</div>
+                <div class="summary-item"><strong>6. 水分与根系：</strong>浅根系，怕涝喜湿。闷根是高频致死原因，预防核心：<strong>见干见湿、疏松透气、绝不积水</strong>。</div>
+                <div class="summary-item"><strong>7. 温度极限：</strong>地栽耐寒-20℃~-25℃，盆栽大多数品种仅耐-9℃（锦叶/羽毛类需≥-5℃）。</div>
+                <div class="summary-item"><strong>8. 叶色分子机制：</strong>春季花青素→夏季叶绿素→秋季花青素+类胡萝卜素。秋色受光照、温差、湿度三因素调控。</div>
+                <div class="summary-item"><strong>9. "返绿"与"返祖"的区别：</strong>返绿是光照不足；返祖是基因跳变，必须及时剪除返祖枝。</div>
+                <div class="summary-item"><strong>10. 品种规模：</strong>全球登录品种已超过<strong>4800</strong>个，得益于鸡爪槭天然的高杂合性、活跃的转座子和频繁的芽变。</div>
+            </div>
+
+            <!-- §10 自测题 -->
+            <h2>§10. 自测题 · 巩固与深化</h2>
+            <h3>基础题（必须脱口而出）</h3>
+            <ol class="question-list">
+                <li>枫树在庭院造景中的价值排序是什么？为什么树形排第一？</li>
+                <li>客户选树的决策逻辑顺序是什么？（位置 → ？ → ？ → ？）</li>
+                <li>12种树形分为哪四大基本形态？请说出每种形态包含的编号。</li>
+                <li>直立类1-4号的核心区别是什么？请用一句话概括每个编号的特点。</li>
+                <li>斜飘类5-8号从"单杆"到"多杆"的递进逻辑是什么？</li>
+                <li>特型类10号（游龙形）、11号（凤舞形）、12号（临水形）的姿态差异是什么？</li>
+                <li>枫叶的六种叶形分别是什么？各有什么审美特征？</li>
+                <li>翅果有什么独特之处？为什么被称为枫树的"身份证"？</li>
+                <li>请说出'珊瑚阁'一年四季的观赏特点（春季叶色、夏季叶色、秋季叶色、冬季枝色）。</li>
+                <li>日本枫树的根系有什么特点？会破坏建筑地基吗？</li>
+                <li>什么是"闷根"？如何识别（至少三个症状）？如何预防？</li>
+                <li>种植日本枫树时最忌讳的一件事是什么？</li>
+                <li>鸡爪槭变异的三大遗传机制是什么？请用通俗比喻解释"转座子"。</li>
+                <li>"返绿"和"返祖"有什么区别？发现返祖枝后第一时间该怎么做？</li>
+                <li>请列出第4级娇嫩品种（抗逆性最弱）至少3个品种名。</li>
+                <li>目前全球登录的日本枫树品种大约有多少个？</li>
+            </ol>
+
+            <h3>进阶题（优秀主播应能从容应对）</h3>
+            <ol class="question-list">
+                <li>客户说"我家窗前想种一棵不挡光的树，但又要有点韵味"，你会推荐哪个树形？为什么？</li>
+                <li>客户说"我想要一棵别人家院子里绝对没有的、能当话题的树"，你会推荐哪几个树形？为什么？</li>
+                <li>客户说"我家池塘边想种一棵树，要能形成水面倒影"，你会推荐哪个树形？</li>
+                <li>请解释叶色变化的生理机制——为什么春天的叶子红、夏天的叶子绿、秋天的叶子又红了？从色素层面说清楚。</li>
+                <li>客户说"同一批买的'橙之梦'，邻居家的颜色比我家的鲜艳很多，是不是我的树有问题？"请从光照、温差、湿度三个角度给出专业解答。</li>
+                <li>客户说"我的'蝴蝶枫'新长出来的枝条全是绿叶，原来的粉白锦斑不见了，怎么办？"请给出完整的诊断和处理方案（含原因分析、操作步骤、后续预防）。</li>
+                <li>请从转座子（跳跃基因）的角度，解释为什么鸡爪槭比同属其他物种（如糖枫、元宝枫）更容易产生新品种。用主播能说给客户听的通俗语言表述。</li>
+                <li>客户问"你家的'青龙'为什么比外面贵那么多？"请从生长速度（慢生性）、嫁接难度、品种稳定性三个维度回答，并关联"树形骨架"的价值。</li>
+                <li>地栽与盆栽的耐寒极限不同，原因是什么？如果客户在华北地区想盆栽过冬，你建议他怎么做？</li>
+                <li>结合本章所学，请设计一段30秒的直播话术，向客户说明"为什么选枫树要先看树形，不能只看颜色"。</li>
+            </ol>
+
+            <!-- §11 话术速查卡 -->
+            <h2>§11. 话术速查卡 · 直播高频场景</h2>
+            <p><em>使用说明：以下话术均基于本章科学依据提炼，主播可根据具体品种和场景灵活套用，核心目标是<strong>建立专业信任 + 降低决策阻力 + 提升客单价</strong>。</em></p>
+            <div class="card-grid">
+                <div class="card-item"><strong>树形优先</strong>"买枫树先看树形——高飘、低分枝、斜飘、临水，树形决定了这棵树在你家院子里能干什么用。颜色是第二位的，树形不对，颜色再好也白搭。"</div>
+                <div class="card-item"><strong>焦叶处理</strong>"焦叶是树在喊渴——太阳太猛、风太干、根闷了，三选一。先排查，别急着浇水。如果是根闷了，越浇越严重。"</div>
+                <div class="card-item"><strong>闷根识别</strong>"土是湿的但叶子还是蔫的，新芽发黑，那就是根泡坏了。停水、松土、通风，别再浇了。枫树怕涝不怕旱。"</div>
+                <div class="card-item"><strong>耐寒说明</strong>"地栽-20℃没问题，盆栽就要保护。盆壁薄，根没土壤保温，冬天要裹防寒布或移入室内。北方还要防干冷风。"</div>
+                <div class="card-item"><strong>品种数量</strong>"枫树品种超过4800个，因为它基因天生不稳定——有跳跃基因、会芽变、基因副本多。每一个品种都是从万千变异中选出来的。"</div>
+                <div class="card-item"><strong>返祖处理</strong>"锦叶品种长出了全绿叶——那是返祖了，必须从基部剪掉。不剪的话，绿叶枝条生长势更强，会把整棵树的基因带偏。"</div>
+                <div class="card-item"><strong>生长慢原因</strong>"枫树长得慢，因为它是林下树种，天生就慢。加上我们把能量花在花青素和精致叶形上了。慢，才致密，才长寿。"</div>
+                <div class="card-item"><strong>耐晒分级</strong>"耐晒最强的有'田向山''血红'，晒不焦；锦叶类最娇气，比如'蝴蝶'，必须半阴养。新手建议从第1级开始。"</div>
+                <div class="card-item"><strong>位置推荐</strong>"窗前选1号高飘不挡光；草坪中央选2号常规大气；水边选12号临水形出倒影；墙角选3号低分枝丰满。位置决定树形。"</div>
+                <div class="card-item"><strong>叶形选择</strong>"喜欢仙气选羽毛形（青龙）；喜欢圆润选团扇形（约旦）；喜欢个性选异形叶（狮子头）。叶形是细节，锦上添花。"</div>
+                <div class="card-item"><strong>秋色原理</strong>"秋色是叶绿素分解后，黄色类胡萝卜素和红色花青素同时显现。温差越大，糖分积累越多，红色越正。南方秋色淡，因为温差不够。"</div>
+                <div class="card-item"><strong>冬观枝价值</strong>"冬天叶子落尽，树形骨架和冬枝颜色就是主角。'珊瑚阁'冬天珊瑚红，'美峯'冬天金黄，冬天也能有风景。"</div>
+            </div>
+
+            <!-- 页脚 -->
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                —— 第三章 完 —— 山秋枫树园 · 植物科学讲义
+            </div>
+
+        </div>
+        <!-- end content-wrap -->
+    </div>
+    <!-- end app -->
+</body>
+</html>

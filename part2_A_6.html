@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>6号中分枝斜飘 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">6</span>
+                <div>
+                    <div class="type">中分枝斜飘</div>
+                    <div class="sub">斜飘型 · 中 (0.8-1.5m) · 单干 · 疏朗 · 倾斜≥15°</div>
+                </div>
+            </div>
+            <div class="tagline">
+                斜枝在眼前，坐着也能看
+                <span class="light">谦逊 · 低伏 · 近人 · 视线平齐 —— 迁就你的树，坐着也陪你</span>
+            </div>
+            <div class="keyword-line">✦ 斜飘型 · 中 (0.8-1.5m) · 单干 · 疏朗 · 倾斜≥15° ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">谦逊尺度</span>
+                    <span class="hook">"不高不低，低伏在你面前"</span>
+                    <div class="desc">分枝点在一米左右，你站着的时候视线平视就能看到树冠。5号引你'仰望'，6号引你'平视'——这是本质的区别。伸手就能摸到倾斜的主干，顺着它的方向看出去——你与树在同一个高度出发。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">低处动势</span>
+                    <span class="hook">"5号引你'仰望'，6号引你'平视'"</span>
+                    <div class="desc">斜枝在你胸前——你的视线'平着'就跟它走了，不费力气。如果你想引导人看向近处的水面、脚边的石组——用6号，视线从腰部出发自然落到近景。它是'精确制导'，不是'大方向引导'。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">为坐姿设计</span>
+                    <span class="hook">"人坐下的时候，它正好陪着你"</span>
+                    <div class="desc">人坐着时视线约1.1m，6号分枝点约1m——你坐下，它正好在你眼前。茶室窗前、长椅旁、榻榻米上——视线平出去就是斜飘的枝条。它不是'需要你迁就'的树，它是一棵'迁就你'的树。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">近景破法</span>
+                    <span class="hook">"不挡景，但破景"</span>
+                    <div class="desc">窗户、月洞门、格栅都是'框'——太规整容易'死'。种一棵6号在框景位置，斜斜的枝条从一侧探入，打破规整。它不是去'填'那个画面，是去跟画面里的其他元素'对话'。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">6 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">中分枝斜飘</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">斜飘型 · 中 (0.8-1.5m) · 单干 · 疏朗 · 倾斜≥15°</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"斜枝在眼前，坐着也能看。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">谦逊尺度 · 低处动势 · 为坐姿设计 · 近景破法</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">谦逊 · 低伏 · 近人 · 视线平齐 · 陪伴</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">茶室窗前</span><span class="tag">座椅/长椅旁</span><span class="tag">石组/石灯笼旁</span><span class="tag">飞石路径</span><span class="tag">花境边缘</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">窗前斜飘坐着看不见 · 精致元素视线落不到 · 所有树都站着缺一棵斜的 · 花境有层次没串联</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">坐观斜枝 · 石旁斜影 · 飞石同行 · 同一高度四季轮换</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">茶室 / 茶庭</span><span class="desc">茶人坐于室内，视线高度约一米，窗外斜枝在窗框中横斜穿过。春红夏绿秋金冬枝，四季在同一个视线高度流转——最省力的观看方式。</span></div>
+                <div class="scene-item"><span class="name">长椅 / 座椅旁</span><span class="desc">人坐于长椅上，视线约一米，斜枝也在同一高度。坐下去的时候斜枝就在你眼前——不需要调整任何角度，坐下来就能看。</span></div>
+                <div class="scene-item"><span class="name">石组 / 散置石旁</span><span class="desc">石组高度在膝盖到腰部，6号的斜枝也在腰部高度指向石组。石是'实'的，斜枝是'虚'的——两者在同一个高度咬合。</span></div>
+                <div class="scene-item"><span class="name">飞石 / 汀步路径旁</span><span class="desc">人在石上走，斜枝在腰部高度陪你。一步一石、一步一斜，走路不再只是走路，是跟一棵树同步前进。</span></div>
+                <div class="scene-item"><span class="name">花境边缘</span><span class="desc">斜枝不是高高在上俯视花境，而是在花境的高度'穿行'其中。枫树不是花境的'背景'，是花境的'参与者'。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 窗前有斜飘，但'太高了'，坐着看不见</div>
+                <div class="solution">"你想种斜飘，但担心坐在屋里看出去枝条在头顶——想要斜飘的画意，但怕高度不对，坐着看不到。"<br /><strong>→ 6号就是为'坐着看'设计的。分枝点在一米左右——你站着的时候它在胸前，你坐下来的时候它正好在你眼前。茶室里坐着喝茶，平视出去就是那根斜枝——不用抬头、不费脖子。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 近景有精致元素，但视线'落不到'它们身上</div>
+                <div class="solution">"你放了一块好看的景石、一个石灯笼，但每次走过的时候视线好像'落不到'它们身上。东西是好的，但它们在'视线的盲区'。"<br /><strong>→ 种一棵6号在旁边——斜枝在腰部高度指向那个小物件。人走到附近，视线自然地从斜枝'滑'到景石上。斜枝是'视线导轨'——它不是主角，但让主角被看见了。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 院子里所有树都'站着'，没有一棵'坐着'</div>
+                <div class="solution">"院子里的树全在'立正'，没有一棵是'坐着'的、'靠着'的、'探着'的。太整齐了，整齐到像列队。你总觉得院子太'板'了。"<br /><strong>→ 种一棵6号进去——它是院子里唯一'不站直'的树。斜斜地探向一边，在那些笔直的树中间画了一道斜线。它不是'破坏'秩序，是给秩序加了一点'温度'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点四 · 花境有'层次'但没'串联'</div>
+                <div class="solution">"花境层次是有的，但你看过去的时候视线在植物之间'跳来跳去'，没有一个东西把它们'串'起来。花境像一首没有主旋律的歌。"<br /><strong>→ 在花境边缘种一棵6号——斜枝在花境的高度横斜穿过，视线从斜枝出发，自然地滑向花境的各个层次。斜枝是花境的'主旋律'——它把所有散落的音符串成了一首歌。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🍵 坐观斜枝</span>
+                    <div class="text">"春天的下午，你坐在茶室里，窗外的6号新叶初展。斜枝在你视线的高度，阳光透过疏朗的叶子，在茶桌上投下斑驳的光影。你端起茶杯的时候，光影就在杯沿上晃动——你不是在看风景，你就坐在风景里。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🪨 石旁斜影</span>
+                    <div class="text">"秋天的傍晚，你站在石组旁边。6号的斜枝指向石组的方向，叶子红了。夕阳从侧面照过来，斜枝的影子落在石头上、落在苔地上。石头是永恒不变的，影子是随光变化的——一个'恒'，一个'变'，在这一刻同时被你看见。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">👣 飞石同行</span>
+                    <div class="text">"你走在日式飞石路径上，每一步踏下去，都有斜枝在腰部的高度陪着你的视线。你走快它也快（在你的视线里），你走慢它也慢。它不是'种在那儿'，它是'跟你一起走'。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🌿 近身四季</span>
+                    <div class="text">"春天它在你的视线高度冒新芽，夏天它在你的视线高度展开绿叶，秋天它在你的视线高度变红，冬天它在你的视线高度留下骨感的枝条。你不需要换姿势、不需要改变视角，四季就在同一个高度轮换。它不是一棵'需要你迁就'的树，它是一棵'迁就你'的树——你坐着，它就陪着你坐着。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>定位要准：</strong>这是'坐下来看的斜飘'。介绍时做一个坐下的手势——"你坐着的时候，视线正好跟它平齐"——这个动作比任何语言都直观。</li>
+                        <li><strong>先讲5号，再讲6号：</strong>"5号是指向远方的，6号是指向眼前的。一个是'视线导演'，一个是'近身陪伴'。"</li>
+                        <li><strong>强调'迁就你'的陪伴感：</strong>"你不用抬头、不用弯腰，你坐着的时候它在，你站着的时候它也在——它始终在你的视线高度。它是一棵'迁就你'的树。"</li>
+                        <li><strong>针对'茶室'场景要精准：</strong>当客户提到茶室、书房、卡座这类"坐下来"的空间时，笃定地说："6号就是为这种空间准备的。"坐下来的客户最需要的就是'眼前有景可看'。</li>
+                        <li><strong>价格轻描淡写：</strong>不要说价格，要说"它的价值在于它和你的'平等'关系——你坐着，它陪你坐着。"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 6号中分枝斜飘
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

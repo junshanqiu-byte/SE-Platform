@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>庭院美学顾问 · 人设话术手册 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 820px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+
+        h1 {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em; margin-bottom: 0.2em;
+        }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle {
+            font-size: 16px; color: rgba(0, 0, 0, 0.30); font-weight: 400;
+            margin-top: -0.2em; margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        h2 {
+            font-size: 24px; color: #1c2e2a; margin-top: 2em; margin-bottom: 0.8em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 16px;
+        }
+        h3 {
+            font-size: 19px; color: #2a423e; margin-top: 1.6em; margin-bottom: 0.5em;
+        }
+        h4 {
+            font-size: 16px; color: #2a423e; margin-top: 1.2em; margin-bottom: 0.4em;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); margin-bottom: 1em;
+        }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        ul, ol {
+            padding-left: 1.6em; margin-bottom: 1.2em;
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75);
+        }
+        li { margin-bottom: 0.3em; }
+        em { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+
+        .highlight-box {
+            padding: 16px 20px; border-radius: 12px; margin: 1.2em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid #6baa9e;
+            background: rgba(255, 255, 255, 0.30);
+        }
+        .highlight-box p:last-child { margin-bottom: 0; }
+        .highlight-box strong { color: rgba(0, 0, 0, 0.80); }
+        .highlight-box ul, .highlight-box ol { margin-bottom: 0; }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.20);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.2em 0;
+        }
+        .example-box .label {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+            color: rgba(0, 0, 0, 0.30); margin-bottom: 0.3em;
+        }
+        .example-box p { margin-bottom: 0.6em; font-size: 15px; }
+        .example-box p:last-child { margin-bottom: 0; }
+        .example-box .dialogue {
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.55);
+            padding-left: 1rem;
+            border-left: 2px solid rgba(127, 193, 197, 0.2);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.10);
+            color: #3a7a78;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            margin-right: 0.4rem;
+            font-weight: 500;
+        }
+
+        .table-wrap {
+            overflow-x: auto; margin: 1.2em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: 14px; min-width: 400px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600; color: #1c2e2a;
+            padding: 10px 14px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .table-caption {
+            font-size: 13px; color: rgba(0, 0, 0, 0.30);
+            text-align: right; padding: 4px 10px 0 0;
+            font-style: italic;
+        }
+
+        .feature-list {
+            list-style: none; padding: 0; margin: 1.2rem 0;
+        }
+        .feature-list li {
+            padding: 0.5rem 0 0.5rem 1.8rem;
+            position: relative;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            font-size: 15px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-list li::before {
+            content: "•";
+            position: absolute; left: 0.2rem;
+            color: #7fc1c5; font-size: 1.2rem;
+        }
+        .feature-list li strong { color: rgba(0, 0, 0, 0.85); }
+
+        .footer-note {
+            margin-top: 40px; padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center; font-size: 12px;
+            color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px;
+        }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            #app { padding: 12px 12px 30px; }
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; padding-left: 12px; }
+            h3 { font-size: 17px; }
+            p, ul, ol { font-size: 15px; }
+            .highlight-box, .example-box { padding: 14px 16px; font-size: 14px; }
+            table { font-size: 13px; min-width: 300px; }
+            th, td { padding: 6px 10px; }
+            .feature-list li { font-size: 14px; }
+            .badge { font-size: 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 48px 52px; }
+            h1 { font-size: 38px; }
+            h2 { font-size: 28px; }
+            p { font-size: 17px; }
+            .feature-list li { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <h1>庭院美学顾问 · 人设话术手册</h1>
+            <p class="subtitle">以树为名 · 从容相告 · 美是唯一的身份</p>
+
+            <!-- 一、核心目标 -->
+            <h2>一、核心目标与底层逻辑</h2>
+            <p><strong>核心目标</strong>：让用户感到“这个人懂树，也懂得美”。人设不是“我是谁”的宣告，而是“我与树的关系”的自然流露——当用户感知到你对树的理解和尊重，信任便会悄然生长。</p>
+
+            <div class="highlight-box">
+                <p><strong>底层逻辑（顾问式视角）</strong>：</p>
+                <ul style="margin-left:1.2rem; margin-bottom:0;">
+                    <li><strong>人设不是“身份标签”，是“审美判断力的来源”。</strong> —— 用户信任你，不是因为你“做了多少年”，而是因为“你看到了一棵我忽略的美”。</li>
+                    <li><strong>信任不靠“喊”出来，靠“感受”出来。</strong> —— 你站在树旁的气场、你描述枝条时的语气、你沉默时的笃定——这些都比“我是生产商”更有力量。</li>
+                    <li><strong>在枫树直播间，人设服务于“审美共同体”的建立。</strong> —— 用户想找的不是“卖树的人”，而是“能一起欣赏树的人”。</li>
+                    <li><strong>人设的终点不是“你信我”，而是“我们共享同一种审美判断”。</strong></li>
+                </ul>
+            </div>
+
+            <p><strong>核心原则</strong>：</p>
+            <ul>
+                <li>以“树”为媒介介绍自己，而非以“身份”为标签。</li>
+                <li>用“感受”代替“数据”——“我在这棵树下站了很久”比“我做树十几年”更动人心。</li>
+                <li>人设是“长出来”的，不是“讲出来”的——它藏在你看树的眼神里、你停顿的节奏里。</li>
+                <li>每一次人设表达，都是一次“审美同行”的邀请。</li>
+            </ul>
+
+            <!-- 二、人设的灵魂三问 -->
+            <h2>二、人设的灵魂三问（顾问式视角）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>问题</th><th>传统回答</th><th>顾问式回答</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>“我是谁？”</strong></td><td>“我是源头基地的生产商”</td><td>“我是那个在苗圃里蹲下来看枝条走向的人”</td></tr>
+                        <tr><td><strong>“我有什么不同？”</strong></td><td>“我们家品种20个，精品率10%”</td><td>“我挑树的标准不是‘规格’，是‘气质’”</td></tr>
+                        <tr><td><strong>“我能给你什么？”</strong></td><td>“省钱、省时间、避坑”</td><td>“帮你找到那棵会让你经常想去看一眼的树”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 从“商业身份”到“审美人格”的转换。</p>
+
+            <!-- 三、六类用户 -->
+            <h2>三、六类用户 × 人设表达</h2>
+            <p><em>每一类用户需要“看见”的人设侧面不同。核心不是“我什么都做”，而是“我刚好懂你在意的事”。</em></p>
+
+            <h3>类型一：新手 · “我不懂树，怕选错”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 陪伴者</div>
+                <p><span class="badge">看见</span>“您第一次看枫树，不确定哪个适合自己——这很正常。”</p>
+                <p><span class="badge">我与树的关系</span>“我在这片苗圃里走了很多年，每一棵树的性格我大概都了解——哪棵耐阴、哪棵喜阳、哪棵适合小院子、哪棵能长成‘镇场子’的树。”</p>
+                <p><span class="badge">我能为你做的事</span>“您不用懂树，您只需要告诉我您的院子——剩下的，我来帮您匹配。这不是‘卖树’，是‘帮树找到适合它的院子’。”</p>
+            </div>
+
+            <h3>类型二：品位型 · “想要有审美判断力的树”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 审美同行者</div>
+                <p><span class="badge">看见</span>“您在意的不只是‘一棵树’，是‘这棵树有没有味道’。”</p>
+                <p><span class="badge">我与树的关系</span>“我选树，不看地径、不看冠幅——我看它的姿态、它的骨架、它的气质。一棵树有没有灵魂，站在那里五秒钟就知道了。”</p>
+                <p><span class="badge">我能为你做的事</span>“我替您先筛一遍。100棵里面，我只挑那些‘有语言’的树——它们的枝条在说话、在伸展、在邀请。您从我这里拿走的，每一棵都经得起细看。”</p>
+            </div>
+
+            <h3>类型三：面子型 · “想要让人羡慕的树”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 品位把关人</div>
+                <p><span class="badge">看见</span>“您希望这棵树种下去，能成为您家院子的一张名片。”</p>
+                <p><span class="badge">我与树的关系</span>“我太知道什么样的树能‘镇得住一个院子’了——不是最大最贵的，是那个姿态最从容、最耐看的。”</p>
+                <p><span class="badge">我能为你做的事</span>“您跟着我选，选到的就是那种‘邻居路过会停下来看一眼’的树。价格不是面子，品位才是。”</p>
+            </div>
+
+            <h3>类型四：务实型 · “要算得清账”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 透明践行者</div>
+                <p><span class="badge">看见</span>“您想知道自己花的钱值不值——这是理性和认真。”</p>
+                <p><span class="badge">我与树的关系</span>“每一棵树的尺寸、树龄、姿态——我可以在镜头前慢慢讲给你听。不是因为它多值钱，是因为它长成今天这个样子，确实花了时间。”</p>
+                <p><span class="badge">我能为你做的事</span>“我帮您算的不是‘省了多少钱’，是‘这棵树能陪您多少年’。一棵树陪您二十年，一天三毛多——这不是账，是陪伴的成本。”</p>
+            </div>
+
+            <h3>类型五：小院型 · “怕尺寸不对”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 空间理解者</div>
+                <p><span class="badge">看见</span>“您担心小院子种不下大树的遗憾——我见过太多这样的院子了。”</p>
+                <p><span class="badge">我与树的关系</span>“我挑了很多年树，知道什么样的树形能让小院子‘透气’——高飘、疏朗、下面通透。树不在大，在于‘对’。”</p>
+                <p><span class="badge">我能为你做的事</span>“您告诉我院子多大、朝哪边——我帮您找那棵‘刚好合适’的树。不是‘凑合’，是‘恰好’。”</p>
+            </div>
+
+            <h3>类型六：情怀型 · “想要有故事的树”</h3>
+            <div class="example-box">
+                <div class="label">人设表达 · 故事守护者</div>
+                <p><span class="badge">看见</span>“您买的不是一棵树，是一段可以讲给时间听的故事。”</p>
+                <p><span class="badge">我与树的关系</span>“我认识很多树——有的种了十年，有的刚刚成型。每一棵都有它自己的来路和脾气。我会告诉您它适合什么样的院子、什么样的生活。”</p>
+                <p><span class="badge">我能为你做的事</span>“您从我这里拿走的树，我会告诉您它的故事——它在哪里长大的、它经历了什么、它为什么会成为今天的样子。然后，您家的故事就开始了。”</p>
+            </div>
+
+            <!-- 四、三层表达结构 -->
+            <h2>四、人设的三层表达结构</h2>
+
+            <h3>第一层 · 我与树的关系（代替“我是谁”）</h3>
+            <div class="example-box">
+                <p><span class="badge">表达方式</span>“我在这片苗圃里走了很多年。每一棵树长成什么样、怎么长的、适合什么样的院子——我大概都了解。”</p>
+                <p><span class="badge">底层意图</span>“我因了解树而了解你院子的可能。”</p>
+            </div>
+
+            <h3>第二层 · 我如何判断树的好坏（代替“我有实力”）</h3>
+            <div class="example-box">
+                <p><span class="badge">表达方式</span>“我挑树，不看地径、不看冠幅——我看它的姿态。一棵树站在那里，它是‘收着’的还是‘展开’的，它是‘着急的’还是‘从容的’——几秒钟就能感觉到。”</p>
+                <p><span class="badge">底层意图</span>“我用心在看，而非用尺子在量。”</p>
+            </div>
+
+            <h3>第三层 · 我能为你做的（代替“我能给你价值”）</h3>
+            <div class="example-box">
+                <p><span class="badge">表达方式</span>“您告诉我您家院子的样子——光照、朝向、您想坐在哪里看它——我帮您找出那棵‘刚好合适’的树。不是‘最贵的’，是‘最对的’。”</p>
+                <p><span class="badge">底层意图</span>“我帮你找到那棵会让你经常想去看看它的树。”</p>
+            </div>
+
+            <!-- 五、完整话术示例 -->
+            <h2>五、完整人设表达示例（自然融入讲品）</h2>
+            <div class="example-box">
+                <div class="label">模拟直播片段</div>
+                <p><em>（镜头里是一棵姿态从容的斜飘枫，主播站在树旁，语气平缓）</em></p>
+                <p><strong>主播</strong>：“我在这片苗圃里走了很多年。有些树看一眼就知道它有故事——这棵就是。你看它的飘枝，不是修剪出来的，是自然长成这样的。它花了很长时间才找到这个姿态。”</p>
+                <p><strong>主播</strong>：“我挑树，不看地径、不看高度——我看它的气质。一棵树站在那里，是‘急着往上长’还是‘从容地展开’，几秒钟就能感觉到。这棵属于后者。”</p>
+                <p><strong>主播</strong>：“您如果有一个朝南的角落，或者一扇需要被‘看出去’的窗——这棵树会很合适。它不是‘最贵的’，但它是‘最对’的那种。”</p>
+                <p><strong>主播</strong>（停顿）：“您告诉我您家院子的样子——我帮您确认它是不是您一直在找的那棵。”</p>
+            </div>
+
+            <!-- 六、重复节奏 -->
+            <h2>六、人设话术的重复节奏（非强制，自然穿插）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>时机</th><th>表达方式</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>开场（前5分钟）</td><td>“我挑树看的是姿态，不是规格。所以每一棵上来的树，我都认识它。”</td></tr>
+                        <tr><td>讲品中（每2-3棵树）</td><td>“我在这棵树下站了很久——它的骨架让我想起一句话……”（自然融入）</td></tr>
+                        <tr><td>收尾</td><td>“我希望您从这里带走的，不是‘一棵树’，是一棵会让您经常想去看看它的树。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 重复的不是“我是谁”的标签，是“我与树的关系”的感知。</p>
+
+            <!-- 七、常见误区 -->
+            <h2>七、常见误区（反面提醒）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>误区</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>人设像“身份宣读”</td><td>“我是源头基地的生产商”——用户不关心你的职业标签，他们关心“你能帮我选到对的树吗”。</td></tr>
+                        <tr><td>只讲身份不讲审美</td><td>只说“做了多少年”不说“我在看什么”——用户无法建立审美信任。</td></tr>
+                        <tr><td>人设与树不匹配</td><td>如果你说自己“懂树”，但每一棵树都讲不出它的姿态特点——用户会觉得你在吹牛。</td></tr>
+                        <tr><td>强行高级</td><td>讲自己不懂的术语、用不自然的修辞——用户能感觉到“你在演”。真实比华丽重要一百倍。</td></tr>
+                        <tr><td>人设标签只讲一次</td><td>用户进直播间的时间是碎片化的。核心感知（“我挑树看的是姿态”）需要自然重复3-5次。</td></tr>
+                        <tr><td>忽略“审美共同体”</td><td>人设的终点不是“你信我”，是“我们共享同一种审美判断”。如果只建立“信任”而不建立“共赏”，用户下单后也不会产生黏性。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 八、速查卡 -->
+            <h2>八、人设话术 · 速查卡</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>场景</th><th>话术示例</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>我与树的关系</td><td>“我在这片苗圃里走了很多年，每一棵树的性格我大概都了解。”</td></tr>
+                        <tr><td>我如何判断树</td><td>“我挑树不看地径不看冠幅——我看它的姿态。”</td></tr>
+                        <tr><td>我能为你做的</td><td>“您告诉我您的院子，我帮您找出那棵‘刚好合适’的树。”</td></tr>
+                        <tr><td>审美判断力</td><td>“一棵树站在那里，是‘急的’还是‘从容的’——几秒钟就能感觉到。”</td></tr>
+                        <tr><td>选品标准</td><td>“100棵树里，我只挑那些‘有语言’的树——它们的枝条在说话。”</td></tr>
+                        <tr><td>人设收束</td><td>“我希望您从这里带走的，是一棵会让您经常想去看看它的树。”</td></tr>
+                        <tr><td>从容底气</td><td>“我今天推荐的每一棵，都是我自己愿意种在自家院子里的。”</td></tr>
+                        <tr><td>审美同行</td><td>“您不用懂树，您只需要告诉我您的感受——剩下的，我帮您匹配。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 九、核心要点 -->
+            <h2>九、核心要点总结</h2>
+            <ul class="feature-list">
+                <li><strong>人设不是“身份标签”，是“审美判断力的来源”。</strong> —— 用户信任你，是因为“你看到了我看不到的美”。</li>
+                <li><strong>以“树”为媒介介绍自己。</strong> —— “我认识这棵树”比“我做了十几年”更动人。</li>
+                <li><strong>用“感受”代替“数据”。</strong> —— 姿态、气质、从容——这些词比“地径”“冠幅”更有力量。</li>
+                <li><strong>人设是“长出来”的，不是“讲出来”的。</strong> —— 它藏在你看树的眼神里、你停顿的节奏里、你沉默时的笃定里。</li>
+                <li><strong>自然重复，而非刻意强调。</strong> —— 每30分钟左右，通过一棵树自然地传递一次“我与树的关系”。</li>
+                <li><strong>人设的终点是“审美共同体”。</strong> —— 不是“你信我”，而是“我们共享同一种审美判断”。</li>
+                <li><strong>真实比华丽重要。</strong> —— 讲自己真正感受到的，不讲自己背下来的。</li>
+            </ul>
+
+            <div class="footer-note">
+                —— 基于《写给庭院美学顾问的七堂课》三阶模型 · 顾问式人设版 ——
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

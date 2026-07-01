@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>5号高分枝斜飘 · 速查便签 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .tree-badge {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 6px; flex-wrap: wrap;
+        }
+        .tree-badge .number {
+            font-size: 48px; font-weight: 700;
+            background: linear-gradient(135deg, #3a7a78, #7fc1c5);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .tree-badge .type {
+            font-size: 20px; font-weight: 600; color: #1c2e2a;
+            letter-spacing: -0.3px;
+        }
+        .tree-badge .sub {
+            font-size: 14px; color: rgba(0, 0, 0, 0.30);
+            font-weight: 400;
+        }
+        .tagline {
+            font-size: 20px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 16px; display: block; margin-top: 2px;
+        }
+        .keyword-line {
+            font-size: 14px; color: rgba(0, 0, 0, 0.25);
+            letter-spacing: 2px; font-weight: 300;
+            margin-bottom: 20px;
+            padding: 8px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .pillars {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 16px 0 20px 0;
+        }
+        .pillar {
+            background: rgba(255, 255, 255, 0.30);
+            border-radius: 16px; padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            transition: all 0.2s ease;
+        }
+        .pillar .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .pillar .name { font-weight: 700; color: #1c2e2a; font-size: 17px; display: block; margin-bottom: 2px; }
+        .pillar .hook { font-size: 13px; font-style: italic; color: rgba(0, 0, 0, 0.40); display: block; margin-bottom: 6px; }
+        .pillar .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.65); }
+        .pillar .desc strong { color: #3a7a78; font-weight: 600; }
+        @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 16px; padding: 16px 18px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quick-card .row {
+            display: flex; padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            font-size: 14px; line-height: 1.5;
+        }
+        .quick-card .row:last-child { border-bottom: none; }
+        .quick-card .label { font-weight: 600; color: #1c2e2a; width: 72px; flex-shrink: 0; }
+        .quick-card .value { color: rgba(0, 0, 0, 0.70); }
+        .quick-card .value .tag { display: inline-block; background: rgba(127, 193, 197, 0.10); padding: 0 8px; border-radius: 12px; font-size: 12px; color: #3a7a78; margin-right: 4px; }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .scene-item .name { font-weight: 600; color: #1c2e2a; display: block; margin-bottom: 2px; }
+        .scene-item .desc { font-size: 12px; color: rgba(0, 0, 0, 0.55); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(127, 193, 197, 0.25);
+        }
+        .pain-point .pain { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-point .pain em { font-style: italic; font-weight: 400; color: rgba(0, 0, 0, 0.40); }
+        .pain-point .solution { font-size: 14px; color: rgba(0, 0, 0, 0.65); margin-top: 4px; }
+        .pain-point .solution strong { color: #3a7a78; font-weight: 600; }
+
+        .dream-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+        .dream-item {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        .dream-item .season { font-weight: 600; color: #1c2e2a; font-size: 14px; display: block; margin-bottom: 4px; }
+        .dream-item .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.60); font-style: italic; }
+        @media (max-width: 480px) { .dream-grid { grid-template-columns: 1fr; } }
+
+        .tips-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin: 12px 0 8px 0;
+        }
+        .tip-box {
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 13px; line-height: 1.6;
+        }
+        .tip-box.forbidden {
+            background: rgba(200, 80, 80, 0.06);
+            border: 1px solid rgba(200, 80, 80, 0.10);
+        }
+        .tip-box.forbidden .title { color: #a55; font-weight: 600; }
+        .tip-box.forbidden .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box.do {
+            background: rgba(80, 160, 140, 0.06);
+            border: 1px solid rgba(80, 160, 140, 0.10);
+        }
+        .tip-box.do .title { color: #3a7a78; font-weight: 600; }
+        .tip-box.do .list { color: rgba(0, 0, 0, 0.60); }
+        .tip-box .list { font-size: 12px; line-height: 1.6; padding-left: 1.2em; margin-top: 4px; }
+        .tip-box .list li { margin-bottom: 3px; }
+        @media (max-width: 480px) { .tips-grid { grid-template-columns: 1fr; } }
+
+        h2 { font-size: 20px; color: #1c2e2a; margin-top: 24px; margin-bottom: 10px; border-left: 4px solid rgba(127, 193, 197, 0.3); padding-left: 14px; }
+        h3 { font-size: 17px; color: #2a423e; margin-top: 18px; margin-bottom: 6px; }
+        p { font-size: 15px; line-height: 1.7; color: rgba(0, 0, 0, 0.70); margin-bottom: 0.8em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .badge-number { display: inline-block; background: rgba(127, 193, 197, 0.12); color: #3a7a78; font-weight: 600; font-size: 12px; padding: 1px 10px; border-radius: 20px; margin-right: 4px; }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .tree-badge .number { font-size: 36px; }
+            .tree-badge .type { font-size: 17px; }
+            .tagline { font-size: 17px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .tree-badge .number { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="tree-badge">
+                <span class="number">5</span>
+                <div>
+                    <div class="type">高分枝斜飘</div>
+                    <div class="sub">斜飘型 · 高 (≥1.5m) · 单干 · 疏朗 · 倾斜≥15°</div>
+                </div>
+            </div>
+            <div class="tagline">
+                斜枝一指定方向，白墙水边最出画
+                <span class="light">动势 · 画意 · 方向感 · 探 —— 你庭院里的'视线导演'</span>
+            </div>
+            <div class="keyword-line">✦ 斜飘型 · 高 (≥1.5m) · 单干 · 疏朗 · 倾斜≥15° ✦</div>
+
+            <!-- 核心卖点 四维 -->
+            <h2>核心卖点 · 四维话术</h2>
+            <div class="pillars">
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">方向感</span>
+                    <span class="hook">"它不是站着等你，是朝你走来"</span>
+                    <div class="desc">倾斜的主干让空间有了明确的指向性——视线会不由自主跟着它走。它像庭院里的'视线导演'，你想让人看向水景或白墙，它帮你决定。有叙事感——你会忍不住想：它为什么朝那边长？那边有什么？</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">'探'</span>
+                    <span class="hook">"不占空间，但延伸空间"</span>
+                    <div class="desc">用姿态去'连接'空间，而不是用体积去'填'空间。种在墙角，枝条探向院子中央——角落不再是角落，它'伸出来'了。种在围墙边，视线跟着枝条'出去了'——院子的边界被打破了。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">高脚杯斜置</span>
+                    <span class="hook">"通透 + 方向，两者兼得"</span>
+                    <div class="desc">分枝点≥1.5m，树干下面是空的——跟1号一样通透，树下可过人。但树干是斜的，不是直的——通透的基础上多了一个'指向'。把直立类的通透、斜飘类的动势、疏朗冠幅的光影，三样东西集于一身。</div>
+                </div>
+                <div class="pillar">
+                    <span class="icon">⊞</span>
+                    <span class="name">白墙的画笔</span>
+                    <span class="hook">"影子会画画"</span>
+                    <div class="desc">倾斜的树干投在白墙上——影子是斜着出去的，像书法的一笔长撇。疏朗的冠幅让影子有浓有淡，不是一团黑影，是有笔触的水墨。一天中影子从墙的一侧移到另一侧——白墙成了记录时间流逝的幕布。</div>
+                </div>
+            </div>
+
+            <!-- 速查卡 -->
+            <h2>主播速查卡</h2>
+            <div class="quick-card">
+                <div class="row"><span class="label">编号</span><span class="value">5 号</span></div>
+                <div class="row"><span class="label">树形</span><span class="value">高分枝斜飘</span></div>
+                <div class="row"><span class="label">定位</span><span class="value">斜飘型 · 高 (≥1.5m) · 单干 · 疏朗 · 倾斜≥15°</span></div>
+                <div class="row"><span class="label">定调</span><span class="value">"斜枝一指定方向，白墙水边最出画。"</span></div>
+                <div class="row"><span class="label">卖点</span><span class="value">方向感 · 探 · 高脚杯斜置 · 白墙画笔</span></div>
+                <div class="row"><span class="label">气质</span><span class="value">动势 · 画意 · 方向感 · 探 · 视线引导</span></div>
+                <div class="row"><span class="label">场景</span><span class="value"><span class="tag">白墙前</span><span class="tag">水边</span><span class="tag">转角</span><span class="tag">月洞门/漏窗</span><span class="tag">茶室窗外</span></span></div>
+                <div class="row"><span class="label">痛点</span><span class="value">白墙太干净 · 院子太安静 · 转角太硬 · 水边没关联 · 窗前太正</span></div>
+                <div class="row"><span class="label">造梦</span><span class="value">斜枝指水 · 白墙影斜 · 转角遇枫 · 窗前引目</span></div>
+                <div class="row"><span class="label">违禁词</span><span class="value" style="color:#a55;">❌ 家人们 · 性价比 · 赶紧拍 · 3、2、1上链接</span></div>
+            </div>
+
+            <!-- 高频场景 -->
+            <h2>高频场景匹配 · 种在哪里，就长成什么画面</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="name">白墙前</span><span class="desc">白墙为纸，树影为墨——斜影像书法的一笔长撇，一天中影子从墙的一侧移到另一侧，墙上的画一直在变。</span></div>
+                <div class="scene-item"><span class="name">水边 / 池塘</span><span class="desc">斜枝探向水面，倒影与水中的虚影相互呼应。秋叶从斜枝落入水中，顺着枝条指向的方向漂走。</span></div>
+                <div class="scene-item"><span class="name">转角 / 通道</span><span class="desc">斜飘的枝条指向转角后的方向——人走到转角，视线被枝条'接住'，然后顺着方向转过去。生硬的90°被柔化了。</span></div>
+                <div class="scene-item"><span class="name">月洞门 / 漏窗</span><span class="desc">枝条从门洞边缘探出来，'藏一半露一半'。圆框里斜枝是最抢眼的'动势'，四时画面不重复。</span></div>
+                <div class="scene-item"><span class="name">茶室窗外</span><span class="desc">斜枝斜斜地探入窗景，'破'了窗框的规整。你端着茶杯，视线顺着斜枝走出去——那一杯茶，喝的不只是味道，还有窗外的方向。</span></div>
+            </div>
+
+            <!-- 场景痛点话术 -->
+            <h2>场景痛点话术 · 先刺痛，再给解药</h2>
+
+            <div class="pain-point">
+                <div class="pain">痛点一 · 白墙'太干净了'，干净到'没内容'</div>
+                <div class="solution">"白墙像一张没落过笔的宣纸，你觉得空，但不知道往墙上放什么——挂东西太俗，刷颜色太闹，种棵普通的树影子又没看头。"<br /><strong>→ 种一棵5号在白墙前面——斜斜的树干每天在墙上画画。影子是斜着出去的，像书法的一笔长撇；疏朗的冠幅让影子有浓有淡，像水墨的晕染。你砌了一面墙，得到了一整面'活的画'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点二 · 院子'太安静'了，缺一点'动势'</div>
+                <div class="solution">"所有的树都是直挺挺的、所有的线条都是横平竖直的——你走进院子里，感觉一切都'停了'。太安静的院子，待久了会闷。"<br /><strong>→ 种一棵斜飘的树进去——它是院子里唯一'有方向'的东西。斜斜的树干打破横平竖直的秩序，给空间注入一股'动势'。院子从'静止'变成了'有叙事感'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点三 · 转角太'硬'了，走过去就是'一刀切'</div>
+                <div class="solution">"你家那个转角——路的转弯处或者建筑的角上，是不是特别'硬'？走过去了就是走过去了，没有任何过渡。"<br /><strong>→ 种一棵5号在转角——斜飘的枝条指向转角后的方向。人走到转角处，视线被枝条'接住'，然后顺着指向'送'到转角后面。那个生硬的90°不见了，转角从'断点'变成了'连接'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点四 · 水边有'空间'但'没关系'</div>
+                <div class="solution">"水边种了一棵直挺挺的树，树是树、水是水，两者'各过各的'。它只是'种在水边'，不是'长在水边'。"<br /><strong>→ 种一棵5号在水边——斜飘的枝条探向水面，树和水之间发生了'对话'。实树在水上，倒影在水里，秋叶从斜枝上落入水中漂走。树不再只是'种在水边'，而是跟水'长在了一起'。</strong></div>
+            </div>
+            <div class="pain-point">
+                <div class="pain">痛点五 · 窗前有景，但'太正了'，没有味道</div>
+                <div class="solution">"一棵直挺挺的树站在窗框正中央——位置对了、高度对了，但总觉得太'正'了。你每次看出去，看到的是一棵'标准答案'，不是一件'作品'。"<br /><strong>→ 种一棵5号在窗前——斜斜的枝条探入窗框，打破了窗框的规整感。窗框是方的、是正的，枝条是斜的、是自由的——这种'破'的感觉，就是庭院美学里最讲究的'生趣'。</strong></div>
+            </div>
+
+            <!-- 造梦深化 -->
+            <h2>造梦深化 · 把'看见'变成'感受到'</h2>
+            <div class="dream-grid">
+                <div class="dream-item">
+                    <span class="season">🍂 斜枝指水</span>
+                    <div class="text">"秋天，斜飘的枝条探向水面，叶子红了。风一吹，叶子从斜枝上落下来，飘在水面上，顺着枝条指向的方向慢慢漂走。你站在岸边，看着叶子的轨迹——那不是落叶，是树写给水的信。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🎨 白墙影斜</span>
+                    <div class="text">"冬日的下午，阳光斜斜地照过来，斜飘的枫树在白墙上投下一道长长的影子。树干是深色的线、枝条是细碎的笔触、光斑是留白。你从旁边走过的时候，影子从你身上划过去——那一瞬间，你走进了这幅画里。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🍁 转角遇枫</span>
+                    <div class="text">"每天回家，走到那个转角，斜飘的枝条指向你来的方向。它在那个角落等你，每一个季节用不同的颜色跟你打招呼。春天红、夏天绿、秋天金、冬天枝干有颜色。它不是种在那儿，是'长'在了你每天的必经之路上。"</div>
+                </div>
+                <div class="dream-item">
+                    <span class="season">🪟 窗前引目</span>
+                    <div class="text">"春天的早晨，你坐在茶室里，窗外的斜飘枫树新叶初展，胭脂红的颜色。枝条斜斜地探入窗框，像一个'箭头'，把你的视线从室内引向窗外的庭院。你喝茶的时候，视线顺着那根枝条走出去——这一杯茶，喝的不只是味道，还有风景。"</div>
+                </div>
+            </div>
+
+            <!-- 临场要点 -->
+            <h2>主播临场要点</h2>
+            <div class="tips-grid">
+                <div class="tip-box forbidden">
+                    <div class="title">❌ 违禁词提醒</div>
+                    <ul class="list">
+                        <li>禁用 "家人们"</li>
+                        <li>禁用 "性价比"</li>
+                        <li>禁用 "赶紧拍"</li>
+                        <li>禁用 "3、2、1上链接"</li>
+                    </ul>
+                    <div style="font-size:12px; color:rgba(0,0,0,0.40); margin-top:6px;">✅ 替代：用"大家""价值""感受""从容拥有"</div>
+                </div>
+                <div class="tip-box do">
+                    <div class="title">✅ 临场要点</div>
+                    <ul class="list">
+                        <li><strong>定位要准：</strong>这是'视线导演'——用手势顺着树干倾斜的方向划出去，"你看，它指向那边"，客户看到你的手势就懂了这棵树在'说话'。</li>
+                        <li><strong>先讲1号，再讲5号：</strong>"还记得1号吗？树下通透、不挡视线。5号就是1号的'升级版'——在通透的基础上，多了一个'指向'。"</li>
+                        <li><strong>白墙是最好的搭配：</strong>当客户说"我家有面白墙"时，眼睛要亮起来——"5号就是为白墙准备的。"立刻进入"白墙为纸、树影为墨"的画面描述。</li>
+                        <li><strong>强调'方向感'的价值：</strong>不强调"贵"，要说"它的价值在于它的'方向感'——它不是一棵普通的树，它是你庭院里的'视线导演'。"</li>
+                        <li><strong>不催单：</strong>说完"喜欢的朋友可以带走"之后安静下来。5号是为那些"想要空间有方向"的人准备的——你越从容，他越觉得"我的院子需要这个方向感"。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 速查便签 · 5号高分枝斜飘
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

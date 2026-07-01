@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>第六章 枫树庭院应用场景 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%; height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 20px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+            overflow-y: auto;
+        }
+        .content-wrap {
+            max-width: 820px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .home-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.2s;
+        }
+        .top-mini .home-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; margin-top: 1.8em; margin-bottom: 0.4em; }
+        h1 {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite; margin-top: 0.2em; margin-bottom: 0.3em;
+        }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        h2 { font-size: 26px; color: #1c2e2a; margin-top: 2em; border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 16px; }
+        h3 { font-size: 20px; color: #2a423e; margin-top: 1.6em; }
+        h4 { font-size: 17px; color: #2a423e; margin-top: 1.4em; font-weight: 600; }
+        .subtitle { font-size: 16px; color: rgba(0, 0, 0, 0.30); font-weight: 400; margin-top: -0.2em; margin-bottom: 1.2em; letter-spacing: 0.3px; }
+        p { font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); margin-bottom: 1.2em; }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        em { font-style: italic; color: rgba(0, 0, 0, 0.55); }
+        hr { border: none; border-top: 1px solid rgba(0, 0, 0, 0.06); margin: 2em 0; }
+        ul, ol { padding-left: 1.6em; margin-bottom: 1.2em; font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); }
+        li { margin-bottom: 0.4em; }
+        .table-wrap { overflow-x: auto; margin: 1.5em 0; border-radius: 16px; background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 360px; }
+        th { background: rgba(127, 193, 197, 0.10); font-weight: 600; color: #1c2e2a; padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+        td { padding: 10px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); color: rgba(0, 0, 0, 0.70); vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        .insight-box, .script-box, .teaching-box {
+            padding: 16px 20px; border-radius: 12px; margin: 1.5em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid;
+        }
+        .insight-box { background: rgba(127, 193, 197, 0.08); border-left-color: #7fc1c5; }
+        .script-box { background: rgba(255, 255, 255, 0.30); border-left-color: #6baa9e; }
+        .teaching-box { background: rgba(110, 155, 181, 0.08); border-left-color: #6e9bb5; }
+        .insight-box p:last-child, .script-box p:last-child, .teaching-box p:last-child { margin-bottom: 0; }
+        .insight-box strong, .script-box strong, .teaching-box strong { color: rgba(0, 0, 0, 0.80); }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1em 0; }
+        .summary-item { background: rgba(255, 255, 255, 0.25); border-radius: 12px; padding: 12px 16px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 14px; line-height: 1.5; color: rgba(0, 0, 0, 0.70); }
+        .summary-item strong { color: #1c2e2a; }
+        .question-list { list-style-type: none; padding-left: 0; }
+        .question-list li { padding: 10px 0 10px 32px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%235fa8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>') left center no-repeat; background-size: 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.03); }
+        .question-list li:last-child { border-bottom: none; }
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1em 0; }
+        .card-item { background: rgba(255, 255, 255, 0.25); border-radius: 16px; padding: 16px 18px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 14px; line-height: 1.6; color: rgba(0, 0, 0, 0.70); transition: all 0.2s ease; }
+        .card-item strong { color: #1c2e2a; display: block; margin-bottom: 4px; font-size: 15px; }
+        .badge { display: inline-block; background: rgba(127, 193, 197, 0.15); color: #3a7a78; font-weight: 600; font-size: 13px; padding: 1px 10px; border-radius: 20px; margin-right: 6px; }
+        .scene-tag { display: inline-block; background: rgba(127, 193, 197, 0.10); color: #3a7a78; font-weight: 500; font-size: 12px; padding: 2px 12px; border-radius: 20px; margin-right: 4px; }
+        .node-range { font-weight: 600; color: #3a7a78; font-size: 14px; }
+        .poem-line { text-align: center; font-style: italic; color: rgba(0, 0, 0, 0.40); padding: 0.5em 0; font-size: 15px; line-height: 1.6; }
+        @media (max-width: 480px) {
+            #app { padding: 12px 12px 30px; }
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            h1 { font-size: 26px; } h2 { font-size: 22px; padding-left: 12px; } h3 { font-size: 18px; }
+            p, ul, ol { font-size: 15px; }
+            .insight-box, .script-box, .teaching-box { padding: 14px 16px; font-size: 14px; }
+            table { font-size: 13px; min-width: 280px; }
+            th, td { padding: 6px 10px; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .card-grid { grid-template-columns: 1fr; }
+            .top-mini .home-link, .top-mini .appendix-link { font-size: 12px; padding: 4px 12px; }
+            .top-mini .appendix-link { margin-right: 4px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 48px 52px; }
+            h1 { font-size: 40px; } h2 { font-size: 30px; } p { font-size: 17px; }
+        }
+        .footer-note { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 12px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+        .chapter-badge { display: inline-block; font-size: 13px; font-weight: 500; color: rgba(127, 193, 197, 0.6); letter-spacing: 1px; margin-right: 8px; }
+        .tree-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; margin: 0.5em 0 1em 0; font-size: 14px; line-height: 1.6; }
+        .tree-type-grid .item { padding: 3px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.02); }
+        .tree-type-grid .item .label { font-weight: 600; color: #1c2e2a; }
+        @media (max-width: 480px) { .tree-type-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="home-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <h1>第六章 枫树庭院应用场景</h1>
+            <p class="subtitle">— 从设计原理到场景落地 · 八大场景79个节点完整体系 —</p>
+
+            <!-- §1 引言 -->
+            <h2>§1. 引言</h2>
+            <p>在直播间里，你学完了枫树的品种、树形、叶色，也学完了庭院设计原理和东方美学。但客户最后问的是：<strong>"这棵树放我家哪个位置合适？"</strong></p>
+            <p>前几个模块回答了"枫树是什么"，第五章回答了"庭院怎么设计"。<strong>这一章回答的是"枫树能在哪"</strong>——从"树"到"空间"的转换。</p>
+            <p><strong>客户在直播间看到一棵枫树时，他真正在想的是："这棵树放我家哪个位置合适？"</strong>如果你的回答能精准对应到他家的具体场景——你就成了帮客户把树种对位置的顾问。</p>
+            <p><strong>学完这一章，你应该能做到：</strong>快速定位场景、准确推荐树形、用造园手法解释、形成完整推荐链路。</p>
+
+            <p><strong>树形编号说明（12类体系）：</strong></p>
+            <div class="tree-type-grid">
+                <div class="item"><span class="label">1号·高飘直立疏朗</span></div>
+                <div class="item"><span class="label">2号·常规直立疏朗</span></div>
+                <div class="item"><span class="label">3号·低分枝直立疏朗</span></div>
+                <div class="item"><span class="label">4号·多干直立疏朗</span></div>
+                <div class="item"><span class="label">5号·高分枝斜飘</span></div>
+                <div class="item"><span class="label">6号·中分枝斜飘</span></div>
+                <div class="item"><span class="label">7号·低分枝双杆斜飘</span></div>
+                <div class="item"><span class="label">8号·多杆斜飘</span></div>
+                <div class="item"><span class="label">9号·低接龙爪垂枝</span></div>
+                <div class="item"><span class="label">10号·游龙形</span></div>
+                <div class="item"><span class="label">11号·凤舞形</span></div>
+                <div class="item"><span class="label">12号·临水形</span></div>
+            </div>
+
+            <!-- §2 八大场景总览 -->
+            <h2>§2. 八大场景总览</h2>
+            <p>枫树在庭院中的应用，按空间逻辑归集为<strong>八大场景</strong>，共<strong>79个景观节点</strong>。</p>
+            <p><strong>核心理念：</strong>节点名称是固定锚点。主播不必一次性输出所有内容，而是根据客户提供的信息选取对应项。</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>场景</th><th>节点编号</th><th>核心定位</th></tr></thead>
+                    <tbody>
+                        <tr><td>入口/门庭区</td><td>J01-J07</td><td>第一印象 · 迎宾 · 仪式感</td></tr>
+                        <tr><td>路径/引导区</td><td>J08-J19</td><td>动线 · 节奏 · 方向暗示</td></tr>
+                        <tr><td>水岸/水景区</td><td>J20-J30</td><td>倒影 · 虚实相生 · 动静对照</td></tr>
+                        <tr><td>亭台/茶室/窗前区</td><td>J31-J37</td><td>画中人看画中景 · 四季轮换</td></tr>
+                        <tr><td>景墙/建构筑物墙面区</td><td>J38-J48</td><td>二维平面上的三维幻觉</td></tr>
+                        <tr><td>主景/焦点树区</td><td>J49-J57</td><td>一棵树定义空间气质</td></tr>
+                        <tr><td>配植/组合搭配区</td><td>J58-J71</td><td>与"他者"对话 · 美学关系</td></tr>
+                        <tr><td>边界/边缘/特殊空间区</td><td>J72-J79</td><td>人工与自然的接口</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>快速定位口诀</h3>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>入口区</strong>——进门先看到什么？两侧有位置吗？有门头门廊吗？</div>
+                <div class="summary-item"><strong>路径区</strong>——路是直是弯？路上有什么特殊节点？路的尽头在哪？</div>
+                <div class="summary-item"><strong>水景区</strong>——水是静是动？水边有石头或岛屿？人能靠近水边坐吗？</div>
+                <div class="summary-item"><strong>亭台窗前区</strong>——坐在哪里看？窗户有多大？独自看还是大家看？</div>
+                <div class="summary-item"><strong>景墙区</strong>——有什么样的墙？墙上有洞或缝隙吗？墙前面有石头吗？</div>
+                <div class="summary-item"><strong>主景区</strong>——想种在什么地面上？希望树在什么位置？种一棵还是两棵？</div>
+                <div class="summary-item"><strong>配植区</strong>——想和什么东西搭配？有什么日式元素吗？专门看还是日常陪伴？</div>
+                <div class="summary-item"><strong>边界区</strong>——院子最外边是什么？有什么特别的边界情况？</div>
+            </div>
+
+            <!-- §3 入口区 -->
+            <h2>§3. 场景一：入口/门庭区（J01-J07）</h2>
+            <p><strong>空间定义：</strong>从庭院大门到建筑入户门的过渡地带，是庭院"第一印象"发生的地方。</p>
+            <p><strong>设计逻辑：</strong>建立"从外到内"的心理转换，枫树扮演迎宾者、界标、框景主角。</p>
+            <div class="script-box">
+                <p><strong>🎤 入口区主播话术：</strong>"您家大门进来第一眼看到什么？如果是照壁，推荐在壁前种一棵斜飘红枫——影子投在墙上，白墙为纸、树影为墨，进门就是一幅画。如果是门楼，两侧各种一棵高飘红枫，对称迎宾，仪式感拉满。"</p>
+            </div>
+
+            <!-- §4 路径区 -->
+            <h2>§4. 场景二：路径/引导区（J08-J19）</h2>
+            <p><strong>空间定义：</strong>庭院中供人行走的线性空间——直路、弯路、转角、通道、桥、台阶、汀步。</p>
+            <p><strong>设计逻辑：</strong>不让走路变得无聊，提供视觉停顿、方向暗示、节奏感和季节陪伴。</p>
+            <div class="script-box">
+                <p><strong>🎤 路径区主播话术：</strong>"您家院子有没有一条路？如果路两侧宽敞，推荐种一排高飘红枫——春天嫩绿成荫，秋天金黄夹道，每天走路都像在画里。如果路上有个月洞门，门后种一棵斜飘红枫——走过去，门框正好把树框成一幅圆形的画。"</p>
+            </div>
+
+            <!-- §5 水景区 -->
+            <h2>§5. 场景三：水岸/水景区（J20-J30）</h2>
+            <p><strong>空间定义：</strong>一切有水的空间——池塘、溪流、镜面水池、叠水、水边平台。</p>
+            <p><strong>设计逻辑：</strong>与水发生关系——倒影、落叶入水、枝条探水，形成"虚实相生、动静对照"。</p>
+            <div class="script-box">
+                <p><strong>🎤 水景区主播话术：</strong>"您家有没有池塘？水边一定要种枫树——最好是临水形或垂枝形。秋天叶子红了，倒影在水里，风吹一下，影子碎了又聚，画面特别有诗意。这就是'虚实相生'。"</p>
+            </div>
+
+            <!-- §6 亭台窗前区 -->
+            <h2>§6. 场景四：亭台/茶室/窗前区（J31-J37）</h2>
+            <p><strong>空间定义：</strong>人停留下来、坐下来、静下来观看庭院的地方——亭子、廊下、茶室、阳台、窗前、卡座。</p>
+            <p><strong>设计逻辑：</strong>成为"画中人"眼中的"画中景"，画框不变，画的内容不断更新。</p>
+            <div class="script-box">
+                <p><strong>🎤 亭台窗前区主播话术：</strong>"您家客厅如果有落地窗，窗外一定要种一棵高飘红枫。窗框就是画框，窗外的树就是画——春天嫩红，夏天浓绿，秋天火红，冬天枝干如画。您坐在沙发上，四季壁画自动轮换。"</p>
+            </div>
+
+            <!-- §7 景墙区 -->
+            <h2>§7. 场景五：景墙/建构筑物墙面区（J38-J48）</h2>
+            <p><strong>空间定义：</strong>以"墙"或"墙面"为核心视觉元素的区域——白墙、月洞门、漏窗、格栅、素色景墙、石材景墙、建筑山墙。</p>
+            <p><strong>设计逻辑：</strong>在二维平面上创造三维的幻觉——墙是平的，树影是活的；洞是空的，树是满的；格栅是秩序的，枫叶是自由的。</p>
+            <div class="script-box">
+                <p><strong>🎤 景墙区主播话术：</strong>"您家有没有白墙？别让它空着。种一棵斜飘红枫在前面——晴天的时候，太阳一照，树影投在白墙上，墙为纸、影为墨，一天中影子从墙的这边移到那边，像一幅活的画。"</p>
+            </div>
+
+            <!-- §8 主景区 -->
+            <h2>§8. 场景六：主景/焦点树区（J49-J57）</h2>
+            <p><strong>空间定义：</strong>以"一棵树"或"一组树"为核心视觉元素的开放空间——开阔草坪、硬质铺装广场、屋顶露台、几何树池、下沉庭院。</p>
+            <p><strong>设计逻辑：</strong>独立撑起一个空间——靠自身的树形、色彩、季节变化定义整个空间的调性。</p>
+            <div class="script-box">
+                <p><strong>🎤 主景区主播话术：</strong>"您家院子如果有开阔的草坪，强烈推荐在中间或黄金分割点种一棵主景枫树。一棵树、一片草坪，就是最经典的'少即是多'。春天看它冒新芽，夏天在树下乘凉，秋天看满树红叶，冬天看枝干骨感——一棵树定义整个院子的气质。"</p>
+            </div>
+
+            <!-- §9 配植区 -->
+            <h2>§9. 场景七：配植/组合搭配区（J58-J71）</h2>
+            <p><strong>空间定义：</strong>枫树与庭院中"他者"一起构成画面的区域——石头、雕塑、长椅、灯笼、飞石、户外家具、其他乔木。</p>
+            <p><strong>设计逻辑：</strong>与"他者"建立美学关系——对比、呼应、陪伴、对话。枫树不是绝对的主角，但没有它画面不完整。</p>
+            <div class="script-box">
+                <p><strong>🎤 配植区主播话术：</strong>"您家庭院如果有角落空着堆杂物，不如种一棵低分枝枫树。一棵树就能让'没用的角落'变成'有风景的角落'。如果是日式风格，推荐石组配枫树——石为骨、枫为衣，枯寂中见生命。"</p>
+            </div>
+
+            <!-- §10 边界区 -->
+            <h2>§10. 场景八：边界/边缘/特殊空间区（J72-J79）</h2>
+            <p><strong>空间定义：</strong>庭院的"边缘地带"和"非常规空间"——围墙边、建筑转角、竹篱旁、树篱旁、花境边缘、挡土墙边、露台边缘、侧门旁。</p>
+            <p><strong>设计逻辑：</strong>让"到此为止"变成"继续延伸"——围墙不再冰冷、转角不再生硬、高差不再割裂，充当"人工与自然的接口"。</p>
+            <div class="script-box">
+                <p><strong>🎤 边界区主播话术：</strong>"您家院墙如果光秃秃的，种一排低分枝枫树——从地面就有枝叶，长起来就是一堵'活的围墙'。如果有挡土墙或高差，种一棵龙爪垂枝枫——枝条从高处垂下来，秋叶飘落，高差不再是障碍，而是风景。"</p>
+            </div>
+
+            <!-- §11 速查总表 -->
+            <h2>§11. 场景-树形速查总表</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>场景</th><th>推荐树形（编号）</th><th>核心品种参考</th></tr></thead>
+                    <tbody>
+                        <tr><td>入口/门庭区</td><td>1号、2号、5号、6号</td><td>'青龙'、'绯红皇后'、'红舞姬'</td></tr>
+                        <tr><td>路径/引导区</td><td>1号、2号、5号、6号</td><td>'青龙'、'绯红皇后'、'约旦'</td></tr>
+                        <tr><td>水岸/水景区</td><td>9号、12号、6号</td><td>'流泉'、'青龙'、'绯红皇后'</td></tr>
+                        <tr><td>亭台/茶室/窗前区</td><td>1号、2号、5号</td><td>'青龙'、'绯红皇后'、'橙之梦'</td></tr>
+                        <tr><td>景墙/墙面区</td><td>5号、6号、10号</td><td>'绯红皇后'、'青龙'、'游龙'</td></tr>
+                        <tr><td>主景/焦点树区</td><td>1号、2号、4号、11号</td><td>'青龙'、'红舞姬'、'凤舞'</td></tr>
+                        <tr><td>配植/组合搭配区</td><td>3号、4号、9号、10号</td><td>'狮子头'、'约旦'、'流泉'</td></tr>
+                        <tr><td>边界/边缘区</td><td>3号、9号、10号</td><td>'狮子头'、'流泉'、'游龙'</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- §12 主播使用指南 -->
+            <h2>§12. 主播使用指南</h2>
+            <ol>
+                <li><strong>听客户描述</strong> 他家庭院的具体位置/节点</li>
+                <li><strong>在八大场景中找到对应场景</strong></li>
+                <li><strong>在场景的节点清单中找到对应的节点名称</strong></li>
+                <li><strong>查看该节点下的</strong> 场景描述、空间效果、树形需求</li>
+                <li><strong>作为后续话术输出和品种推荐的依据</strong></li>
+            </ol>
+            <p><strong>关键原则：</strong>节点名称是固定锚点。主播不必一次性输出所有内容，根据客户提供的信息选取对应项即可。</p>
+
+            <!-- §13 综合话术模板 -->
+            <h2>§13. 综合话术模板 · 直播实战</h2>
+
+            <div class="card-grid">
+                <div class="card-item"><strong>模板一：院子还没设计</strong>"老师，您家院子大概多大？我帮您先分几个区——活动区靠房子近，方便端茶倒水；休闲区放在有景的角落；景观区放主景树，我推荐一棵高飘红枫，草坪中央或者黄金分割点，一棵树撑起整个院子的气质。剩下的角落种低分枝枫，让每个角落都有景。"</div>
+                <div class="card-item"><strong>模板二：窗前想种树</strong>"窗前种树有两款经典方案：如果是落地窗，推荐高飘红枫——树干笔直，冠幅疏朗，不挡光，窗框就是画框。如果是中式月洞窗，推荐斜飘红枫——枝条探向窗洞，像一幅圆形的中国画。春红夏绿秋黄冬枝，四季在窗前轮换。"</div>
+                <div class="card-item"><strong>模板三：有水池</strong>"水边一定要种枫树！推荐临水形或龙爪垂枝形——枝条探向水面，秋天红叶倒映在水里，风一吹影子碎了又聚。如果池边有石头，就种在石头旁边——石为骨、枫为衣，三要素构图最经典。没有大池塘？一个小水缸也能借出倒影。"</div>
+                <div class="card-item"><strong>模板四：想要文化感</strong>"推荐新中式风格。核心配置：一面白墙 + 一棵斜飘红枫。白墙为纸，树为画，晴天树影投在墙上，一天中影子从墙的这边移到那边。再加一个月洞门，门后种红枫——圆框配红枫，就是一幅活的团扇画。这就是'虽由人作，宛自天开'。"</div>
+                <div class="card-item"><strong>模板五：院子小怕种不下</strong>"小院子不是不能种树，是选对树形和位置。推荐高飘形——树干高、冠幅小，不占地面面积；或者低分枝形——成年后体量适中，精致可爱。种在靠边的位置或者黄金分割点，中间留空地，走进去感觉院子比实际大很多。一棵好树胜过十棵普通的。"</div>
+                <div class="card-item"><strong>模板六：边界不好看</strong>"边界不好看，种枫树就解决了。围墙边种低分枝枫——从地面就有枝叶，长起来就是一堵'活的围墙'。建筑转角种斜飘枫——枝条探向墙面，柔化生硬的90度角。侧门旁种高飘枫——出门时枫色相送，进门时枫景相迎，日常出入都有季节陪伴。"</div>
+            </div>
+
+            <!-- §14 自测题 -->
+            <h2>§14. 自测题 · 巩固与深化</h2>
+
+            <h3>基础题</h3>
+            <ol class="question-list">
+                <li>八大场景分别是什么？请按顺序说出。</li>
+                <li>入口区最常用的枫树形是几号？为什么？</li>
+                <li>水景区最推荐的三种枫树形是什么？</li>
+                <li>景墙区最经典的搭配是什么？用哪一号树形？</li>
+                <li>主景区最推荐的两种树形是什么？</li>
+                <li>"白墙为纸，树影为墨"对应哪个场景的哪个节点？</li>
+                <li>为什么围墙边界推荐3号低分枝，而不是1号高飘？</li>
+                <li>"石为骨、枫为衣"对应哪个节点？</li>
+                <li>月洞门后种枫树，推荐哪一号树形？为什么？</li>
+                <li>J71庭院角落的核心价值是什么？</li>
+            </ol>
+
+            <h3>进阶题</h3>
+            <ol class="question-list">
+                <li>客户说"我家进门正对一面照壁"，你怎么用J02帮他设计？用什么树形？</li>
+                <li>客户说"我家客厅是落地窗，窗外什么都没有"，你怎么用J35设计？树形怎么选？</li>
+                <li>客户说"我家院子有个小池塘，池边有块大石头"，你怎么用J30三要素组合设计？</li>
+                <li>客户说"我家院子有一条笔直的路，走到头是一堵墙"，你推荐哪个节点？用什么树形？</li>
+                <li>客户说"我想要一个日式感觉的院子"，你推荐哪些节点组合？分别用什么树形？</li>
+                <li>请从八大场景中，为客户设计一个"从入口到水边"的完整观赏动线（至少4个节点）。</li>
+                <li>客户说"我家院子很小，只有边角能种树"，你推荐哪几个节点？分别用什么树形？</li>
+                <li>请用本章知识，设计一段30秒的直播话术，推荐一款适合窗前种植的枫树。</li>
+            </ol>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                —— 第六章 完 —— 山秋枫树园 · 主播培训讲义
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

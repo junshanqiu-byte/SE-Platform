@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>庭院美学顾问 · 放价与收尾话术 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 820px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+
+        h1 {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em; margin-bottom: 0.2em;
+        }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle {
+            font-size: 16px; color: rgba(0, 0, 0, 0.30); font-weight: 400;
+            margin-top: -0.2em; margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        h2 {
+            font-size: 24px; color: #1c2e2a; margin-top: 2em; margin-bottom: 0.8em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 16px;
+        }
+        h3 {
+            font-size: 19px; color: #2a423e; margin-top: 1.6em; margin-bottom: 0.5em;
+        }
+        h4 {
+            font-size: 16px; color: #2a423e; margin-top: 1.2em; margin-bottom: 0.4em;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); margin-bottom: 1em;
+        }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        ul, ol {
+            padding-left: 1.6em; margin-bottom: 1.2em;
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75);
+        }
+        li { margin-bottom: 0.3em; }
+        em { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+
+        .highlight-box {
+            padding: 16px 20px; border-radius: 12px; margin: 1.2em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid #6baa9e;
+            background: rgba(255, 255, 255, 0.30);
+        }
+        .highlight-box p:last-child { margin-bottom: 0; }
+        .highlight-box strong { color: rgba(0, 0, 0, 0.80); }
+        .highlight-box ul, .highlight-box ol { margin-bottom: 0; }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.20);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.2em 0;
+        }
+        .example-box .label {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+            color: rgba(0, 0, 0, 0.30); margin-bottom: 0.3em;
+        }
+        .example-box p { margin-bottom: 0.6em; font-size: 15px; }
+        .example-box p:last-child { margin-bottom: 0; }
+        .example-box .dialogue {
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.55);
+            padding-left: 1rem;
+            border-left: 2px solid rgba(127, 193, 197, 0.2);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(127, 193, 197, 0.10);
+            color: #3a7a78;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            margin-right: 0.4rem;
+            font-weight: 500;
+        }
+
+        .table-wrap {
+            overflow-x: auto; margin: 1.2em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: 14px; min-width: 400px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600; color: #1c2e2a;
+            padding: 10px 14px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .table-caption {
+            font-size: 13px; color: rgba(0, 0, 0, 0.30);
+            text-align: right; padding: 4px 10px 0 0;
+            font-style: italic;
+        }
+
+        .feature-list {
+            list-style: none; padding: 0; margin: 1.2rem 0;
+        }
+        .feature-list li {
+            padding: 0.5rem 0 0.5rem 1.8rem;
+            position: relative;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            font-size: 15px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.70);
+        }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-list li::before {
+            content: "•";
+            position: absolute; left: 0.2rem;
+            color: #7fc1c5; font-size: 1.2rem;
+        }
+        .feature-list li strong { color: rgba(0, 0, 0, 0.85); }
+
+        .footer-note {
+            margin-top: 40px; padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center; font-size: 12px;
+            color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px;
+        }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            #app { padding: 12px 12px 30px; }
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; padding-left: 12px; }
+            h3 { font-size: 17px; }
+            p, ul, ol { font-size: 15px; }
+            .highlight-box, .example-box { padding: 14px 16px; font-size: 14px; }
+            table { font-size: 13px; min-width: 300px; }
+            th, td { padding: 6px 10px; }
+            .feature-list li { font-size: 14px; }
+            .badge { font-size: 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 48px 52px; }
+            h1 { font-size: 38px; }
+            h2 { font-size: 28px; }
+            p { font-size: 17px; }
+            .feature-list li { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <h1>庭院美学顾问 · 放价与收尾话术</h1>
+            <p class="subtitle">价值确认 · 从容收尾 · 美是唯一的理由</p>
+
+            <!-- 一、核心目标 -->
+            <h2>一、核心目标与底层逻辑</h2>
+            <p><strong>核心目标</strong>：当一棵树已经打动了用户的心，我们需要做的不是“降价”或“逼单”，而是<strong>帮用户完成最后的确认</strong>——确认这棵树的价值，确认它值得被拥有，然后从容地收尾。放价与收尾，不是“催促”，而是“交付安心”。</p>
+
+            <div class="highlight-box">
+                <p><strong>底层逻辑（顾问式视角）</strong>：</p>
+                <ul>
+                    <li><strong>价格不是“降”下来的，是“被看见”的。</strong> —— 当用户真正理解了这棵树的价值，价格自然显得合理。</li>
+                    <li><strong>收尾不是“逼”，是“自然边界”。</strong> —— 过款和下播，是直播中天然的节奏，不需要额外制造紧迫感。</li>
+                    <li><strong>在枫树直播间，放价的底气来自“我知道这棵树值”。</strong> —— 我们不靠套路制造恐慌，我们靠笃定传递信心。</li>
+                    <li><strong>收尾的终点不是“你被说服了”，而是“你确认了”。</strong></li>
+                </ul>
+            </div>
+
+            <p><strong>核心原则</strong>：</p>
+            <ul>
+                <li>先看见价值，再看见价格——顺序不可颠倒。</li>
+                <li>用“透明”代替“降价”——“这棵树的成本是这样的”比“今天便宜了”更有力量。</li>
+                <li>用“自然边界”代替“制造稀缺”——过款、下播，本身就是最真实的节奏。</li>
+                <li>收尾时保持从容——不催、不喊、不制造虚假紧迫。</li>
+            </ul>
+
+            <!-- 二、放价的逻辑 -->
+            <h2>二、放价的逻辑：从价值到价格</h2>
+
+            <h3>第一步 · 确认价值（讲品已完成）</h3>
+            <div class="example-box">
+                <div class="label">价值确认 · 话术示例</div>
+                <p>“这棵斜飘枫，您已经看到了——它的姿态、它的骨架、它那种‘探出去’的感觉。它不是一棵普通的树，它是自然花了很长时间才长成这样的。您家那个角落，如果有一棵这样的树——每天经过的时候，目光会不自觉地被它吸引。”</p>
+            </div>
+
+            <h3>第二步 · 自然提及价格（非核心，轻描淡写）</h3>
+            <div class="example-box">
+                <div class="label">价格提及 · 话术示例</div>
+                <p>“这棵树的价格，在左下角。您看一下，然后感受一下——它值不值这个价。我不需要多说，树自己会说话。”</p>
+                <p>“线下花卉市场，同样的树形、同样的粗度，四五千是常态。今天我们直播间，2500左右。不是因为‘降价’，是因为我们本来就是源头，没有中间环节。”</p>
+            </div>
+
+            <h3>第三步 · 给出理由（自然说明）</h3>
+            <div class="example-box">
+                <div class="label">理由说明 · 话术示例</div>
+                <p>“为什么今天会是这个价格？因为这是我们自己苗圃的树，直接到你手里。没有门店租金、没有中间商、没有层层加价。你花的每一分钱，都在树上——在它的树龄、在它的姿态、在它未来陪你的那些年里。”</p>
+            </div>
+
+            <h3>第四步 · 算一笔安静的账（非强制）</h3>
+            <div class="example-box">
+                <div class="label">算账 · 话术示例（可选）</div>
+                <p>“如果硬要算一笔账——这棵树陪你二十年，7300天。2500块钱，一天三毛多。你每天少踩一脚油门，就省出来了。换来的是春天的嫩芽、夏天的浓荫、秋天的红叶、冬天的骨架——四季都有看头。但账是次要的，重要的是：你每天路过它的时候，会不会多看一眼？”</p>
+            </div>
+
+            <!-- 三、收尾的逻辑 -->
+            <h2>三、收尾的逻辑：自然边界</h2>
+            <p><strong>核心观念</strong>：收尾不是“逼”，是“自然的结束”。过款和下播，是直播中天然的节奏——不需要额外制造理由，它们本身就是理由。</p>
+
+            <h3>方式一 · 过款（自然流转）</h3>
+            <div class="example-box">
+                <div class="label">过款 · 话术示例</div>
+                <p>“这棵树展示得差不多了。如果它有打动您——左下角拍下，编号发到公屏。如果没有，也没关系，后面还有别的树。我们继续看下一棵。”</p>
+                <p>“这棵我准备过款了。喜欢的朋友可以带走它，不喜欢的我们看下一棵。树和人一样，讲究缘分。”</p>
+            </div>
+
+            <h3>方式二 · 下播（真实收尾）</h3>
+            <div class="example-box">
+                <div class="label">下播 · 话术示例</div>
+                <p>“今天播了挺久了，准备下播了。今天最后再看一棵树——如果这棵正好是你一直在找的，就带走吧。如果不是，我们明天还有新的树。”</p>
+                <p>“准备下播了。这棵树我再留三分钟，三分钟之后我就下了。不是因为它‘限量’，是因为我真的要休息了。”</p>
+            </div>
+
+            <h3>方式三 · 确认式收尾（最轻盈）</h3>
+            <div class="example-box">
+                <div class="label">确认式 · 话术示例</div>
+                <p>“如果您确认它就是您院子里一直在找的那棵——左下角拍下，编号发到公屏。我为您保留。如果您还在感受，没关系，您可以慢慢看——树不会跑，我也不会催您。”</p>
+            </div>
+
+            <!-- 四、六类用户 -->
+            <h2>四、六类用户 × 放价与收尾策略</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>用户类型</th><th>放价切入点</th><th>收尾方式</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>新手 · 初次接触</td><td>“这棵是容器苗，养不活算我的——我们有养护手册和园艺师全程陪您。”</td><td>“如果它是您第一棵枫树，它会是一个很好的开始。喜欢就带走，不喜欢我们继续看。”</td></tr>
+                        <tr><td>品位型 · 追求意境</td><td>“这棵的骨架是自然长成的，不是修剪出来的。市面上很少见。”</td><td>“这种气质的树，可遇不可求。如果您觉得它对了，就带走吧。”</td></tr>
+                        <tr><td>面子型 · 在意独特性</td><td>“这棵的形态是独一无二的，整条街不会有第二棵一样的。”</td><td>“如果您想让院子有点‘说法’——这棵会替您说话。”</td></tr>
+                        <tr><td>务实型 · 理性算账</td><td>“线下四五千，源头2500。没有中间商，您花的每一分钱都在树上。”</td><td>“账已经算明白了，剩下的就是看感觉——感觉对了，就带走。”</td></tr>
+                        <tr><td>小院型 · 空间焦虑</td><td>“这棵高飘枫，下面通透，视线穿过去，小院子反而显大。”</td><td>“尺寸我量给您看了，您量一下自家位置——合适就带走，不合适我们继续看。”</td></tr>
+                        <tr><td>情怀型 · 在意故事</td><td>“这棵树在苗圃里种了快十年，它见过很多四季轮回。”</td><td>“如果您觉得它的故事应该继续在您家院子里写下去——就带它走吧。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 五、完整流程 -->
+            <h2>五、完整放价与收尾流程（融合示范）</h2>
+            <div class="example-box">
+                <div class="label">模拟直播片段</div>
+                <p><em>（镜头里是一棵姿态舒展的斜飘枫，已展示约两分钟）</em></p>
+                <p><strong>主播</strong>（轻声）：“这棵斜飘枫，您看到了——它的飘枝是自然长成的，不是修剪出来的。这种‘探出去’的感觉，放在院子里，会有一种‘它在等你’的意味。”</p>
+                <p><strong>主播</strong>：“价格在左下角。您看一下，然后感受一下——它值不值这个价。线下花卉市场，同样的树形、同样的粗度，四五千是常态。今天我们直播间，2500左右——因为我们就是源头，没有中间商。”</p>
+                <p><strong>主播</strong>：“如果硬要算一笔账——它陪你二十年，一天三毛多。但账是次要的，重要的是：您每天路过它的时候，会不会停下来多看它一眼？”</p>
+                <p><strong>主播</strong>（停顿）：“如果您确认它就是您院子里一直在找的那棵——左下角拍下，编号发到公屏。我为您保留。如果您还在感受，没关系——树不会跑，我也不会催您。”</p>
+                <p><strong>主播</strong>（从容）：“如果没有打动您，我们继续看下一棵。后面还有别的树，总有一棵会刚好长在您的审美上。”</p>
+            </div>
+
+            <!-- 六、衔接节奏 -->
+            <h2>六、放价与收尾在整场直播中的位置</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>环节</th><th>话术重点</th><th>时长</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>讲品（审美锁定 + 身份确认）</td><td>让用户“看见”这棵树在自己院子的样子</td><td>2-3分钟</td></tr>
+                        <tr><td><strong>放价</strong></td><td>自然提及价格 + 简单理由 + 轻描淡写算账</td><td>30-45秒</td></tr>
+                        <tr><td><strong>收尾</strong></td><td>确认式邀请 + 从容等待 + 自然过款</td><td>15-30秒</td></tr>
+                        <tr><td>过渡到下一棵</td><td>“好，我们来看下一棵……”</td><td>即时</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 七、常见误区 -->
+            <h2>七、常见误区（反面提醒）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>误区</th><th>说明</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>不讲价值直接放价</td><td>用户还不知道这棵树好在哪——价格再低也没有意义。顺序不能反。</td></tr>
+                        <tr><td>放价像“喊低价”</td><td>“今天只要2500！”——语气太急，反而让人怀疑“是不是有问题”。从容笃定比音量更重要。</td></tr>
+                        <tr><td>虚构价格锚点</td><td>“原价一万，今天2500”——用户不傻，查不到的东西不要编。用真实的市场参考。</td></tr>
+                        <tr><td>收尾像“逼单”</td><td>“最后3棵！赶紧拍！”——这种话会让用户感到压力，反而想走。用“过款”“下播”更自然。</td></tr>
+                        <tr><td>说了过款却迟迟不过</td><td>“过款了”说完还继续讲——用户会识破你在演戏。说了就要执行。</td></tr>
+                        <tr><td>收尾不配合动作</td><td>说过款，树还放在画面正中央——视觉上没有“要走”的感觉。配合动作，让用户感受到流转。</td></tr>
+                        <tr><td>放价理由太假</td><td>“今天心情好，亏本卖”——用户觉得你在演。用真实理由：源头基地、没有中间商、自然流转。</td></tr>
+                        <tr><td>忽略沉默用户</td><td>用户不回应不代表不感兴趣。不追问、不点名、不给压力——让每个人保持自己的节奏。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 八、速查卡 -->
+            <h2>八、放价与收尾 · 速查卡</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>场景</th><th>话术示例</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>价值确认</td><td>“您已经看到这棵树的姿态了——它值不值这个价，树自己会说话。”</td></tr>
+                        <tr><td>价格提及</td><td>“价格在左下角。您看一下，感受一下。”</td></tr>
+                        <tr><td>理由说明</td><td>“我们是源头，没有中间商。您花的每一分钱都在树上。”</td></tr>
+                        <tr><td>轻算账</td><td>“一天三毛多，换来四季风景——您觉得值不值？”</td></tr>
+                        <tr><td>过款收尾</td><td>“这棵展示得差不多了。喜欢就带走，不喜欢我们看下一棵。”</td></tr>
+                        <tr><td>下播收尾</td><td>“今天播得差不多了。最后再看一棵——如果它正好是您一直在找的，就带走吧。”</td></tr>
+                        <tr><td>确认式收尾</td><td>“如果您确认它就是您院子里一直在找的那棵——拍下，编号发到公屏。我为您保留。”</td></tr>
+                        <tr><td>从容等待</td><td>“如果您还在感受，没关系。树不会跑，我也不会催您。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 九、核心要点 -->
+            <h2>九、核心要点总结</h2>
+            <ul class="feature-list">
+                <li><strong>先价值，后价格。</strong> —— 用户先“看见”这棵树值得，价格才会被接受。</li>
+                <li><strong>价格是“被看见”的，不是“被喊出来”的。</strong> —— 从容提及，让用户自己感受。</li>
+                <li><strong>理由要真实、具体、简短。</strong> —— “源头基地”“没有中间商”比“今天开心”有说服力一百倍。</li>
+                <li><strong>收尾不是“逼”，是“自然边界”。</strong> —— 过款、下播，本身就是最真实的节奏。</li>
+                <li><strong>说过款就过款，说下播就下播。</strong> —— 信用是一点一滴建立的，也是一次崩塌的。</li>
+                <li><strong>配合动作。</strong> —— 说过款时把树拿开、伸手拿下一棵——让用户视觉上感受到“真的在走”。</li>
+                <li><strong>尊重沉默。</strong> —— 不互动不代表不感兴趣。不追问、不点名、不给压力。</li>
+                <li><strong>保持从容。</strong> —— 你的笃定，就是用户最后的确认。</li>
+            </ul>
+
+            <!-- 十、特别提醒 -->
+            <h2>十、特别提醒：关于“逼单”这件事</h2>
+            <div class="highlight-box" style="border-left-color: #b09b86;">
+                <p><strong>在顾问式直播中，“逼单”这个动作本身需要被重新理解。</strong></p>
+                <p>传统直播的“逼单”，本质是用稀缺和紧迫去“推”用户。但顾问式直播的收尾，是“邀请确认”——用户已经心动了，你只需要给他一个从容的确认空间。</p>
+                <p style="margin-top:0.8rem;"><strong>两者的区别：</strong></p>
+                <ul>
+                    <li><strong>传统逼单</strong>：“最后3棵！赶紧拍！”——用户在压力下做决定。</li>
+                    <li><strong>顾问式收尾</strong>：“如果您确认它就是您一直在找的那棵——拍下，我为您保留。”——用户在从容中确认。</li>
+                </ul>
+                <p style="margin-top:0.8rem;">前者制造恐慌，后者交付安心。前者让用户“被推着走”，后者让用户“自己走进来”。</p>
+            </div>
+
+            <div class="footer-note">
+                —— 基于《写给庭院美学顾问的七堂课》三阶模型 · 顾问式放价与收尾版 ——
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

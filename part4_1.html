@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>庭院美学顾问 · 共鸣话术手册 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 820px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 32px 28px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+            transition: background 0.4s ease;
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 12px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 13px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 6px 14px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        h1 {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+            margin-top: 0.2em; margin-bottom: 0.2em;
+        }
+        @keyframes shimmerTitle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .subtitle {
+            font-size: 16px; color: rgba(0, 0, 0, 0.30); font-weight: 400;
+            margin-top: -0.2em; margin-bottom: 1.2em;
+            letter-spacing: 0.3px;
+        }
+        h2 {
+            font-size: 24px; color: #1c2e2a; margin-top: 2em; margin-bottom: 0.8em;
+            border-left: 4px solid rgba(127, 193, 197, 0.4); padding-left: 16px;
+        }
+        h3 {
+            font-size: 19px; color: #2a423e; margin-top: 1.6em; margin-bottom: 0.5em;
+        }
+        h4 {
+            font-size: 16px; color: #2a423e; margin-top: 1.2em; margin-bottom: 0.4em;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75); margin-bottom: 1em;
+        }
+        strong { color: rgba(0, 0, 0, 0.85); font-weight: 600; }
+        ul, ol {
+            padding-left: 1.6em; margin-bottom: 1.2em;
+            font-size: 16px; line-height: 1.8; color: rgba(0, 0, 0, 0.75);
+        }
+        li { margin-bottom: 0.3em; }
+
+        .block-quote {
+            padding: 16px 20px; border-radius: 12px; margin: 1.2em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid #7fc1c5;
+            background: rgba(127, 193, 197, 0.08);
+        }
+        .block-quote p:last-child { margin-bottom: 0; }
+        .block-quote strong { color: rgba(0, 0, 0, 0.80); }
+
+        .highlight-box {
+            padding: 16px 20px; border-radius: 12px; margin: 1.2em 0;
+            font-size: 15px; line-height: 1.8; color: rgba(0, 0, 0, 0.70);
+            border-left: 4px solid #6baa9e;
+            background: rgba(255, 255, 255, 0.30);
+        }
+        .highlight-box p:last-child { margin-bottom: 0; }
+        .highlight-box strong { color: rgba(0, 0, 0, 0.80); }
+        .highlight-box ul { margin-bottom: 0; }
+
+        .example {
+            background: rgba(255, 255, 255, 0.20);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 1.2em 0;
+        }
+        .example-label {
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+            color: rgba(0, 0, 0, 0.30); margin-bottom: 0.3em;
+        }
+        .example p { margin-bottom: 0.6em; font-size: 15px; }
+        .example p:last-child { margin-bottom: 0; }
+        .example em { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+
+        .table-wrap {
+            overflow-x: auto; margin: 1.2em 0;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table {
+            width: 100%; border-collapse: collapse;
+            font-size: 14px; min-width: 400px;
+        }
+        th {
+            background: rgba(127, 193, 197, 0.10);
+            font-weight: 600; color: #1c2e2a;
+            padding: 10px 14px; text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.70);
+            vertical-align: top;
+        }
+        tr:last-child td { border-bottom: none; }
+        .table-caption {
+            font-size: 13px; color: rgba(0, 0, 0, 0.30);
+            text-align: right; padding: 4px 10px 0 0;
+            font-style: italic;
+        }
+
+        .footer-note {
+            margin-top: 40px; padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center; font-size: 12px;
+            color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px;
+        }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            #app { padding: 12px 12px 30px; }
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; padding-left: 12px; }
+            h3 { font-size: 17px; }
+            p, ul, ol { font-size: 15px; }
+            .block-quote, .highlight-box, .example { padding: 14px 16px; font-size: 14px; }
+            table { font-size: 13px; min-width: 300px; }
+            th, td { padding: 6px 10px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 48px 52px; }
+            h1 { font-size: 38px; }
+            h2 { font-size: 28px; }
+            p { font-size: 17px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+            </div>
+
+            <h1>庭院美学顾问 · 共鸣话术手册</h1>
+            <p class="subtitle">基于“审美 → 身份 → 拥有”三阶模型 · 自然对话版</p>
+
+            <!-- 一、核心目标 -->
+            <h2>一、核心目标与底层逻辑</h2>
+            <p><strong>核心目标</strong>：拿到一棵枫树，开口的第一段话，不是“圈定人群”，而是<strong>唤醒一种审美想象</strong>——让屏幕前的那个人，在心里“看见”这棵树出现在自己庭院中的画面，从而产生“这棵树应该属于我”的直觉。共鸣话术的本质，不是“给用户一个留下来的理由”，而是<strong>给用户的审美判断一个启动的契机</strong>。</p>
+
+            <div class="highlight-box">
+                <p><strong>底层逻辑（来自三阶模型）</strong>：</p>
+                <ul style="margin-left:1.2rem; margin-bottom:0;">
+                    <li><strong>审美锁定</strong>：用画面和意境吸引，而非用身份标签圈定。</li>
+                    <li><strong>身份确认</strong>：让用户自己判断“这棵树配不配得上我家”，而非我们告诉他“你需要”。</li>
+                    <li><strong>即时拥有</strong>：当审美和身份确认完成，拥有是自然发生的，无需催促。</li>
+                </ul>
+            </div>
+
+            <p><strong>核心原则</strong>：</p>
+            <ul>
+                <li>用“看见”代替“告诉”——引导用户想象，而非灌输结论。</li>
+                <li>用“匹配”代替“需求”——不是“你需要什么”，而是“什么与你相配”。</li>
+                <li>用“从容”代替“紧迫”——语气笃定而安静，给用户留出感受空间。</li>
+                <li>与枫树销售结合：高客单价、长周期的产品，用户的决策驱动力是“审美冲动”而非“功能缺失”。我们的共鸣话术，是在他“随便看看”时，用一棵树的姿态、色彩、气质，触发他内心的“对了”的感觉。</li>
+            </ul>
+
+            <!-- 二、三种形式 -->
+            <h2>二、共鸣话术的三种自然形式</h2>
+            <p style="font-size:14px; color:rgba(0,0,0,0.35); font-style:italic; margin-top:-0.4em;">非强制式，依树而变</p>
+
+            <h3>形式一：姿态唤醒式（最轻盈，适合开场）</h3>
+            <p><strong>核心逻辑</strong>：先让用户“看见”这棵树的姿态，再由姿态自然联想到自家院子的某个角落。不定义“你是谁”，只邀请“你来看”。<br />
+            <strong>话术引导</strong>：“您看这棵树的枝条……它这样舒展着，像不像在等一个恰当的位置？”</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>树的姿态</th><th>唤醒话术</th></tr></thead>
+                    <tbody>
+                        <tr><td>高飘直立</td><td>“您看它的主干，笔直向上，枝条却疏朗地向四周打开——它不占地方，却撑得起一片天。放在您家入户的玄关对景处，每天进门第一眼，是不是正好？”</td></tr>
+                        <tr><td>低分枝斜飘</td><td>“它的枝条几乎是从根部就开始倾斜的，像被风常年吹拂过一样。这种自然的动势，放在茶室窗外，喝茶时看出去，是不是觉得那阵风还在？”</td></tr>
+                        <tr><td>多杆丛生</td><td>“它不只是一棵树，是好几根主干一起长出来的，像一个小群落。放在院子的角落，或者水岸边，它自己能成一片小景，不用再配别的。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 不是“圈定人群”，而是“邀请共赏”。</p>
+
+            <h3>形式二：场景映照式（力度适中，适合讲品前）</h3>
+            <p><strong>核心逻辑</strong>：描述一个具体的庭院场景，让用户在脑海中“走入”那个场景，然后发现“我的家也有类似的位置”。<br />
+            <strong>话术引导</strong>：“您想象一下，您家客厅那扇落地窗——如果窗外站着这样一棵树……”</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>场景</th><th>映照话术</th></tr></thead>
+                    <tbody>
+                        <tr><td>落地窗前</td><td>“很多别墅的客厅都有一面大落地窗，窗外是院子。但如果没有一棵树，看出去就是空的——你会觉得那扇窗‘白长了’。枫树不一样，它的枝条是活的，春夏有绿荫，秋天有颜色，冬天有骨感。您坐在沙发上，目光自然地落在那棵树上——窗就不再是一面玻璃，它成了一幅画。”</td></tr>
+                        <tr><td>院中茶台</td><td>“喜欢在院子里喝茶的人，都想要一个‘坐得住’的地方。不是椅子舒服不舒服，是眼睛有没有东西可看。一棵枫树种在旁边，叶子疏密有致，风一吹光影落在茶台上——您那杯茶，能多喝半小时。”</td></tr>
+                        <tr><td>入户门庭</td><td>“入户的位置，是家的第一张脸。很多院子大门进来就是一块空地，或者一堵墙，显得‘硬’。放一棵姿态舒展的枫树在那里，它不是挡路，是引路——枝条微微向门的方向倾斜，像是在说‘欢迎回来’。”</td></tr>
+                        <tr><td>冬季枯荣</td><td>“有人担心枫树冬天落叶后不好看。但您见过冬天的枫树吗？叶子落尽后，枝干的线条全露出来——瘦劲、疏朗、像一幅水墨。您坐在温暖的屋里看出去，那种‘枯’中带着生命力的感觉，比常绿树更有味道。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 不制造“缺憾感”，而是营造“可能性”。</p>
+
+            <h3>形式三：时间对话式（最深沉，适合深度交流）</h3>
+            <p><strong>核心逻辑</strong>：枫树是活的生命，它会在庭院里生长、变化、陪伴。话术围绕“时间”展开——让用户想象“这棵树一年后、五年后、十年后”的样子。<br />
+            <strong>话术引导</strong>：“您现在看它，是这个样子。但您想过吗——三年后的秋天，它会变成什么样？”</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>时间维度</th><th>对话话术</th></tr></thead>
+                    <tbody>
+                        <tr><td>第一年</td><td>“今天它种下去，您可能觉得它还不够高大。但您看它的枝条——那些细小的分枝，已经预示了未来的走向。它会按照自己的节奏慢慢长，不急，您也不急。”</td></tr>
+                        <tr><td>第三年</td><td>“三年后，它的冠幅会大一圈，秋色会比现在更深。您每天路过它，可能没察觉，但有一天您翻出今天的照片——会发现它已经陪您走过了三个四季。”</td></tr>
+                        <tr><td>十年后</td><td>“十年后，它会是您院子里最‘老’的那棵树。它的主干会变粗，树皮会起皱，枝条会更舒展。您坐在它下面，会想起它刚来的样子——那时候，您和它都年轻。”</td></tr>
+                        <tr><td>四季轮回</td><td>“枫树的美，不在于某一天，而在于轮回。春天冒红芽，夏天绿荫浓，秋天染霜色，冬天骨相清。您买的不只是一棵树，是一整年的期待，是每个季节都有一个‘时刻’在等您。”</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="table-caption">* 用“时间感知”替代“损失厌恶”，正向情感牵引。</p>
+
+            <!-- 三、整场直播节奏 -->
+            <h2>三、整场直播的共鸣节奏（三阶模型对应）</h2>
+
+            <div class="block-quote">
+                <p><strong>第一阶段：审美锁定（开场15-30秒）</strong><br />
+                动作：镜头只对准树，安静展示其姿态。<br />
+                话术（轻声）：“大家看这棵树的线条……它这样长着，是自然形成的，不是修剪出来的。”<br />
+                目的：让树本身的美感抓住“对的人”，不寒暄、不欢迎、不点名。</p>
+            </div>
+            <div class="block-quote">
+                <p><strong>第二阶段：身份确认（接下来2-3分钟）</strong><br />
+                动作：镜头缓慢推移，从整体到局部，主播用场景化语言勾勒画面。<br />
+                话术（从容）：“您想象一下，把它放在您家茶室窗外——深秋的时候，叶子变成这种温润的橙红色，您坐在里面喝茶，往外看……”（停顿几秒，给用户想象空间）<br />
+                目的：帮客户完成“这棵树配不配我家”的内心确认。</p>
+            </div>
+            <div class="block-quote">
+                <p><strong>第三阶段：无阻力拥有（最后30秒）</strong><br />
+                动作：告知独特性（“这棵的形态是独一无二的”）和购买路径（“编号发到公屏，园艺师一对一对接”），然后安静等待。<br />
+                话术（笃定）：“喜欢的朋友直接拍下，编号发到公屏。我们安排园艺师一对一视频指导栽种。您不需要操心任何事。”<br />
+                目的：不催、不倒数、不喊“3-2-1”，让客户在从容状态中自己决定。</p>
+            </div>
+
+            <!-- 四、完整话术示例 -->
+            <h2>四、完整话术示例（约45秒）</h2>
+            <p style="font-size:14px; color:rgba(0,0,0,0.35); font-style:italic; margin-top:-0.4em;">覆盖审美+身份+拥有</p>
+            <div class="example">
+                <div class="example-label">模拟直播片段</div>
+                <p><em>（镜头里只有一棵姿态舒展的枫树，安静展示15秒）</em></p>
+                <p><strong>主播轻声</strong>：“大家看这棵树的枝条走向——它不是人工绑扎的，是自然长成这样的。这种‘野趣’，放在院子里，整个空间的格调都不一样了。”</p>
+                <p><em>（停顿5秒，镜头缓慢推向叶片细节）</em></p>
+                <p><strong>主播继续</strong>：“您想象一下，把它放在您家落地窗外的那个角落——春夏绿荫，秋天变色，冬天骨感。您坐在客厅里，目光随时能落在一幅活的画上。”</p>
+                <p><em>（镜头回到整体，停顿3秒）</em></p>
+                <p><strong>主播从容地说</strong>：“这棵的形态是独一无二的，喜欢的朋友直接拍下，编号发到公屏。我们负责送、负责种、负责教您养护。您只需要负责欣赏。”</p>
+                <p><em>（安静，镜头继续展示树，等待客户自己决定）</em></p>
+            </div>
+
+            <!-- 五、使用要点 -->
+            <h2>五、使用要点（顾问式调整）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>要点</th><th>说明</th></tr></thead>
+                    <tbody>
+                        <tr><td>称呼</td><td>不用“家人们”“哥哥姐姐”，用“大家”或省略称呼。</td></tr>
+                        <tr><td>语气</td><td>笃定、从容、不卑不亢。语速比日常慢三分之一，每句话间留呼吸感。</td></tr>
+                        <tr><td>画面优先</td><td>每句话都在帮用户“看见”，而非“知道”。不讲地径、冠幅、年份等参数，除非作为尺寸参照。</td></tr>
+                        <tr><td>价格位置</td><td>价格只能出现在最后一句，轻描淡写带过（如“这棵的价格在左下角”），绝口不提“划算”“性价比”。</td></tr>
+                        <tr><td>等待姿态</td><td>讲完购买路径后，安静下来，不补任何催促的话。相信“对的人看到了自己会下单”。</td></tr>
+                        <tr><td>树形编号内化</td><td>心中清楚这棵树是几号树形、适合哪个场景节点，但话术中不必直说编号，只需自然描述其适合的位置。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 六、常见误区 -->
+            <h2>六、常见误区（反面提醒）</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>误区</th><th>说明</th></tr></thead>
+                    <tbody>
+                        <tr><td>用身份标签圈人</td><td>如“所有有院子的人”——这种宣告式会让人产生被“归类”的感觉，而非被“吸引”。我们只展示树，让树自己吸引人。</td></tr>
+                        <tr><td>制造缺憾感</td><td>如“你的院子空空的，你不觉得亏吗？”——这种话带有评判色彩，客户会感到被冒犯。我们只描述可能性，不评判现状。</td></tr>
+                        <tr><td>讲参数代替画面</td><td>如“地径5公分，高度2米2”——用户无法产生情感连接。必须转化为“这棵树放在你家窗前的样子”。</td></tr>
+                        <tr><td>沉浸式讲痛点忘了收尾</td><td>给完场景想象后，必须自然过渡到“拥有”环节，否则用户停留在想象中却不知如何行动。</td></tr>
+                        <tr><td>语气像推销</td><td>任何带有“求”“催”“赶”意味的语调都会让客户划走。保持像朋友推荐好东西的轻松感。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 七、与整场直播的衔接 -->
+            <h2>七、与整场直播的衔接</h2>
+            <p style="font-size:14px; color:rgba(0,0,0,0.35); font-style:italic; margin-top:-0.4em;">非强制，顺其自然</p>
+            <ul>
+                <li><strong>开场（审美锁定）</strong>：直接展示树，轻声描述姿态。</li>
+                <li><strong>中间（身份确认）</strong>：用场景映照式话术，帮客户“看见”树在自己家的样子。</li>
+                <li><strong>结尾（无阻力拥有）</strong>：告知独特性、告知购买路径，然后安静等待。</li>
+            </ul>
+            <div class="highlight-box">
+                <p><strong>核心原则</strong>：共鸣话术不是独立存在的“第一句话”，它贯穿整场直播——每一棵树，都是用审美去对话，用画面去打动，用从容去成交。</p>
+            </div>
+
+            <div class="footer-note">
+                —— 基于《写给庭院美学顾问的七堂课》三阶模型修订 · 自然对话版 ——
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

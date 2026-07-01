@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>粉色系 · 枫叶色彩速查卡 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100%; min-height: -webkit-fill-available;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            background: #dcece8; color: #1c2e2a;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; background: rgba(127, 193, 197, 0.25); }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; background: rgba(95, 168, 166, 0.20); }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); background: rgba(167, 212, 210, 0.15); }
+        #app {
+            position: relative; width: 100%; min-height: 100%; min-height: -webkit-fill-available;
+            z-index: 1; padding: 20px 16px 40px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 20px));
+        }
+        .content-wrap {
+            max-width: 720px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 28px 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.02);
+        }
+        .top-mini {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-mini .brand { font-size: 11px; font-weight: 500; letter-spacing: 2px; color: rgba(0, 0, 0, 0.20); text-transform: uppercase; }
+        .top-mini .back-link {
+            font-size: 12px; color: rgba(0, 0, 0, 0.25); text-decoration: none;
+            padding: 4px 12px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .top-mini .back-link:active { transform: scale(0.94); background: rgba(255, 255, 255, 0.40); }
+        .nav-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .header-badge {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 4px; flex-wrap: wrap;
+        }
+        .header-badge .icon { font-size: 36px; }
+        .header-badge .title { font-size: 22px; font-weight: 700; color: #1c2e2a; letter-spacing: -0.3px; }
+        .header-badge .sub { font-size: 14px; color: rgba(0, 0, 0, 0.30); font-weight: 400; }
+
+        .tagline {
+            font-size: 18px; font-weight: 500; color: #2a423e;
+            margin-top: 2px; margin-bottom: 12px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+        }
+        .tagline .light {
+            font-weight: 300; color: rgba(0, 0, 0, 0.25);
+            font-size: 14px; display: block; margin-top: 2px;
+        }
+
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 16px 18px;
+            margin: 12px 0 20px 0;
+            border-left: 3px solid rgba(190, 140, 160, 0.3);
+            font-size: 14px; line-height: 1.7;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .comparison-box strong { color: #1c2e2a; }
+
+        .color-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .color-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 14px; padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+        .color-card .swatch {
+            width: 100%; height: 24px; border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .color-card .name { font-weight: 700; color: #1c2e2a; font-size: 16px; display: block; }
+        .color-card .sub { font-size: 12px; color: rgba(0, 0, 0, 0.35); display: block; margin-bottom: 2px; }
+        .color-card .desc { font-size: 13px; line-height: 1.5; color: rgba(0, 0, 0, 0.55); }
+        .color-card .variety { font-size: 12px; color: #b06a8a; background: rgba(190, 140, 160, 0.08); padding: 2px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        @media (max-width: 480px) { .color-grid { grid-template-columns: 1fr; } }
+
+        .period-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+            margin: 12px 0 16px 0;
+        }
+        .period-card {
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 12px; padding: 14px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            text-align: center;
+        }
+        .period-card .emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+        .period-card .name { font-weight: 700; color: #1c2e2a; font-size: 15px; display: block; }
+        .period-card .time { font-size: 12px; color: rgba(0, 0, 0, 0.30); }
+        .period-card .desc { font-size: 12px; line-height: 1.5; color: rgba(0, 0, 0, 0.50); margin-top: 4px; }
+        .period-card .rep { font-size: 11px; color: #b06a8a; margin-top: 4px; }
+        @media (max-width: 480px) { .period-grid { grid-template-columns: 1fr; } }
+
+        .scene-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+        .scene-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px; padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px; line-height: 1.5;
+            color: rgba(0, 0, 0, 0.65);
+        }
+        .scene-item .place { font-weight: 600; color: #1c2e2a; }
+        .scene-item .rec { color: #b06a8a; }
+        .scene-item .why { font-size: 12px; color: rgba(0, 0, 0, 0.45); }
+        @media (max-width: 480px) { .scene-grid { grid-template-columns: 1fr; } }
+
+        .pain-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px; padding: 14px 16px;
+            margin: 10px 0;
+            border-left: 3px solid rgba(190, 140, 160, 0.2);
+        }
+        .pain-box .q { font-weight: 600; color: #1c2e2a; font-size: 14px; }
+        .pain-box .a { font-size: 14px; color: rgba(0, 0, 0, 0.60); margin-top: 4px; }
+        .pain-box .a strong { color: #b06a8a; }
+
+        .dream-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px; padding: 16px 18px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dream-box .title { font-weight: 600; color: #1c2e2a; font-size: 15px; display: block; margin-bottom: 4px; }
+        .dream-box .text { font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.55); font-style: italic; }
+
+        h2 { font-size: 18px; color: #1c2e2a; margin-top: 22px; margin-bottom: 10px; border-left: 4px solid rgba(190, 140, 160, 0.3); padding-left: 14px; }
+        h3 { font-size: 16px; color: #2a423e; margin-top: 16px; margin-bottom: 6px; }
+
+        .footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, 0.04); text-align: center; font-size: 11px; color: rgba(0, 0, 0, 0.15); letter-spacing: 0.5px; }
+        .footer-note strong { color: rgba(0, 0, 0, 0.20); font-weight: 500; }
+
+        .keyword-line {
+            font-size: 13px; color: rgba(0, 0, 0, 0.20);
+            letter-spacing: 1px; font-weight: 300;
+            margin-bottom: 16px;
+            padding: 6px 0; border-top: 1px solid rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        @media (max-width: 480px) {
+            .content-wrap { padding: 20px 16px; border-radius: 24px; }
+            .header-badge .title { font-size: 18px; }
+            .tagline { font-size: 16px; }
+        }
+        @media (min-width: 800px) {
+            .content-wrap { padding: 40px 44px; }
+            .header-badge .title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles"><div class="circle c1"></div><div class="circle c2"></div><div class="circle c3"></div></div>
+    <div id="app">
+        <div class="content-wrap">
+
+            <div class="top-mini">
+                <span class="brand">山秋枫树园</span>
+                <div class="nav-group">
+                    <a href="#" class="back-link" onclick="window.location.href='plat.html';">← 返回</a>
+                </div>
+            </div>
+
+            <!-- 主标识 -->
+            <div class="header-badge">
+                <span class="icon">🌸</span>
+                <div>
+                    <div class="title">粉色系 · 枫叶色彩速查卡</div>
+                    <div class="sub">比花还温柔 · 长在叶子上的粉 · 庭院美学顾问</div>
+                </div>
+            </div>
+            <div class="tagline">
+                枫树不只有红色——还有粉色。比花还温柔。
+                <span class="light">你不需要成为植物学家，但你需要知道——粉色在枫树上，是长在叶子里的。</span>
+            </div>
+            <div class="keyword-line">✦ 审美共鸣 × 身份确认 × 即时拥有 ✦</div>
+
+            <!-- 与普通植物的对比 -->
+            <div class="comparison-box">
+                <p><strong>与普通植物的对比 · 审美共鸣</strong><br />
+                你见过粉色的树吗？粉色在植物界通常是花的颜色——樱花粉、桃花粉，但那是花，开完就谢了。<br />
+                枫树的粉色是"长在叶子上的粉"——不是开几天就没了，是长在那里、一直在的粉。<br />
+                种一棵粉色枫在院子里，那不是一棵树，是"一棵不会谢的花"。</p>
+            </div>
+
+            <!-- 粉色系 -->
+            <h2>✦ 完整色彩 · 便签速查</h2>
+            <div class="color-grid">
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffb7c5;"></div>
+                    <span class="name">全粉</span>
+                    <span class="sub">最纯粹</span>
+                    <div class="desc">整片叶子都是粉色，像一块粉色的绸缎挂在树上，没有杂色。</div>
+                    <span class="variety">代表：泰勒（春季）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ff8c69;"></div>
+                    <span class="name">鲑鱼粉</span>
+                    <span class="sub">最温暖</span>
+                    <div class="desc">像三文鱼肉色，带一点橙调的粉，那种暖意让人心里发热。</div>
+                    <span class="variety">代表：珊瑚之心</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#f08080;"></div>
+                    <span class="name">珊瑚粉</span>
+                    <span class="sub">最高级</span>
+                    <div class="desc">像珊瑚、像日落，温柔又有力量。</div>
+                    <span class="variety">代表：魔幻珊瑚</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffd1dc;"></div>
+                    <span class="name">薄粉</span>
+                    <span class="sub">最轻</span>
+                    <div class="desc">若有若无，像一层粉色薄纱蒙在叶子上，似有似无，最撩人。</div>
+                    <span class="variety">代表：花散里（春叶半开）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#ffc0cb;"></div>
+                    <span class="name">粉白</span>
+                    <span class="sub">清雅</span>
+                    <div class="desc">粉色与白色交织，像一杯粉色奶昔，柔和感是纯色给不了的。</div>
+                    <span class="variety">代表：花散里（半开）</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#f5a0b0;"></div>
+                    <span class="name">粉绿斑锦</span>
+                    <span class="sub">一片两色</span>
+                    <div class="desc">粉一块、绿一块，像画家随意泼上去的，每一片比例都不一样。</div>
+                    <span class="variety">代表：蝴蝶、羽前锦</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#f4a0b0;"></div>
+                    <span class="name">粉边</span>
+                    <span class="sub">精致</span>
+                    <div class="desc">边缘镶粉边，像给叶子描了一道粉色轮廓线，精细感十足。</div>
+                    <span class="variety">代表：粉色蕾丝</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#d87093;"></div>
+                    <span class="name">粉紫</span>
+                    <span class="sub">神秘</span>
+                    <div class="desc">捉摸不定，早上看是粉的，下午又带一点紫，最耐看。</div>
+                    <span class="variety">代表：粉色激情</span>
+                </div>
+
+                <div class="color-card">
+                    <div class="swatch" style="background:#e75480;"></div>
+                    <span class="name">深粉</span>
+                    <span class="sub">有劲儿</span>
+                    <div class="desc">扎扎实实的粉，像草莓、像胭脂，一切"粉得很认真"的东西。</div>
+                    <span class="variety">代表：羽前锦（春季）</span>
+                </div>
+
+            </div>
+
+            <!-- 场景推荐 -->
+            <h2>✦ 场景推荐 · 身份确认</h2>
+            <div class="scene-grid">
+                <div class="scene-item"><span class="place">窗前</span> → <span class="rec">粉色枫</span><br /><span class="why">晨光里半透明的粉，每天早上的"第一眼好心情"</span></div>
+                <div class="scene-item"><span class="place">草坪中央</span> → <span class="rec">全粉</span><br /><span class="why">绿草坪上一朵粉云，整个院子最梦幻的存在</span></div>
+                <div class="scene-item"><span class="place">水边</span> → <span class="rec">粉色枫</span><br /><span class="why">粉色倒影柔柔的，是水边最温柔的画面</span></div>
+                <div class="scene-item"><span class="place">茶室</span> → <span class="rec">粉色枫</span><br /><span class="why">粉色是最安静的颜色，不跳不闹，柔柔地待在那里</span></div>
+                <div class="scene-item"><span class="place">入口</span> → <span class="rec">粉色枫</span><br /><span class="why">客人还没进门，先看到那抹粉色——"这家主人不一样"</span></div>
+            </div>
+
+            <!-- 痛点化解 -->
+            <h2>✦ 痛点化解 · 解药话术</h2>
+
+            <div class="pain-box">
+                <div class="q">"粉色太个性，怕过两年不喜欢"</div>
+                <div class="a">→ 选鲑鱼粉或珊瑚粉，带橙调的暖粉，不是"一眼到底"的粉。第一年温暖，第三年还是温暖。不会腻的颜色，才是好颜色。</div>
+            </div>
+
+            <!-- 造梦 -->
+            <h2>✦ 造梦 · 即时拥有</h2>
+
+            <div class="dream-box">
+                <span class="title">🌅 晨光粉影</span>
+                <div class="text">春天的早晨，阳光照在粉色枫叶上，半透明的粉色像被点亮了的纱巾。你端着咖啡站在窗前，一天还没有正式开始，但你已经觉得"今天会很好"。</div>
+            </div>
+            <div class="dream-box">
+                <span class="title">💕 治愈角落</span>
+                <div class="text">疲惫的下午回到家，粉色枫树在等你。搬一把椅子坐在旁边，看着那些粉色的叶子，十分钟后，你觉得今天的累也没那么累了。</div>
+            </div>
+
+            <div class="footer-note">
+                <strong>© 都江堰市山秋园艺苗圃</strong> · 山秋枫树园 · 大规格品种枫树专业供应商<br />
+                庭院美学顾问 · 粉色系速查 · 审美共鸣 × 身份确认 × 即时拥有
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

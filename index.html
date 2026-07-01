@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
-        /* ===== 全局重置（同前，略） ===== */
+        /* ===== 全局重置 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -67,34 +67,45 @@
         }
         #homeView::-webkit-scrollbar { width: 0; background: transparent; }
 
+        /* ===== 顶部栏 ===== */
         .top-bar {
             display: flex; align-items: center; justify-content: flex-end;
             gap: 12px; margin-bottom: 8px; padding-top: 2px;
             flex-shrink: 0; position: relative; z-index: 3;
         }
+        /* 品牌标识 — 直接调用同目录下的 shanqiu_logo.png */
         .brand-logo {
             width: 48px; height: 48px; border-radius: 50%;
             flex-shrink: 0;
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.20);
             border: 1.5px solid rgba(255,255,255,0.20);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; font-weight: 600; color: rgba(0,0,0,0.15);
-            letter-spacing: 0.5px;
-            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
+            user-select: none;
+            transition: background 0.3s ease;
         }
         .brand-logo img {
             width: 100%; height: 100%; object-fit: cover;
-            display: none;
+            display: block;
         }
-        .brand-logo.has-image img { display: block; }
-        .brand-logo.has-image .logo-text { display: none; }
+        /* 图片加载失败时显示文字占位 */
         .brand-logo .logo-text {
-            font-size: 14px; font-weight: 600;
+            font-size: 16px;
+            font-weight: 600;
             color: rgba(0,0,0,0.20);
             letter-spacing: 0.5px;
+            display: none;
+            position: absolute;
+        }
+        .brand-logo.fallback .logo-text {
+            display: block;
+        }
+        .brand-logo.fallback img {
+            display: none;
         }
 
         .theme-dots {
@@ -120,6 +131,7 @@
         .theme-dots .dot.d2 { background: #6baa9e; }
         .theme-dots .dot.d3 { background: #6e9bb5; }
 
+        /* ===== 头部 ===== */
         .home-header { margin-bottom: 10px; flex-shrink: 0; }
         .home-header .brand {
             font-size: 11px; font-weight: 500; letter-spacing: 2px;
@@ -154,6 +166,7 @@
         }
         .home-header .sub strong { color: rgba(0,0,0,0.40); font-weight: 500; }
 
+        /* ===== 卡片网格 ===== */
         .card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -348,7 +361,7 @@
         .node-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
         .node-item .desc { font-size: 12px; color: rgba(0,0,0,0.40); margin-top: 1px; }
 
-        /* ===== 品种列表（仅供其他模块使用，第五模块不再使用） ===== */
+        /* ===== 品种列表 ===== */
         .variety-item {
             background: rgba(255,255,255,0.25);
             border-radius: 12px; padding: 10px 14px;
@@ -409,7 +422,6 @@
             #homeView { padding: 10px 12px 10px; padding-top: max(10px, env(safe-area-inset-top,10px)); padding-bottom: max(10px, env(safe-area-inset-bottom,10px)); }
             .top-bar { gap: 10px; margin-bottom: 6px; }
             .brand-logo { width: 40px; height: 40px; }
-            .brand-logo .logo-text { font-size: 12px; }
             .theme-dots { gap: 6px; padding: 2px 6px; }
             .theme-dots .dot { width: 12px; height: 12px; }
             .home-header h1 { font-size: 20px; }
@@ -448,7 +460,6 @@
             .card-item .desc { font-size: 9px; }
             .card-item .meta { font-size: 8px; padding: 1px 6px; }
             .brand-logo { width: 36px; height: 36px; }
-            .brand-logo .logo-text { font-size: 10px; }
             .grid-cards { grid-template-columns: 1fr 1fr; }
         }
         @media (min-width: 800px) {
@@ -459,7 +470,6 @@
             .card-item .desc { font-size: 13px; }
             .home-header h1 { font-size: 32px; }
             .brand-logo { width: 64px; height: 64px; }
-            .brand-logo .logo-text { font-size: 18px; }
             .grid-cards { gap: 12px; }
             .grid-card { padding: 18px 14px; }
             .grid-card .num { font-size: 22px; }
@@ -476,7 +486,6 @@
             .card-grid { gap: 5px; }
             .top-bar { margin-bottom: 4px; }
             .brand-logo { width: 36px; height: 36px; }
-            .brand-logo .logo-text { font-size: 10px; }
             .home-footer { margin-top: 2px; padding-top: 4px; }
             .home-footer .copyright { font-size: 8px; }
         }
@@ -496,9 +505,10 @@
         <!-- ===== 首页 ===== -->
         <div id="homeView">
             <div class="top-bar">
+                <!-- 品牌标识：直接调用同目录下的 shanqiu_logo.png -->
                 <div class="brand-logo" id="brandLogo">
+                    <img id="brandImage" src="shanqiu_logo.png" alt="山秋枫树园" />
                     <span class="logo-text">山秋</span>
-                    <img id="brandImage" src="" alt="品牌图标" />
                 </div>
                 <div class="theme-dots">
                     <div class="dot d1 active" data-theme="mint"></div>
@@ -593,15 +603,20 @@
         setTheme(savedTheme);
 
         // ================================================================
-        //  品牌标识：静态占位
+        //  品牌标识：直接加载 shanqiu_logo.png，无上传交互
         // ================================================================
         const brandLogo = document.getElementById('brandLogo');
         const brandImage = document.getElementById('brandImage');
-        const savedBrandImage = localStorage.getItem('brand-image');
-        if (savedBrandImage) {
-            brandImage.src = savedBrandImage;
-            brandLogo.classList.add('has-image');
-        }
+
+        // 图片加载失败时显示文字占位
+        brandImage.onerror = function() {
+            brandLogo.classList.add('fallback');
+        };
+
+        // 图片加载成功时确保显示
+        brandImage.onload = function() {
+            brandLogo.classList.remove('fallback');
+        };
 
         // ================================================================
         //  数据定义
@@ -677,7 +692,7 @@
             { id: 'sc6', name: '放价与收尾话术', desc: '价值确认·从容收尾·美是唯一的理由', file: 'part4_6.html' },
         ];
 
-        // -------- Part5: 品种 (仅用于列表展示，实际加载 part5.html) --------
+        // -------- Part5: 品种 --------
         const VARIETIES_FILE = 'part5.html';
 
         // ================================================================
@@ -718,13 +733,10 @@
             return html;
         }
 
-        // 核心：逐级后退函数
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
             path = path.slice(0, level);
-            // 重新渲染当前模块视图
             renderCurrentModule();
-            // 更新面包屑显示
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
         }
 
@@ -768,7 +780,6 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 隐藏内部返回按钮
                             const selectors = [
                                 '.back-btn', '[data-back]', '.module-header .back-btn',
                                 '.back-link', '.top-mini .back-link', '.detail-back',
@@ -1020,7 +1031,7 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种速查 —— 直接加载 part5.html，并监听其内部导航消息 --------
+        // -------- Part5: 品种速查 —— 直接加载 part5.html --------
         function renderPart5Direct() {
             if (path.length === 0) {
                 path = ['主播品种速查手册'];
@@ -1028,7 +1039,6 @@
                 moduleSub.textContent = '29个品种 · 完整档案';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
 
-                // 直接加载 part5.html
                 const fileUrl = VARIETIES_FILE;
                 moduleScroll.innerHTML = `
                     <div class="file-view" id="fileViewContainer">
@@ -1038,7 +1048,6 @@
                 const iframe = document.getElementById('fileIframe');
                 if (iframe) {
                     iframe.onload = function() {
-                        // 隐藏内部返回按钮
                         try {
                             const doc = iframe.contentDocument || iframe.contentWindow?.document;
                             if (doc) {
@@ -1070,7 +1079,6 @@
                             </div>
                         `;
                     };
-                    // 延迟再试一次隐藏
                     setTimeout(() => {
                         try {
                             const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -1096,15 +1104,11 @@
         window.addEventListener('message', function(event) {
             const data = event.data;
             if (data && data.type === 'navigate') {
-                // 更新主框架的路径（由 part5.html 内部发出）
-                // 期望 data.path 为完整路径数组，例如 ['主播品种速查手册', '奥马']
                 if (Array.isArray(data.path) && data.path.length > 0) {
                     path = data.path;
-                    // 更新标题与子标题
                     const last = path[path.length - 1];
                     moduleTitle.textContent = last;
                     moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
-                    // 更新面包屑
                     moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 }
             }
@@ -1145,11 +1149,10 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (逐级后退完整版)');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
-        console.log('📁 请确保所有 part*.html 文件与 index.html 在同一目录下');
-        console.log('💡 第5模块需在 part5.html 中增加 postMessage 通信以实现逐级后退，详见注释');
-        console.log('📝 part5.html 修改说明：在进入品种详情时调用 window.parent.postMessage({ type: "navigate", path: ["主播品种速查手册", "品种名"] }, "*"); 返回列表时调用 window.parent.postMessage({ type: "navigate", path: ["主播品种速查手册"] }, "*");');
+        console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
+        console.log('🖼️ 品牌图标: shanqiu_logo.png');
     </script>
 
 </body>

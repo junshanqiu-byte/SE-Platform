@@ -73,7 +73,7 @@
             gap: 12px; margin-bottom: 8px; padding-top: 2px;
             flex-shrink: 0; position: relative; z-index: 3;
         }
-        /* 品牌标识 — 直接调用同目录下的 shanqiu_logo.png */
+        /* 品牌标识 */
         .brand-logo {
             width: 48px; height: 48px; border-radius: 50%;
             flex-shrink: 0;
@@ -87,6 +87,7 @@
             overflow: hidden;
             user-select: none;
             transition: background 0.3s ease;
+            position: relative;
         }
         .brand-logo img {
             width: 100%; height: 100%; object-fit: cover;
@@ -100,6 +101,9 @@
             letter-spacing: 0.5px;
             display: none;
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .brand-logo.fallback .logo-text {
             display: block;
@@ -603,20 +607,35 @@
         setTheme(savedTheme);
 
         // ================================================================
-        //  品牌标识：直接加载 shanqiu_logo.png，无上传交互
+        //  品牌标识：直接加载 shanqiu_logo.png
         // ================================================================
         const brandLogo = document.getElementById('brandLogo');
         const brandImage = document.getElementById('brandImage');
 
-        // 图片加载失败时显示文字占位
-        brandImage.onerror = function() {
-            brandLogo.classList.add('fallback');
-        };
-
-        // 图片加载成功时确保显示
+        // 图片加载成功
         brandImage.onload = function() {
             brandLogo.classList.remove('fallback');
+            console.log('✅ 品牌图标加载成功: shanqiu_logo.png');
         };
+
+        // 图片加载失败 → 显示文字占位
+        brandImage.onerror = function() {
+            brandLogo.classList.add('fallback');
+            console.warn('⚠️ 品牌图标加载失败，已切换为文字占位。请确认 shanqiu_logo.png 与 index.html 在同一目录，且文件名大小写正确。');
+        };
+
+        // 额外检查：如果图片已经缓存，可能不会触发 onload/onerror
+        // 手动检查图片是否已加载
+        if (brandImage.complete && brandImage.naturalWidth > 0) {
+            brandLogo.classList.remove('fallback');
+            console.log('✅ 品牌图标已加载（缓存）: shanqiu_logo.png');
+        } else if (brandImage.complete && brandImage.naturalWidth === 0) {
+            brandLogo.classList.add('fallback');
+            console.warn('⚠️ 品牌图标加载失败（缓存检测）: shanqiu_logo.png');
+        }
+
+        console.log('📁 当前页面路径:', window.location.href);
+        console.log('🖼️ 尝试加载图片: shanqiu_logo.png');
 
         // ================================================================
         //  数据定义
@@ -1153,6 +1172,7 @@
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
         console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
         console.log('🖼️ 品牌图标: shanqiu_logo.png');
+        console.log('💡 如果图片不显示，请检查浏览器控制台（F12）查看具体错误信息');
     </script>
 
 </body>

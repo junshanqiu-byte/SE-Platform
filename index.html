@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
-        /* ===== 全局重置 ===== */
+        /* ===== 全局重置（同前，略） ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -58,9 +58,9 @@
         #homeView {
             width: 100%; height: 100%; height: -webkit-fill-available;
             overflow-y: auto;
-            padding: 20px 20px 20px;
-            padding-top: max(20px, env(safe-area-inset-top, 20px));
-            padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+            padding: 12px 14px 12px;
+            padding-top: max(12px, env(safe-area-inset-top, 12px));
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
             display: flex; flex-direction: column;
             position: relative; z-index: 2;
             -webkit-overflow-scrolling: touch;
@@ -69,37 +69,45 @@
 
         .top-bar {
             display: flex; align-items: center; justify-content: flex-end;
-            gap: 18px; margin-bottom: 16px; padding-top: 4px;
+            gap: 12px; margin-bottom: 8px; padding-top: 2px;
             flex-shrink: 0; position: relative; z-index: 3;
         }
-        .brand-avatar {
-            position: relative; width: 104px; height: 104px; border-radius: 50%;
-            overflow: hidden; border: 2px solid rgba(255,255,255,0.40);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            cursor: pointer; flex-shrink: 0;
-            background: rgba(255,255,255,0.20);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
+        .brand-logo {
+            width: 48px; height: 48px; border-radius: 50%;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.25);
+            border: 1.5px solid rgba(255,255,255,0.20);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 600; color: rgba(0,0,0,0.15);
+            letter-spacing: 0.5px;
+            user-select: none;
+            overflow: hidden;
         }
-        .brand-avatar:active { transform: scale(0.94); }
-        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .brand-avatar .placeholder { font-size: 42px; color: rgba(0,0,0,0.08); font-weight: 300; user-select: none; pointer-events: none; }
-        .brand-avatar.has-image .placeholder { display: none; }
-        .brand-avatar.has-image img { display: block; }
-        .brand-avatar input[type="file"] { display: none; }
+        .brand-logo img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: none;
+        }
+        .brand-logo.has-image img { display: block; }
+        .brand-logo.has-image .logo-text { display: none; }
+        .brand-logo .logo-text {
+            font-size: 14px; font-weight: 600;
+            color: rgba(0,0,0,0.20);
+            letter-spacing: 0.5px;
+        }
+
         .theme-dots {
-            display: flex; gap: 10px; flex-shrink: 0;
-            padding: 4px 10px;
+            display: flex; gap: 8px; flex-shrink: 0;
+            padding: 3px 8px;
             background: rgba(255,255,255,0.20);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
         }
         .theme-dots .dot {
-            width: 16px; height: 16px; border-radius: 50%;
+            width: 14px; height: 14px; border-radius: 50%;
             border: 1.5px solid rgba(255,255,255,0.4);
             cursor: pointer; transition: all 0.3s ease;
-            position: relative; -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
         }
         .theme-dots .dot:active { transform: scale(0.85); }
@@ -112,15 +120,15 @@
         .theme-dots .dot.d2 { background: #6baa9e; }
         .theme-dots .dot.d3 { background: #6e9bb5; }
 
-        .home-header { margin-bottom: 24px; flex-shrink: 0; }
+        .home-header { margin-bottom: 10px; flex-shrink: 0; }
         .home-header .brand {
-            font-size: 13px; font-weight: 500; letter-spacing: 2.5px;
+            font-size: 11px; font-weight: 500; letter-spacing: 2px;
             text-transform: uppercase; transition: color 0.6s ease;
             color: rgba(0,0,0,0.20);
         }
         .home-header h1 {
-            font-size: 34px; font-weight: 700; letter-spacing: -0.5px;
-            line-height: 1.15; margin-top: 4px;
+            font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+            line-height: 1.15; margin-top: 2px;
             background: linear-gradient(90deg, #4a8c8a, #7fc1c5, #4a8c8a, #7fc1c5);
             background-size: 300% 100%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -140,23 +148,22 @@
             animation: shimmerTitle 5s ease-in-out infinite;
         }
         .home-header .sub {
-            font-size: 15px; color: rgba(0,0,0,0.30);
-            margin-top: 6px; letter-spacing: 0.3px;
+            font-size: 13px; color: rgba(0,0,0,0.25);
+            margin-top: 2px; letter-spacing: 0.3px;
             transition: color 0.6s ease;
         }
-        .home-header .sub strong { color: rgba(0,0,0,0.45); font-weight: 500; }
+        .home-header .sub strong { color: rgba(0,0,0,0.40); font-weight: 500; }
 
-        /* ===== 卡片网格 ===== */
         .card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 8px;
             flex: 1;
             align-content: start;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
         .card-item {
-            padding: 28px 22px;
+            padding: 14px 14px 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
@@ -166,12 +173,13 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.25);
-            border-radius: 24px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.01);
             transition: background 0.4s ease, transform 0.3s ease, border-color 0.4s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            min-height: 72px;
         }
         .card-item:active { transform: scale(0.96); background: rgba(255,255,255,0.55); }
         .card-item .glow {
@@ -181,48 +189,51 @@
         .card-item:hover .glow { opacity: 1; }
         .theme-mint .card-item .glow { background: linear-gradient(90deg, transparent, rgba(127,193,197,0.30), transparent); }
         .card-item .title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: #1c2e2a;
-            letter-spacing: 0.2px;
-            margin-bottom: 2px;
+            letter-spacing: 0.1px;
+            line-height: 1.2;
         }
         .card-item .desc {
-            font-size: 13px;
-            color: rgba(0,0,0,0.35);
-            line-height: 1.4;
-            margin-top: 2px;
+            font-size: 11px;
+            color: rgba(0,0,0,0.30);
+            line-height: 1.3;
+            margin-top: 1px;
         }
         .card-item .meta {
             display: inline-block;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
-            padding: 2px 14px;
+            padding: 1px 10px;
             border-radius: 30px;
-            margin-top: 10px;
-            letter-spacing: 0.5px;
+            margin-top: 5px;
+            letter-spacing: 0.4px;
             transition: background 0.4s ease, color 0.4s ease;
             align-self: flex-start;
         }
         .theme-mint .card-item .meta { color: #5fa8a6; background: rgba(95,168,166,0.06); }
         .card-item .card-number {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
-            color: rgba(0,0,0,0.10);
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            color: rgba(0,0,0,0.06);
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+        }
+        .card-item.full-width {
+            grid-column: 1 / -1;
         }
 
         .home-footer {
-            margin-top: 16px; padding-top: 12px;
-            border-top: 1px solid rgba(0,0,0,0.03);
+            margin-top: 6px; padding-top: 8px;
+            border-top: 1px solid rgba(0,0,0,0.02);
             text-align: center; flex-shrink: 0;
         }
         .home-footer .copyright {
-            font-size: 11px; color: rgba(0,0,0,0.12);
-            letter-spacing: 0.8px; line-height: 1.6;
+            font-size: 10px; color: rgba(0,0,0,0.10);
+            letter-spacing: 0.6px; line-height: 1.5;
         }
-        .home-footer .copyright strong { color: rgba(0,0,0,0.22); font-weight: 500; }
+        .home-footer .copyright strong { color: rgba(0,0,0,0.18); font-weight: 500; }
 
         /* ===== 模块视图 ===== */
         .module-view {
@@ -245,38 +256,38 @@
 
         .module-header {
             flex-shrink: 0;
-            padding: 14px 16px 12px;
+            padding: 10px 14px 10px;
             background: rgba(255,255,255,0.30);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,0.20);
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 10px;
             position: sticky; top: 0; z-index: 10;
-            min-height: 60px;
+            min-height: 50px;
             flex-wrap: wrap;
         }
         .module-header .back-btn {
             display: flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 34px; height: 34px; border-radius: 50%;
             border: 1px solid rgba(0,0,0,0.04);
             background: rgba(255,255,255,0.30);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            font-size: 20px; color: #555;
+            font-size: 18px; color: #555;
             cursor: pointer; transition: all 0.2s;
             flex-shrink: 0; font-weight: 300; line-height: 1;
             -webkit-tap-highlight-color: transparent;
         }
         .module-header .back-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.50); }
         .module-header .title {
-            font-size: 18px; font-weight: 600; color: #1c2e2a;
+            font-size: 16px; font-weight: 600; color: #1c2e2a;
             flex: 0 1 auto; letter-spacing: -0.2px;
         }
         .module-header .sub {
-            font-size: 12px; color: rgba(0,0,0,0.25);
-            letter-spacing: 0.5px; flex-shrink: 0;
+            font-size: 11px; color: rgba(0,0,0,0.25);
+            letter-spacing: 0.4px; flex-shrink: 0;
         }
         .module-header .breadcrumb {
-            font-size: 12px; color: rgba(0,0,0,0.25);
-            flex: 1; min-width: 60px;
+            font-size: 11px; color: rgba(0,0,0,0.25);
+            flex: 1; min-width: 40px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .module-header .breadcrumb span { cursor: pointer; transition: color 0.2s; }
@@ -286,7 +297,7 @@
 
         .module-scroll {
             flex: 1; overflow-y: auto;
-            padding: 16px 20px 20px;
+            padding: 12px 14px 16px;
             -webkit-overflow-scrolling: touch;
         }
         .module-scroll::-webkit-scrollbar { width: 3px; }
@@ -295,149 +306,179 @@
         /* ===== 列表项 ===== */
         .list-item {
             background: rgba(255,255,255,0.30);
-            border-radius: 16px; padding: 14px 18px;
+            border-radius: 14px; padding: 12px 16px;
             border: 1px solid rgba(255,255,255,0.15);
             cursor: pointer; transition: all 0.2s;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
             backdrop-filter: blur(4px);
         }
         .list-item:active { transform: scale(0.97); background: rgba(255,255,255,0.50); }
-        .list-item .left .title { font-weight: 500; color: #1c2e2a; font-size: 15px; }
-        .list-item .left .sub { font-size: 12px; color: rgba(0,0,0,0.30); }
-        .list-item .arrow { color: rgba(0,0,0,0.12); font-size: 18px; }
-        .list-item .tag {
-            font-size: 11px; color: #3a7a78;
-            background: rgba(127,193,197,0.06);
-            padding: 2px 10px; border-radius: 20px;
-        }
+        .list-item .left .title { font-weight: 500; color: #1c2e2a; font-size: 14px; }
+        .list-item .left .sub { font-size: 11px; color: rgba(0,0,0,0.30); }
+        .list-item .arrow { color: rgba(0,0,0,0.12); font-size: 16px; }
 
         /* ===== 网格卡片 ===== */
         .grid-cards {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
-            margin-top: 8px;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+            margin-top: 6px;
         }
         .grid-card {
             background: rgba(255,255,255,0.30);
-            border-radius: 16px; padding: 18px 14px;
+            border-radius: 14px; padding: 14px 10px;
             border: 1px solid rgba(255,255,255,0.10);
             cursor: pointer; transition: all 0.2s;
             text-align: center; backdrop-filter: blur(4px);
         }
         .grid-card:active { transform: scale(0.95); background: rgba(255,255,255,0.50); }
-        .grid-card .num { font-size: 22px; font-weight: 700; color: #3a7a78; display: block; line-height: 1.2; }
-        .grid-card .name { font-size: 14px; font-weight: 500; color: #1c2e2a; margin-top: 4px; }
-        .grid-card .sub { font-size: 11px; color: rgba(0,0,0,0.25); margin-top: 2px; }
+        .grid-card .num { font-size: 18px; font-weight: 700; color: #3a7a78; display: block; line-height: 1.2; }
+        .grid-card .name { font-size: 13px; font-weight: 500; color: #1c2e2a; margin-top: 3px; }
+        .grid-card .sub { font-size: 10px; color: rgba(0,0,0,0.25); margin-top: 1px; }
 
         /* ===== 节点列表 ===== */
         .node-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 12px 16px;
+            border-radius: 12px; padding: 10px 14px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             cursor: pointer; transition: all 0.2s;
         }
         .node-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .node-item .id { font-weight: 700; color: #3a7a78; font-size: 13px; }
-        .node-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
-        .node-item .desc { font-size: 13px; color: rgba(0,0,0,0.40); margin-top: 2px; }
+        .node-item .id { font-weight: 700; color: #3a7a78; font-size: 12px; }
+        .node-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
+        .node-item .desc { font-size: 12px; color: rgba(0,0,0,0.40); margin-top: 1px; }
 
-        /* ===== 品种列表 ===== */
+        /* ===== 品种列表（仅供其他模块使用，第五模块不再使用） ===== */
         .variety-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 12px 16px;
+            border-radius: 12px; padding: 10px 14px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             cursor: pointer; transition: all 0.2s;
             display: flex; justify-content: space-between; align-items: center;
         }
         .variety-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .variety-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
-        .variety-item .latin { font-size: 12px; color: rgba(0,0,0,0.25); font-style: italic; }
+        .variety-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
+        .variety-item .latin { font-size: 11px; color: rgba(0,0,0,0.25); font-style: italic; }
 
         /* ===== 话术列表 ===== */
         .script-item {
             background: rgba(255,255,255,0.25);
-            border-radius: 12px; padding: 14px 16px;
+            border-radius: 12px; padding: 12px 14px;
             border: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             cursor: pointer; transition: all 0.2s;
         }
         .script-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
-        .script-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
-        .script-item .desc { font-size: 13px; color: rgba(0,0,0,0.35); margin-top: 2px; }
+        .script-item .name { font-weight: 500; color: #1c2e2a; font-size: 14px; }
+        .script-item .desc { font-size: 12px; color: rgba(0,0,0,0.35); margin-top: 1px; }
 
         /* ===== iframe 文件视图 ===== */
         .file-view {
             flex: 1; position: relative;
             background: rgba(255,255,255,0.10);
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
-            margin-top: 4px;
-            min-height: 400px;
+            margin-top: 2px;
+            min-height: 300px;
         }
         .file-view iframe {
             width: 100%; height: 100%;
             border: none; display: block;
             background: transparent;
-            min-height: 400px;
+            min-height: 300px;
         }
         .file-view .file-placeholder {
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            height: 100%; min-height: 300px;
+            height: 100%; min-height: 200px;
             color: rgba(0,0,0,0.20);
             font-size: 14px; text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
         }
-        .file-view .file-placeholder .big { font-size: 40px; margin-bottom: 12px; opacity: 0.2; }
+        .file-view .file-placeholder .big { font-size: 32px; margin-bottom: 8px; opacity: 0.2; }
 
         /* ===== 响应式 ===== */
         @media (max-width: 640px) {
-            .grid-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+            .grid-card { padding: 10px 6px; }
+            .grid-card .num { font-size: 16px; }
+            .grid-card .name { font-size: 12px; }
         }
         @media (max-width: 480px) {
-            #homeView { padding: 16px 16px 16px; padding-top: max(16px, env(safe-area-inset-top,16px)); padding-bottom: max(16px, env(safe-area-inset-bottom,16px)); }
-            .top-bar { gap: 14px; margin-bottom: 12px; }
-            .brand-avatar { width: 88px; height: 88px; }
-            .brand-avatar .placeholder { font-size: 34px; }
-            .theme-dots { gap: 8px; padding: 3px 8px; }
-            .theme-dots .dot { width: 14px; height: 14px; }
-            .home-header h1 { font-size: 26px; }
-            .card-grid { gap: 12px; }
-            .card-item { padding: 20px 16px; border-radius: 20px; }
-            .card-item .title { font-size: 16px; }
-            .module-header .title { font-size: 16px; }
-            .module-header .back-btn { width: 36px; height: 36px; font-size: 18px; }
-            .module-header { padding: 10px 12px 10px; min-height: 52px; }
-            .grid-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .module-scroll { padding: 12px 14px 16px; }
-            .grid-card { padding: 14px 10px; }
-            .grid-card .num { font-size: 18px; }
+            #homeView { padding: 10px 12px 10px; padding-top: max(10px, env(safe-area-inset-top,10px)); padding-bottom: max(10px, env(safe-area-inset-bottom,10px)); }
+            .top-bar { gap: 10px; margin-bottom: 6px; }
+            .brand-logo { width: 40px; height: 40px; }
+            .brand-logo .logo-text { font-size: 12px; }
+            .theme-dots { gap: 6px; padding: 2px 6px; }
+            .theme-dots .dot { width: 12px; height: 12px; }
+            .home-header h1 { font-size: 20px; }
+            .home-header .sub { font-size: 12px; }
+            .home-header { margin-bottom: 6px; }
+            .card-grid { gap: 6px; }
+            .card-item { padding: 10px 10px 8px; border-radius: 14px; min-height: 60px; }
+            .card-item .title { font-size: 13px; }
+            .card-item .desc { font-size: 10px; }
+            .card-item .meta { font-size: 9px; padding: 1px 8px; margin-top: 3px; }
+            .card-item .card-number { font-size: 9px; }
+            .home-footer { margin-top: 4px; padding-top: 6px; }
+            .home-footer .copyright { font-size: 9px; }
+            .module-header { padding: 8px 12px 8px; min-height: 44px; }
+            .module-header .title { font-size: 14px; }
+            .module-header .back-btn { width: 30px; height: 30px; font-size: 16px; }
+            .module-scroll { padding: 10px 12px 12px; }
+            .list-item { padding: 10px 12px; margin-bottom: 6px; }
+            .list-item .left .title { font-size: 13px; }
+            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+            .grid-card { padding: 8px 4px; border-radius: 12px; }
+            .grid-card .num { font-size: 14px; }
+            .grid-card .name { font-size: 11px; }
+            .grid-card .sub { font-size: 9px; }
+            .node-item { padding: 8px 12px; }
+            .node-item .name { font-size: 13px; }
+            .variety-item { padding: 8px 12px; }
+            .variety-item .name { font-size: 13px; }
+            .script-item { padding: 10px 12px; }
+            .script-item .name { font-size: 13px; }
         }
         @media (max-width: 380px) {
-            .home-header h1 { font-size: 22px; }
-            .card-grid { gap: 8px; }
-            .card-item { padding: 16px 12px; border-radius: 16px; }
-            .card-item .title { font-size: 14px; }
-            .card-item .desc { font-size: 12px; }
-            .brand-avatar { width: 72px; height: 72px; }
-            .brand-avatar .placeholder { font-size: 28px; }
-            .theme-dots .dot { width: 12px; height: 12px; }
-            .grid-cards { grid-template-columns: 1fr; }
+            .home-header h1 { font-size: 18px; }
+            .card-item { padding: 8px 8px 6px; min-height: 52px; }
+            .card-item .title { font-size: 12px; }
+            .card-item .desc { font-size: 9px; }
+            .card-item .meta { font-size: 8px; padding: 1px 6px; }
+            .brand-logo { width: 36px; height: 36px; }
+            .brand-logo .logo-text { font-size: 10px; }
+            .grid-cards { grid-template-columns: 1fr 1fr; }
         }
         @media (min-width: 800px) {
-            #homeView { padding: 40px 80px 40px; max-width: 900px; margin: 0 auto; }
-            .top-bar { margin-bottom: 24px; }
-            .brand-avatar { width: 120px; height: 120px; }
-            .brand-avatar .placeholder { font-size: 48px; }
-            .card-grid { gap: 24px; }
-            .card-item { padding: 36px 32px; border-radius: 28px; }
-            .card-item .title { font-size: 20px; }
-            .home-header h1 { font-size: 42px; }
-            .theme-dots .dot { width: 18px; height: 18px; }
-            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-            .module-scroll { padding: 20px 32px 28px; }
+            #homeView { padding: 24px 60px 24px; max-width: 780px; margin: 0 auto; }
+            .card-grid { gap: 12px; }
+            .card-item { padding: 20px 22px; border-radius: 22px; min-height: 90px; }
+            .card-item .title { font-size: 18px; }
+            .card-item .desc { font-size: 13px; }
+            .home-header h1 { font-size: 32px; }
+            .brand-logo { width: 64px; height: 64px; }
+            .brand-logo .logo-text { font-size: 18px; }
+            .grid-cards { gap: 12px; }
+            .grid-card { padding: 18px 14px; }
+            .grid-card .num { font-size: 22px; }
+        }
+        @media (max-height: 650px) {
+            .home-header h1 { font-size: 18px; }
+            .home-header .sub { font-size: 11px; }
+            .home-header { margin-bottom: 4px; }
+            .card-item { padding: 8px 10px 6px; min-height: 50px; }
+            .card-item .title { font-size: 12px; }
+            .card-item .desc { font-size: 9px; }
+            .card-item .meta { font-size: 8px; padding: 1px 6px; margin-top: 2px; }
+            .card-item .card-number { font-size: 8px; margin-bottom: 1px; }
+            .card-grid { gap: 5px; }
+            .top-bar { margin-bottom: 4px; }
+            .brand-logo { width: 36px; height: 36px; }
+            .brand-logo .logo-text { font-size: 10px; }
+            .home-footer { margin-top: 2px; padding-top: 4px; }
+            .home-footer .copyright { font-size: 8px; }
         }
     </style>
 </head>
@@ -455,10 +496,9 @@
         <!-- ===== 首页 ===== -->
         <div id="homeView">
             <div class="top-bar">
-                <div class="brand-avatar" id="brandAvatar" title="点击上传品牌图片">
-                    <span class="placeholder">📷</span>
+                <div class="brand-logo" id="brandLogo">
+                    <span class="logo-text">山秋</span>
                     <img id="brandImage" src="" alt="品牌图标" />
-                    <input type="file" id="imageUpload" accept="image/*" />
                 </div>
                 <div class="theme-dots">
                     <div class="dot d1 active" data-theme="mint"></div>
@@ -502,19 +542,18 @@
                     <div class="desc">六大话术体系 · 顾问式沟通</div>
                     <span class="meta">6 大模块</span>
                 </div>
-                <div class="card-item" data-module="part5" style="grid-column:1/-1;">
+                <div class="card-item full-width" data-module="part5">
                     <div class="glow"></div>
                     <div class="card-number">05</div>
                     <div class="title">主播品种速查手册</div>
                     <div class="desc">29个品种 · 完整档案</div>
-                    <span class="meta">29 个品种</span>
+                    <span class="meta">直接进入手册</span>
                 </div>
             </div>
 
             <div class="home-footer">
                 <div class="copyright">
-                    <strong>© 都江堰市山秋园艺苗圃</strong><br />
-                    山秋枫树园 · 大规格品种枫树专业供应商
+                    <strong>© 都江堰市山秋园艺苗圃</strong> · 大规格品种枫树专业供应商
                 </div>
             </div>
         </div>
@@ -554,31 +593,18 @@
         setTheme(savedTheme);
 
         // ================================================================
-        //  品牌图片上传
+        //  品牌标识：静态占位
         // ================================================================
-        const avatar = document.getElementById('brandAvatar');
-        const fileInput = document.getElementById('imageUpload');
+        const brandLogo = document.getElementById('brandLogo');
         const brandImage = document.getElementById('brandImage');
-        const savedImage = localStorage.getItem('brand-image');
-        if (savedImage) { brandImage.src = savedImage;
-            avatar.classList.add('has-image'); }
-        avatar.addEventListener('click', () => { fileInput.click(); });
-        fileInput.addEventListener('change', function(e) {
-            const file = this.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const data = ev.target.result;
-                brandImage.src = data;
-                avatar.classList.add('has-image');
-                localStorage.setItem('brand-image', data);
-            };
-            reader.readAsDataURL(file);
-            this.value = '';
-        });
+        const savedBrandImage = localStorage.getItem('brand-image');
+        if (savedBrandImage) {
+            brandImage.src = savedBrandImage;
+            brandLogo.classList.add('has-image');
+        }
 
         // ================================================================
-        //  数据定义（含实际文件映射 + 更新后的课程名称）
+        //  数据定义
         // ================================================================
 
         // -------- Part1: 课程 (7门) --------
@@ -651,39 +677,7 @@
             { id: 'sc6', name: '放价与收尾话术', desc: '价值确认·从容收尾·美是唯一的理由', file: 'part4_6.html' },
         ];
 
-        // -------- Part5: 品种 (29个) --------
-        // 品种数据保留在主框架中，用于列表渲染，详情则加载 part5.html
-        const VARIETIES = [
-            { id: 'v1', name: '奥马', latin: 'Acer palmatum \'Ohma\'' },
-            { id: 'v2', name: '春雨', latin: 'Acer palmatum \'Shun\'u\'' },
-            { id: 'v3', name: '东林黄枫/热力棒', latin: 'Acer oliverianum \'Hot Rod\'' },
-            { id: 'v4', name: '桂', latin: 'Acer palmatum \'Katsura\'' },
-            { id: 'v5', name: '红千鸟', latin: 'Acer palmatum \'Beni Chidori\'' },
-            { id: 'v6', name: '红司', latin: 'Acer palmatum \'Beni Tsukasa\'' },
-            { id: 'v7', name: '红乙女', latin: 'Acer palmatum \'Beni Otome\'' },
-            { id: 'v8', name: '蝴蝶', latin: 'Acer palmatum \'Kochō nishiki\'' },
-            { id: 'v9', name: '幻彩', latin: 'Acer palmatum \'Orihime nishiki\'' },
-            { id: 'v10', name: '荒皮红叶', latin: 'Acer palmatum \'Arahagah\'' },
-            { id: 'v11', name: '荒野', latin: 'Acer palmatum \'Kōya\'' },
-            { id: 'v12', name: '黄八丈', latin: 'Acer palmatum \'Kihachijō\'' },
-            { id: 'v13', name: '美岛绿', latin: 'Acer palmatum \'Midori Shima\'' },
-            { id: 'v14', name: '魔幻珊瑚', latin: 'Acer palmatum \'Maho Coral\'' },
-            { id: 'v15', name: '牛爪（丑之爪）', latin: 'Acer palmatum \'Ushi no Tsume\'' },
-            { id: 'v16', name: '女神', latin: 'Acer palmatum \'Megami\'' },
-            { id: 'v17', name: '日本日出', latin: 'Acer palmatum \'Nippon Sunrise\'' },
-            { id: 'v18', name: '三河锦', latin: 'Acer palmatum \'Mikawa nishiki\'' },
-            { id: 'v19', name: '山锦', latin: 'Acer palmatum \'Yama nishiki\'' },
-            { id: 'v20', name: '威尔逊粉矮人', latin: 'Acer palmatum \'Wilson\'s Pink Dwarf\'' },
-            { id: 'v21', name: '希拉蕊', latin: 'Acer palmatum \'Hilary\'' },
-            { id: 'v22', name: '旭鹤', latin: 'Acer palmatum \'Asahi Tsuru\'' },
-            { id: 'v23', name: '血汐', latin: 'Acer palmatum \'Chi Shio\'' },
-            { id: 'v24', name: '乙女樱', latin: 'Acer palmatum \'Otome Sakura\'' },
-            { id: 'v25', name: '刈羽红', latin: 'Acer palmatum \'Kariha Red\'' },
-            { id: 'v26', name: '印花布', latin: 'Acer palmatum \'Nishiki\'' },
-            { id: 'v27', name: '羽前锦', latin: 'Acer palmatum \'Uzen nishiki\'' },
-            { id: 'v28', name: '曙', latin: 'Acer palmatum \'Akebono\'' },
-            { id: 'v29', name: '织姬', latin: 'Acer palmatum \'Orihime\'' },
-        ];
+        // -------- Part5: 品种 (仅用于列表展示，实际加载 part5.html) --------
         const VARIETIES_FILE = 'part5.html';
 
         // ================================================================
@@ -724,10 +718,14 @@
             return html;
         }
 
+        // 核心：逐级后退函数
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
             path = path.slice(0, level);
+            // 重新渲染当前模块视图
             renderCurrentModule();
+            // 更新面包屑显示
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
         }
 
         function navigateBack() {
@@ -748,7 +746,7 @@
             else if (mod === 'part2') renderPart2();
             else if (mod === 'part3') renderPart3();
             else if (mod === 'part4') renderPart4();
-            else if (mod === 'part5') renderPart5();
+            else if (mod === 'part5') renderPart5Direct();
         }
 
         // -------- 通用：打开文件（iframe）并隐藏内页返回按钮 --------
@@ -766,12 +764,11 @@
             `;
             const iframe = document.getElementById('fileIframe');
             if (iframe) {
-                // 加载完成后尝试隐藏内页的返回按钮
                 iframe.onload = function() {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 隐藏所有可能的返回按钮
+                            // 隐藏内部返回按钮
                             const selectors = [
                                 '.back-btn', '[data-back]', '.module-header .back-btn',
                                 '.back-link', '.top-mini .back-link', '.detail-back',
@@ -784,7 +781,6 @@
                                     el.style.pointerEvents = 'none';
                                 });
                             });
-                            // 也尝试隐藏带有返回图标的元素（如 ‹ 或 ← 的按钮）
                             const allButtons = doc.querySelectorAll('button, a');
                             allButtons.forEach(btn => {
                                 const txt = btn.textContent.trim();
@@ -793,17 +789,13 @@
                                     btn.style.pointerEvents = 'none';
                                 }
                             });
-                            // 隐藏带有 .back 类的元素
                             const backEls = doc.querySelectorAll('.back, .back-btn, .back-link, .nav-back');
                             backEls.forEach(el => {
                                 el.style.display = 'none';
                                 el.style.pointerEvents = 'none';
                             });
                         }
-                    } catch(e) {
-                        // 跨域忽略
-                        console.log('无法访问iframe内容（跨域或加载中）:', e);
-                    }
+                    } catch(e) {}
                 };
                 iframe.onerror = function() {
                     document.getElementById('fileViewContainer').innerHTML = `
@@ -814,7 +806,6 @@
                         </div>
                     `;
                 };
-                // 额外延迟处理（部分页面可能动态生成返回按钮）
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -848,7 +839,7 @@
                 moduleTitle.textContent = '日本枫树入门课程';
                 moduleSub.textContent = '7门课程';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
+                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
                 html += `<div class="list-view">`;
                 COURSES.forEach(c => {
                     html += `
@@ -877,7 +868,7 @@
                 moduleSub.textContent = '树形 · 叶色 · 叶形';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 moduleScroll.innerHTML = `
-                    <div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">选择分类</div>
+                    <div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">选择分类</div>
                     <div class="list-view">
                         <div class="list-item" onclick="openPart2A()">
                             <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
@@ -901,7 +892,7 @@
             moduleTitle.textContent = '树形分类';
             moduleSub.textContent = '12种树形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
+            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
             html += `<div class="grid-cards">`;
             TREE_TYPES.forEach(t => {
                 html += `
@@ -927,7 +918,7 @@
             moduleTitle.textContent = '叶色分类';
             moduleSub.textContent = '7个色系';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
+            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
             html += `<div class="grid-cards">`;
             COLOR_SERIES.forEach(c => {
                 html += `
@@ -952,7 +943,7 @@
             moduleTitle.textContent = '叶形分类';
             moduleSub.textContent = '6种叶形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
+            let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
             html += `<div class="grid-cards">`;
             LEAF_TYPES.forEach(l => {
                 html += `
@@ -979,12 +970,12 @@
                 moduleTitle.textContent = '场景节点速查手册';
                 moduleSub.textContent = '八大场景';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">79个节点</div>`;
+                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">79个节点</div>`;
                 html += `<div class="grid-cards">`;
                 SCENES.forEach(s => {
                     html += `
                         <div class="grid-card" onclick="openScene('${s.id}')">
-                            <span class="num" style="font-size:16px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
+                            <span class="num" style="font-size:15px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
                             <div class="name">${s.name}</div>
                             <div class="sub">${s.desc}</div>
                         </div>
@@ -1008,7 +999,7 @@
                 moduleTitle.textContent = '全体系话术手册';
                 moduleSub.textContent = '六大话术体系';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
+                let html = `<div style="margin-bottom:8px;font-size:12px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
                 html += `<div class="script-list">`;
                 SCRIPT_TYPES.forEach(s => {
                     html += `
@@ -1029,110 +1020,95 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种（列表在主框架，详情加载part5.html） --------
-        function renderPart5() {
+        // -------- Part5: 品种速查 —— 直接加载 part5.html，并监听其内部导航消息 --------
+        function renderPart5Direct() {
             if (path.length === 0) {
                 path = ['主播品种速查手册'];
                 moduleTitle.textContent = '主播品种速查手册';
-                moduleSub.textContent = '29个品种';
+                moduleSub.textContent = '29个品种 · 完整档案';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">点击品种查看完整档案</div>`;
-                html += `<div class="variety-list">`;
-                VARIETIES.forEach(v => {
-                    html += `
-                        <div class="variety-item" onclick="openVariety('${v.id}')">
-                            <span class="name">${v.name}</span>
-                            <span class="latin">${v.latin}</span>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-                moduleScroll.innerHTML = html;
-            } else {
-                // 如果路径大于0，说明用户点击了品种，由 openVariety 处理
-                // 但 openVariety 会直接加载 part5.html，不会走这个分支
-            }
-        }
 
-        function openVariety(vid) {
-            // 直接加载 part5.html，让其在内部处理品种详情
-            // 同时传递品种名称作为面包屑
-            const variety = VARIETIES.find(v => v.id === vid);
-            if (!variety) { alert('品种不存在'); return; }
-            // 进入品种详情，加载 part5.html
-            // 注意：这里不push品种名称，因为part5.html内部会显示详情
-            // 但我们希望面包屑显示品种名称
-            path.push(variety.name);
-            moduleTitle.textContent = variety.name;
-            moduleSub.textContent = '品种详情';
-            moduleBreadcrumb.innerHTML = renderBreadcrumb();
-
-            // 加载 part5.html
-            const fileUrl = VARIETIES_FILE;
-            moduleScroll.innerHTML = `
-                <div class="file-view" id="fileViewContainer">
-                    <iframe id="fileIframe" src="${fileUrl}" title="${variety.name}"></iframe>
-                </div>
-            `;
-            const iframe = document.getElementById('fileIframe');
-            if (iframe) {
-                iframe.onload = function() {
-                    try {
-                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                        if (doc) {
-                            // 隐藏返回按钮
-                            const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link', '.detail-back'];
-                            selectors.forEach(sel => {
-                                const els = doc.querySelectorAll(sel);
-                                els.forEach(el => {
-                                    el.style.display = 'none';
-                                    el.style.pointerEvents = 'none';
+                // 直接加载 part5.html
+                const fileUrl = VARIETIES_FILE;
+                moduleScroll.innerHTML = `
+                    <div class="file-view" id="fileViewContainer">
+                        <iframe id="fileIframe" src="${fileUrl}" title="品种速查手册"></iframe>
+                    </div>
+                `;
+                const iframe = document.getElementById('fileIframe');
+                if (iframe) {
+                    iframe.onload = function() {
+                        // 隐藏内部返回按钮
+                        try {
+                            const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                            if (doc) {
+                                const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link', '.detail-back'];
+                                selectors.forEach(sel => {
+                                    const els = doc.querySelectorAll(sel);
+                                    els.forEach(el => {
+                                        el.style.display = 'none';
+                                        el.style.pointerEvents = 'none';
+                                    });
                                 });
-                            });
-                            const allBtns = doc.querySelectorAll('button, a');
-                            allBtns.forEach(btn => {
-                                const txt = btn.textContent.trim();
-                                if (txt === '‹' || txt === '←' || txt === '返回') {
-                                    btn.style.display = 'none';
-                                    btn.style.pointerEvents = 'none';
-                                }
-                            });
-                            // 尝试在part5.html中自动跳转到对应的品种
-                            // 由于无法直接控制part5.html的内部逻辑，我们通过URL hash传递品种ID
-                            // 但更可靠的方式是：在part5.html中通过postMessage监听
-                            // 或者我们可以直接修改iframe的src添加hash
-                            // 这里我们尝试通过hash传递
-                            const iframeWin = iframe.contentWindow;
-                            if (iframeWin) {
-                                // 尝试发送消息给part5.html
-                                iframeWin.postMessage({ type: 'viewVariety', id: vid }, '*');
+                                const allBtns = doc.querySelectorAll('button, a');
+                                allBtns.forEach(btn => {
+                                    const txt = btn.textContent.trim();
+                                    if (txt === '‹' || txt === '←' || txt === '返回') {
+                                        btn.style.display = 'none';
+                                        btn.style.pointerEvents = 'none';
+                                    }
+                                });
                             }
-                        }
-                    } catch(e) {
-                        console.log('无法访问iframe内容:', e);
-                    }
-                };
-                iframe.onerror = function() {
-                    document.getElementById('fileViewContainer').innerHTML = `
-                        <div class="file-placeholder">
-                            <div class="big">📄</div>
-                            <div>文件加载失败</div>
-                            <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${fileUrl} 存在于同一目录下</div>
-                        </div>
-                    `;
-                };
-                // 重新加载iframe以触发onload
-                // 但为了确保postMessage能发送，我们延迟一下
-                setTimeout(() => {
-                    try {
-                        const iframeWin = iframe.contentWindow;
-                        if (iframeWin) {
-                            iframeWin.postMessage({ type: 'viewVariety', id: vid }, '*');
-                        }
-                    } catch(e) {}
-                }, 1000);
+                        } catch(e) {}
+                    };
+                    iframe.onerror = function() {
+                        document.getElementById('fileViewContainer').innerHTML = `
+                            <div class="file-placeholder">
+                                <div class="big">📄</div>
+                                <div>文件加载失败</div>
+                                <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${fileUrl} 存在于同一目录下</div>
+                            </div>
+                        `;
+                    };
+                    // 延迟再试一次隐藏
+                    setTimeout(() => {
+                        try {
+                            const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                            if (doc) {
+                                const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link', '.detail-back'];
+                                selectors.forEach(sel => {
+                                    const els = doc.querySelectorAll(sel);
+                                    els.forEach(el => {
+                                        el.style.display = 'none';
+                                        el.style.pointerEvents = 'none';
+                                    });
+                                });
+                            }
+                        } catch(e) {}
+                    }, 2000);
+                }
             }
         }
+
+        // ================================================================
+        //  监听来自 iframe 的消息（用于第5模块内部导航同步）
+        // ================================================================
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data && data.type === 'navigate') {
+                // 更新主框架的路径（由 part5.html 内部发出）
+                // 期望 data.path 为完整路径数组，例如 ['主播品种速查手册', '奥马']
+                if (Array.isArray(data.path) && data.path.length > 0) {
+                    path = data.path;
+                    // 更新标题与子标题
+                    const last = path[path.length - 1];
+                    moduleTitle.textContent = last;
+                    moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                    // 更新面包屑
+                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                }
+            }
+        });
 
         // ================================================================
         //  事件绑定
@@ -1156,12 +1132,6 @@
             }
         });
 
-        // 监听来自iframe的postMessage（用于品种详情跳转）
-        window.addEventListener('message', function(event) {
-            // 可以处理来自part5.html的消息
-            console.log('收到iframe消息:', event.data);
-        });
-
         // 暴露函数到全局
         window.openCourse = openCourse;
         window.openTreeDetail = openTreeDetail;
@@ -1169,17 +1139,17 @@
         window.openLeafDetail = openLeafDetail;
         window.openScene = openScene;
         window.openScript = openScript;
-        window.openVariety = openVariety;
         window.openPart2A = openPart2A;
         window.openPart2B = openPart2B;
         window.openPart2C = openPart2C;
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (逐级后退完整版)');
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
         console.log('📁 请确保所有 part*.html 文件与 index.html 在同一目录下');
-        console.log('💡 内页返回按钮已自动隐藏，使用左上角返回按钮逐级回退');
+        console.log('💡 第5模块需在 part5.html 中增加 postMessage 通信以实现逐级后退，详见注释');
+        console.log('📝 part5.html 修改说明：在进入品种详情时调用 window.parent.postMessage({ type: "navigate", path: ["主播品种速查手册", "品种名"] }, "*"); 返回列表时调用 window.parent.postMessage({ type: "navigate", path: ["主播品种速查手册"] }, "*");');
     </script>
 
 </body>

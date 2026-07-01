@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>山秋枫树园 · 庭院美学顾问赋能平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== 全局重置 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100%; height: -webkit-fill-available;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .theme-mint .bg-layer { background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%); }
+        .theme-spring .bg-layer { background: linear-gradient(145deg, #d8e8e0 0%, #e8f2ec 100%); }
+        .theme-misty .bg-layer { background: linear-gradient(145deg, #d5e2e8 0%, #e6eef2 100%); }
+        .bg-blur-circles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .bg-blur-circles .circle {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            transition: background 0.8s ease, transform 0.8s ease;
+        }
+        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; }
+        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; }
+        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); }
+        .theme-mint .bg-blur-circles .c1 { background: rgba(127,193,197,0.25); }
+        .theme-mint .bg-blur-circles .c2 { background: rgba(95,168,166,0.20); }
+        .theme-mint .bg-blur-circles .c3 { background: rgba(167,212,210,0.15); }
+        .theme-spring .bg-blur-circles .c1 { background: rgba(107,170,158,0.25); }
+        .theme-spring .bg-blur-circles .c2 { background: rgba(80,150,138,0.20); }
+        .theme-spring .bg-blur-circles .c3 { background: rgba(150,200,188,0.15); }
+        .theme-misty .bg-blur-circles .c1 { background: rgba(110,155,181,0.25); }
+        .theme-misty .bg-blur-circles .c2 { background: rgba(90,135,161,0.20); }
+        .theme-misty .bg-blur-circles .c3 { background: rgba(160,190,210,0.15); }
+
+        #app {
+            position: relative; width: 100%; height: 100%; height: -webkit-fill-available;
+            z-index: 1; overflow: hidden;
+        }
+
+        /* ===== 首页视图 ===== */
+        #homeView {
+            width: 100%; height: 100%; height: -webkit-fill-available;
+            overflow-y: auto;
+            padding: 20px 20px 20px;
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+            padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+            display: flex; flex-direction: column;
+            position: relative; z-index: 2;
+            -webkit-overflow-scrolling: touch;
+        }
+        #homeView::-webkit-scrollbar { width: 0; background: transparent; }
+
+        .top-bar {
+            display: flex; align-items: center; justify-content: flex-end;
+            gap: 18px; margin-bottom: 16px; padding-top: 4px;
+            flex-shrink: 0; position: relative; z-index: 3;
+        }
+        .brand-avatar {
+            position: relative; width: 104px; height: 104px; border-radius: 50%;
+            overflow: hidden; border: 2px solid rgba(255,255,255,0.40);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            cursor: pointer; flex-shrink: 0;
+            background: rgba(255,255,255,0.20);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .brand-avatar:active { transform: scale(0.94); }
+        .brand-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .brand-avatar .placeholder { font-size: 42px; color: rgba(0,0,0,0.08); font-weight: 300; user-select: none; pointer-events: none; }
+        .brand-avatar.has-image .placeholder { display: none; }
+        .brand-avatar.has-image img { display: block; }
+        .brand-avatar input[type="file"] { display: none; }
+        .theme-dots {
+            display: flex; gap: 10px; flex-shrink: 0;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.20);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
+        }
+        .theme-dots .dot {
+            width: 16px; height: 16px; border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.4);
+            cursor: pointer; transition: all 0.3s ease;
+            position: relative; -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+        .theme-dots .dot:active { transform: scale(0.85); }
+        .theme-dots .dot.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+            transform: scale(1.12);
+        }
+        .theme-dots .dot.d1 { background: #7fc1c5; }
+        .theme-dots .dot.d2 { background: #6baa9e; }
+        .theme-dots .dot.d3 { background: #6e9bb5; }
+
+        .home-header { margin-bottom: 24px; flex-shrink: 0; }
+        .home-header .brand {
+            font-size: 13px; font-weight: 500; letter-spacing: 2.5px;
+            text-transform: uppercase; transition: color 0.6s ease;
+            color: rgba(0,0,0,0.20);
+        }
+        .home-header h1 {
+            font-size: 34px; font-weight: 700; letter-spacing: -0.5px;
+            line-height: 1.15; margin-top: 4px;
+            background: linear-gradient(90deg, #4a8c8a, #7fc1c5, #4a8c8a, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+        }
+        @keyframes shimmerTitle {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .theme-mint .home-header h1 {
+            background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
+            background-size: 300% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+        }
+        .home-header .sub {
+            font-size: 15px; color: rgba(0,0,0,0.30);
+            margin-top: 6px; letter-spacing: 0.3px;
+            transition: color 0.6s ease;
+        }
+        .home-header .sub strong { color: rgba(0,0,0,0.45); font-weight: 500; }
+
+        /* ===== 卡片网格（无图标） ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            flex: 1;
+            align-content: start;
+            margin-bottom: 12px;
+        }
+        .card-item {
+            padding: 28px 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,0.40);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+            transition: background 0.4s ease, transform 0.3s ease, border-color 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .card-item:active { transform: scale(0.96); background: rgba(255,255,255,0.55); }
+        .card-item .glow {
+            position: absolute; top: -1px; left: 10%; right: 10%;
+            height: 1px; opacity: 0; transition: opacity 0.4s;
+        }
+        .card-item:hover .glow { opacity: 1; }
+        .theme-mint .card-item .glow { background: linear-gradient(90deg, transparent, rgba(127,193,197,0.30), transparent); }
+        .card-item .title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c2e2a;
+            letter-spacing: 0.2px;
+            margin-bottom: 2px;
+        }
+        .card-item .desc {
+            font-size: 13px;
+            color: rgba(0,0,0,0.35);
+            line-height: 1.4;
+            margin-top: 2px;
+        }
+        .card-item .meta {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+            transition: background 0.4s ease, color 0.4s ease;
+            align-self: flex-start;
+        }
+        .theme-mint .card-item .meta { color: #5fa8a6; background: rgba(95,168,166,0.06); }
+        .card-item .card-number {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(0,0,0,0.10);
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .home-footer {
+            margin-top: 16px; padding-top: 12px;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            text-align: center; flex-shrink: 0;
+        }
+        .home-footer .copyright {
+            font-size: 11px; color: rgba(0,0,0,0.12);
+            letter-spacing: 0.8px; line-height: 1.6;
+        }
+        .home-footer .copyright strong { color: rgba(0,0,0,0.22); font-weight: 500; }
+
+        /* ===== 模块视图 ===== */
+        .module-view {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; height: -webkit-fill-available;
+            display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateX(20px);
+            will-change: transform, opacity;
+            z-index: 20;
+            background: rgba(255,255,255,0.50);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            padding-top: env(safe-area-inset-top, 0);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        .module-view.active {
+            opacity: 1; pointer-events: auto; transform: translateX(0);
+        }
+
+        .module-header {
+            flex-shrink: 0;
+            padding: 14px 16px 12px;
+            background: rgba(255,255,255,0.30);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.20);
+            display: flex; align-items: center; gap: 12px;
+            position: sticky; top: 0; z-index: 10;
+            min-height: 60px;
+            flex-wrap: wrap;
+        }
+        .module-header .back-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.04);
+            background: rgba(255,255,255,0.30);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            font-size: 20px; color: #555;
+            cursor: pointer; transition: all 0.2s;
+            flex-shrink: 0; font-weight: 300; line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .module-header .back-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.50); }
+        .module-header .title {
+            font-size: 18px; font-weight: 600; color: #1c2e2a;
+            flex: 0 1 auto; letter-spacing: -0.2px;
+        }
+        .module-header .sub {
+            font-size: 12px; color: rgba(0,0,0,0.25);
+            letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .module-header .breadcrumb {
+            font-size: 12px; color: rgba(0,0,0,0.25);
+            flex: 1; min-width: 60px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .module-header .breadcrumb span { cursor: pointer; transition: color 0.2s; }
+        .module-header .breadcrumb span:hover { color: #3a7a78; }
+        .module-header .breadcrumb .sep { color: rgba(0,0,0,0.08); cursor: default; }
+        .module-header .breadcrumb .current { color: #3a7a78; font-weight: 500; cursor: default; }
+
+        .module-scroll {
+            flex: 1; overflow-y: auto;
+            padding: 16px 20px 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .module-scroll::-webkit-scrollbar { width: 3px; }
+        .module-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 10px; }
+
+        /* ===== 列表项 ===== */
+        .list-item {
+            background: rgba(255,255,255,0.30);
+            border-radius: 16px; padding: 14px 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer; transition: all 0.2s;
+            margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .list-item:active { transform: scale(0.97); background: rgba(255,255,255,0.50); }
+        .list-item .left .title { font-weight: 500; color: #1c2e2a; font-size: 15px; }
+        .list-item .left .sub { font-size: 12px; color: rgba(0,0,0,0.30); }
+        .list-item .arrow { color: rgba(0,0,0,0.12); font-size: 18px; }
+        .list-item .tag {
+            font-size: 11px; color: #3a7a78;
+            background: rgba(127,193,197,0.06);
+            padding: 2px 10px; border-radius: 20px;
+        }
+
+        /* ===== 网格卡片 ===== */
+        .grid-cards {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+            margin-top: 8px;
+        }
+        .grid-card {
+            background: rgba(255,255,255,0.30);
+            border-radius: 16px; padding: 18px 14px;
+            border: 1px solid rgba(255,255,255,0.10);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; backdrop-filter: blur(4px);
+        }
+        .grid-card:active { transform: scale(0.95); background: rgba(255,255,255,0.50); }
+        .grid-card .num { font-size: 22px; font-weight: 700; color: #3a7a78; display: block; line-height: 1.2; }
+        .grid-card .name { font-size: 14px; font-weight: 500; color: #1c2e2a; margin-top: 4px; }
+        .grid-card .sub { font-size: 11px; color: rgba(0,0,0,0.25); margin-top: 2px; }
+
+        /* ===== 节点列表 ===== */
+        .node-item {
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px; padding: 12px 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 8px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .node-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .node-item .id { font-weight: 700; color: #3a7a78; font-size: 13px; }
+        .node-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
+        .node-item .desc { font-size: 13px; color: rgba(0,0,0,0.40); margin-top: 2px; }
+
+        /* ===== 品种列表 ===== */
+        .variety-item {
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px; padding: 12px 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 8px;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .variety-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .variety-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
+        .variety-item .latin { font-size: 12px; color: rgba(0,0,0,0.25); font-style: italic; }
+
+        /* ===== 话术列表 ===== */
+        .script-item {
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px; padding: 14px 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 8px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .script-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .script-item .name { font-weight: 500; color: #1c2e2a; font-size: 15px; }
+        .script-item .desc { font-size: 13px; color: rgba(0,0,0,0.35); margin-top: 2px; }
+
+        /* ===== iframe 文件视图 ===== */
+        .file-view {
+            flex: 1; position: relative;
+            background: rgba(255,255,255,0.10);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 4px;
+            min-height: 400px;
+        }
+        .file-view iframe {
+            width: 100%; height: 100%;
+            border: none; display: block;
+            background: transparent;
+            min-height: 400px;
+        }
+        .file-view .file-placeholder {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100%; min-height: 300px;
+            color: rgba(0,0,0,0.20);
+            font-size: 14px; text-align: center;
+            padding: 40px 20px;
+        }
+        .file-view .file-placeholder .big { font-size: 40px; margin-bottom: 12px; opacity: 0.2; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            .grid-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+        }
+        @media (max-width: 480px) {
+            #homeView { padding: 16px 16px 16px; padding-top: max(16px, env(safe-area-inset-top,16px)); padding-bottom: max(16px, env(safe-area-inset-bottom,16px)); }
+            .top-bar { gap: 14px; margin-bottom: 12px; }
+            .brand-avatar { width: 88px; height: 88px; }
+            .brand-avatar .placeholder { font-size: 34px; }
+            .theme-dots { gap: 8px; padding: 3px 8px; }
+            .theme-dots .dot { width: 14px; height: 14px; }
+            .home-header h1 { font-size: 26px; }
+            .card-grid { gap: 12px; }
+            .card-item { padding: 20px 16px; border-radius: 20px; }
+            .card-item .title { font-size: 16px; }
+            .module-header .title { font-size: 16px; }
+            .module-header .back-btn { width: 36px; height: 36px; font-size: 18px; }
+            .module-header { padding: 10px 12px 10px; min-height: 52px; }
+            .grid-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .module-scroll { padding: 12px 14px 16px; }
+            .grid-card { padding: 14px 10px; }
+            .grid-card .num { font-size: 18px; }
+        }
+        @media (max-width: 380px) {
+            .home-header h1 { font-size: 22px; }
+            .card-grid { gap: 8px; }
+            .card-item { padding: 16px 12px; border-radius: 16px; }
+            .card-item .title { font-size: 14px; }
+            .card-item .desc { font-size: 12px; }
+            .brand-avatar { width: 72px; height: 72px; }
+            .brand-avatar .placeholder { font-size: 28px; }
+            .theme-dots .dot { width: 12px; height: 12px; }
+            .grid-cards { grid-template-columns: 1fr; }
+        }
+        @media (min-width: 800px) {
+            #homeView { padding: 40px 80px 40px; max-width: 900px; margin: 0 auto; }
+            .top-bar { margin-bottom: 24px; }
+            .brand-avatar { width: 120px; height: 120px; }
+            .brand-avatar .placeholder { font-size: 48px; }
+            .card-grid { gap: 24px; }
+            .card-item { padding: 36px 32px; border-radius: 28px; }
+            .card-item .title { font-size: 20px; }
+            .home-header h1 { font-size: 42px; }
+            .theme-dots .dot { width: 18px; height: 18px; }
+            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+            .module-scroll { padding: 20px 32px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer"></div>
+    <div class="bg-blur-circles">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+    </div>
+
+    <div id="app" class="theme-mint">
+
+        <!-- ===== 首页 ===== -->
+        <div id="homeView">
+            <div class="top-bar">
+                <div class="brand-avatar" id="brandAvatar" title="点击上传品牌图片">
+                    <span class="placeholder">📷</span>
+                    <img id="brandImage" src="" alt="品牌图标" />
+                    <input type="file" id="imageUpload" accept="image/*" />
+                </div>
+                <div class="theme-dots">
+                    <div class="dot d1 active" data-theme="mint"></div>
+                    <div class="dot d2" data-theme="spring"></div>
+                    <div class="dot d3" data-theme="misty"></div>
+                </div>
+            </div>
+
+            <div class="home-header">
+                <div class="brand">山秋枫树园</div>
+                <h1>庭院美学顾问<br />赋能平台</h1>
+                <div class="sub">大规格品种枫树 · <strong>专业话术体系</strong></div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card-item" data-module="part1">
+                    <div class="glow"></div>
+                    <div class="card-number">01</div>
+                    <div class="title">日本枫树入门课程</div>
+                    <div class="desc">系统化主播成长体系</div>
+                    <span class="meta">7 门课程</span>
+                </div>
+                <div class="card-item" data-module="part2">
+                    <div class="glow"></div>
+                    <div class="card-number">02</div>
+                    <div class="title">形态分类话术手册</div>
+                    <div class="desc">树形 · 叶色 · 叶形</div>
+                    <span class="meta">3 大分类</span>
+                </div>
+                <div class="card-item" data-module="part3">
+                    <div class="glow"></div>
+                    <div class="card-number">03</div>
+                    <div class="title">场景节点速查手册</div>
+                    <div class="desc">八大场景 · 79个节点</div>
+                    <span class="meta">8 大场景</span>
+                </div>
+                <div class="card-item" data-module="part4">
+                    <div class="glow"></div>
+                    <div class="card-number">04</div>
+                    <div class="title">全体系话术手册</div>
+                    <div class="desc">六大话术体系 · 顾问式沟通</div>
+                    <span class="meta">6 大模块</span>
+                </div>
+                <div class="card-item" data-module="part5" style="grid-column:1/-1;">
+                    <div class="glow"></div>
+                    <div class="card-number">05</div>
+                    <div class="title">主播品种速查手册</div>
+                    <div class="desc">29个品种 · 完整档案</div>
+                    <span class="meta">29 个品种</span>
+                </div>
+            </div>
+
+            <div class="home-footer">
+                <div class="copyright">
+                    <strong>© 都江堰市山秋园艺苗圃</strong><br />
+                    山秋枫树园 · 大规格品种枫树专业供应商
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 模块视图 ===== -->
+        <div class="module-view" id="moduleView">
+            <div class="module-header" id="moduleHeader">
+                <button class="back-btn" id="moduleBack">‹</button>
+                <span class="title" id="moduleTitle">模块标题</span>
+                <span class="breadcrumb" id="moduleBreadcrumb"></span>
+                <span class="sub" id="moduleSub"></span>
+            </div>
+            <div class="module-scroll" id="moduleScroll">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ================================================================
+        //  主题切换
+        // ================================================================
+        const appEl = document.getElementById('app');
+        const dots = document.querySelectorAll('.theme-dots .dot');
+
+        function setTheme(theme) {
+            appEl.classList.remove('theme-mint', 'theme-spring', 'theme-misty');
+            appEl.classList.add('theme-' + theme);
+            dots.forEach(d => { d.classList.toggle('active', d.dataset.theme === theme); });
+            localStorage.setItem('preferred-theme', theme);
+        }
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => { setTheme(dot.dataset.theme); });
+        });
+        const savedTheme = localStorage.getItem('preferred-theme') || 'mint';
+        setTheme(savedTheme);
+
+        // ================================================================
+        //  品牌图片上传
+        // ================================================================
+        const avatar = document.getElementById('brandAvatar');
+        const fileInput = document.getElementById('imageUpload');
+        const brandImage = document.getElementById('brandImage');
+        const savedImage = localStorage.getItem('brand-image');
+        if (savedImage) { brandImage.src = savedImage;
+            avatar.classList.add('has-image'); }
+        avatar.addEventListener('click', () => { fileInput.click(); });
+        fileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const data = ev.target.result;
+                brandImage.src = data;
+                avatar.classList.add('has-image');
+                localStorage.setItem('brand-image', data);
+            };
+            reader.readAsDataURL(file);
+            this.value = '';
+        });
+
+        // ================================================================
+        //  数据定义（含实际文件映射 + 更新后的课程名称）
+        // ================================================================
+
+        // -------- Part1: 课程 (7门) --------
+        // 按用户提供的名称更新
+        const COURSES = [
+            { id: 'c0', title: '引言：写给庭院美学顾问的七堂课', file: 'part1_0.html' },
+            { id: 'c1', title: '第1课：读懂日本枫树', file: 'part1_1.html' },
+            { id: 'c2', title: '第2课：日本枫树的前世今生', file: 'part1_2.html' },
+            { id: 'c3', title: '第3课：日本枫树的生理习性与形态分类', file: 'part1_3.html' },
+            { id: 'c4', title: '第4课：日本枫树的种植养护', file: 'part1_4.html' },
+            { id: 'c5', title: '第5课：庭院景观设计与中式庭院美学', file: 'part1_5.html' },
+            { id: 'c6', title: '第6课：枫树庭院应用场景', file: 'part1_6.html' },
+        ];
+
+        // -------- Part2A: 树形 (12种) --------
+        const TREE_TYPES = [
+            { id: 't1', num: '1号', name: '高飘直立疏朗', desc: '挺拔向上不挡景，疏朗通透万能用', file: 'part2_A_1.html' },
+            { id: 't2', num: '2号', name: '常规直立疏朗', desc: '不高不低正正好，平视过去就是景', file: 'part2_A_2.html' },
+            { id: 't3', num: '3号', name: '低分枝直立疏朗', desc: '从膝盖开始就是树，小院边界全靠它', file: 'part2_A_3.html' },
+            { id: 't4', num: '4号', name: '多干直立疏朗', desc: '一本多干如火炬，向上散开不堵光', file: 'part2_A_4.html' },
+            { id: 't5', num: '5号', name: '高分枝斜飘', desc: '斜枝一指定方向，白墙水边最出画', file: 'part2_A_5.html' },
+            { id: 't6', num: '6号', name: '中分枝斜飘', desc: '斜枝在眼前，坐着也能看', file: 'part2_A_6.html' },
+            { id: 't7', num: '7号', name: '低分枝双杆斜飘', desc: '双杆同向V形岔，方向统一层次多', file: 'part2_A_7.html' },
+            { id: 't8', num: '8号', name: '多杆斜飘', desc: '群杆同向各不同，一树成林最野趣', file: 'part2_A_8.html' },
+            { id: 't9', num: '9号', name: '低接龙爪垂枝', desc: '卷曲如爪层层叠，近身静观最出彩', file: 'part2_A_9.html' },
+            { id: 't10', num: '10号', name: '游龙形', desc: '蜿蜒如龙天然长，白墙投影最出神', file: 'part2_A_10.html' },
+            { id: 't11', num: '11号', name: '凤舞形', desc: '枝条开张如长袖，庭院从此有舞姿', file: 'part2_A_11.html' },
+            { id: 't12', num: '12号', name: '临水形', desc: '扑向水面成倒影，一树一影一轮月', file: 'part2_A_12.html' },
+        ];
+
+        // -------- Part2B: 叶色 (7个色系) --------
+        const COLOR_SERIES = [
+            { id: 'cr', name: '红色系', desc: '一二十种红，主角色', file: 'part2_B_1.html' },
+            { id: 'cp', name: '粉色系', desc: '比花还温柔，长在叶子上的粉', file: 'part2_B_2.html' },
+            { id: 'cv', name: '紫色系', desc: '红色太常见，紫色才高级', file: 'part2_B_3.html' },
+            { id: 'cy', name: '黄色系', desc: '黄金枫，金色就是最好的定调', file: 'part2_B_4.html' },
+            { id: 'cg', name: '绿色系', desc: '枫树的绿，是一个色系', file: 'part2_B_5.html' },
+            { id: 'cf', name: '锦叶系', desc: '每一片叶子都不一样，树也是画', file: 'part2_B_6.html' },
+            { id: 'cb', name: '观枝系', desc: '冬天是彩色的，脱了衣服展示骨架', file: 'part2_B_7.html' },
+        ];
+
+        // -------- Part2C: 叶形 (6种) --------
+        const LEAF_TYPES = [
+            { id: 'l1', name: '掌叶型', desc: '经典·耐看·端正', file: 'part2_C_1.html' },
+            { id: 'l2', name: '羽毛型', desc: '虚·透·飘，像羽毛、像蕾丝', file: 'part2_C_2.html' },
+            { id: 'l3', name: '团扇型', desc: '圆·润·静，画出来的叶子', file: 'part2_C_3.html' },
+            { id: 'l4', name: '羽扇型', desc: '柔·雅·劲，比团扇更张扬', file: 'part2_C_4.html' },
+            { id: 'l5', name: '脉纹型', desc: '细·耐·藏，美在叶脉里', file: 'part2_C_5.html' },
+            { id: 'l6', name: '异叶型', desc: '异·趣·稀，打破认知的枫树', file: 'part2_C_6.html' },
+        ];
+
+        // -------- Part3: 场景 (8个) --------
+        const SCENES = [
+            { id: 's1', name: '入口/门庭区', nodes: 'J01-J07', desc: '第一印象·迎宾·仪式感', file: 'part3_1.html' },
+            { id: 's2', name: '路径/引导区', nodes: 'J08-J19', desc: '动线·节奏·方向暗示', file: 'part3_2.html' },
+            { id: 's3', name: '水岸/水景区', nodes: 'J20-J30', desc: '倒影·虚实相生·动静对照', file: 'part3_3.html' },
+            { id: 's4', name: '亭台/茶室/窗前区', nodes: 'J31-J37', desc: '画中人看画中景·四季轮换', file: 'part3_4.html' },
+            { id: 's5', name: '景墙/建构筑物墙面区', nodes: 'J38-J48', desc: '二维平面上的三维幻觉', file: 'part3_5.html' },
+            { id: 's6', name: '主景/焦点树区', nodes: 'J49-J57', desc: '一棵树定义空间气质', file: 'part3_6.html' },
+            { id: 's7', name: '配植/组合搭配区', nodes: 'J58-J71', desc: '与"他者"对话·美学关系', file: 'part3_7.html' },
+            { id: 's8', name: '边界/边缘/特殊空间区', nodes: 'J72-J79', desc: '人工与自然的接口', file: 'part3_8.html' },
+        ];
+
+        // -------- Part4: 话术 (6类) --------
+        const SCRIPT_TYPES = [
+            { id: 'sc1', name: '共鸣话术手册', desc: '基于"审美→身份→拥有"三阶模型，自然对话版', file: 'part4_1.html' },
+            { id: 'sc2', name: '互动话术手册', desc: '以树为引·自然对话·从容连接', file: 'part4_2.html' },
+            { id: 'sc3', name: '点对点互动话术', desc: '以名相连·以树对话·以美相待', file: 'part4_3.html' },
+            { id: 'sc4', name: '保障话术手册', desc: '交付安心·而非消除恐惧', file: 'part4_4.html' },
+            { id: 'sc5', name: '人设话术手册', desc: '以树为名·从容相告·美是唯一的身份', file: 'part4_5.html' },
+            { id: 'sc6', name: '放价与收尾话术', desc: '价值确认·从容收尾·美是唯一的理由', file: 'part4_6.html' },
+        ];
+
+        // -------- Part5: 品种 (29个, 单文件) --------
+        const VARIETIES = [
+            { id: 'v1', name: '奥马', latin: 'Acer palmatum \'Ohma\'' },
+            { id: 'v2', name: '春雨', latin: 'Acer palmatum \'Shun\'u\'' },
+            { id: 'v3', name: '东林黄枫/热力棒', latin: 'Acer oliverianum \'Hot Rod\'' },
+            { id: 'v4', name: '桂', latin: 'Acer palmatum \'Katsura\'' },
+            { id: 'v5', name: '红千鸟', latin: 'Acer palmatum \'Beni Chidori\'' },
+            { id: 'v6', name: '红司', latin: 'Acer palmatum \'Beni Tsukasa\'' },
+            { id: 'v7', name: '红乙女', latin: 'Acer palmatum \'Beni Otome\'' },
+            { id: 'v8', name: '蝴蝶', latin: 'Acer palmatum \'Kochō nishiki\'' },
+            { id: 'v9', name: '幻彩', latin: 'Acer palmatum \'Orihime nishiki\'' },
+            { id: 'v10', name: '荒皮红叶', latin: 'Acer palmatum \'Arahagah\'' },
+            { id: 'v11', name: '荒野', latin: 'Acer palmatum \'Kōya\'' },
+            { id: 'v12', name: '黄八丈', latin: 'Acer palmatum \'Kihachijō\'' },
+            { id: 'v13', name: '美岛绿', latin: 'Acer palmatum \'Midori Shima\'' },
+            { id: 'v14', name: '魔幻珊瑚', latin: 'Acer palmatum \'Maho Coral\'' },
+            { id: 'v15', name: '牛爪（丑之爪）', latin: 'Acer palmatum \'Ushi no Tsume\'' },
+            { id: 'v16', name: '女神', latin: 'Acer palmatum \'Megami\'' },
+            { id: 'v17', name: '日本日出', latin: 'Acer palmatum \'Nippon Sunrise\'' },
+            { id: 'v18', name: '三河锦', latin: 'Acer palmatum \'Mikawa nishiki\'' },
+            { id: 'v19', name: '山锦', latin: 'Acer palmatum \'Yama nishiki\'' },
+            { id: 'v20', name: '威尔逊粉矮人', latin: 'Acer palmatum \'Wilson\'s Pink Dwarf\'' },
+            { id: 'v21', name: '希拉蕊', latin: 'Acer palmatum \'Hilary\'' },
+            { id: 'v22', name: '旭鹤', latin: 'Acer palmatum \'Asahi Tsuru\'' },
+            { id: 'v23', name: '血汐', latin: 'Acer palmatum \'Chi Shio\'' },
+            { id: 'v24', name: '乙女樱', latin: 'Acer palmatum \'Otome Sakura\'' },
+            { id: 'v25', name: '刈羽红', latin: 'Acer palmatum \'Kariha Red\'' },
+            { id: 'v26', name: '印花布', latin: 'Acer palmatum \'Nishiki\'' },
+            { id: 'v27', name: '羽前锦', latin: 'Acer palmatum \'Uzen nishiki\'' },
+            { id: 'v28', name: '曙', latin: 'Acer palmatum \'Akebono\'' },
+            { id: 'v29', name: '织姬', latin: 'Acer palmatum \'Orihime\'' },
+        ];
+        const VARIETIES_FILE = 'part5.html';
+
+        // ================================================================
+        //  导航状态
+        // ================================================================
+        const homeView = document.getElementById('homeView');
+        const moduleView = document.getElementById('moduleView');
+        const moduleScroll = document.getElementById('moduleScroll');
+        const moduleBack = document.getElementById('moduleBack');
+        const moduleTitle = document.getElementById('moduleTitle');
+        const moduleSub = document.getElementById('moduleSub');
+        const moduleBreadcrumb = document.getElementById('moduleBreadcrumb');
+
+        let currentModule = null;
+        let path = [];
+
+        function showModule() {
+            homeView.style.display = 'none';
+            moduleView.classList.add('active');
+        }
+        function hideModule() {
+            homeView.style.display = 'flex';
+            moduleView.classList.remove('active');
+            currentModule = null;
+            path = [];
+        }
+
+        function renderBreadcrumb() {
+            let html = '';
+            path.forEach((p, i) => {
+                if (i > 0) html += `<span class="sep"> › </span>`;
+                if (i === path.length - 1) {
+                    html += `<span class="current">${p}</span>`;
+                } else {
+                    html += `<span onclick="goBackTo(${i+1})">${p}</span>`;
+                }
+            });
+            return html;
+        }
+
+        function goBackTo(level) {
+            if (level < 1) { hideModule(); return; }
+            path = path.slice(0, level);
+            renderCurrentModule();
+        }
+
+        function navigateBack() {
+            if (path.length <= 1) {
+                hideModule();
+            } else {
+                goBackTo(path.length - 1);
+            }
+        }
+
+        // ================================================================
+        //  渲染模块内容
+        // ================================================================
+        function renderCurrentModule() {
+            if (!currentModule) return;
+            const mod = currentModule;
+            if (mod === 'part1') renderPart1();
+            else if (mod === 'part2') renderPart2();
+            else if (mod === 'part3') renderPart3();
+            else if (mod === 'part4') renderPart4();
+            else if (mod === 'part5') renderPart5();
+        }
+
+        // -------- 通用：打开文件 --------
+        function openFileView(title, file, sub) {
+            path.push(title);
+            moduleTitle.textContent = title;
+            moduleSub.textContent = sub || '';
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+
+            const fileUrl = file;
+            moduleScroll.innerHTML = `
+                <div class="file-view" id="fileViewContainer">
+                    <iframe id="fileIframe" src="${fileUrl}" title="${title}"></iframe>
+                </div>
+            `;
+            const iframe = document.getElementById('fileIframe');
+            if (iframe) {
+                iframe.onerror = function() {
+                    document.getElementById('fileViewContainer').innerHTML = `
+                        <div class="file-placeholder">
+                            <div class="big">📄</div>
+                            <div>文件加载失败</div>
+                            <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${file} 存在于同一目录下</div>
+                        </div>
+                    `;
+                };
+                setTimeout(() => {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (doc && doc.body && doc.body.innerHTML.trim().length < 10) {}
+                    } catch (e) {}
+                }, 3000);
+            }
+        }
+
+        // -------- Part1: 课程 --------
+        function renderPart1() {
+            if (path.length === 0) {
+                path = ['日本枫树入门课程'];
+                moduleTitle.textContent = '日本枫树入门课程';
+                moduleSub.textContent = '7门课程';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
+                html += `<div class="list-view">`;
+                COURSES.forEach(c => {
+                    html += `
+                        <div class="list-item" onclick="openCourse('${c.id}')">
+                            <div class="left"><div class="title">${c.title}</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            }
+        }
+
+        function openCourse(cid) {
+            const course = COURSES.find(c => c.id === cid);
+            if (!course || !course.file) { alert('文件不存在'); return; }
+            openFileView(course.title, course.file, '课程详情');
+        }
+
+        // -------- Part2: 形态分类 --------
+        function renderPart2() {
+            if (path.length === 0) {
+                path = ['形态分类话术手册'];
+                moduleTitle.textContent = '形态分类话术手册';
+                moduleSub.textContent = '树形 · 叶色 · 叶形';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                moduleScroll.innerHTML = `
+                    <div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">选择分类</div>
+                    <div class="list-view">
+                        <div class="list-item" onclick="openPart2A()">
+                            <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="list-item" onclick="openPart2B()">
+                            <div class="left"><div class="title">B. 叶色分类</div><div class="sub">7个色系 · 色彩科学</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="list-item" onclick="openPart2C()">
+                            <div class="left"><div class="title">C. 叶形分类</div><div class="sub">6种叶形 · 形态辨识</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function openPart2A() {
+            path.push('树形分类');
+            moduleTitle.textContent = '树形分类';
+            moduleSub.textContent = '12种树形';
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
+            html += `<div class="grid-cards">`;
+            TREE_TYPES.forEach(t => {
+                html += `
+                    <div class="grid-card" onclick="openTreeDetail('${t.id}')">
+                        <span class="num">${t.num}</span>
+                        <div class="name">${t.name}</div>
+                        <div class="sub">${t.desc}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
+        }
+
+        function openTreeDetail(tid) {
+            const tree = TREE_TYPES.find(t => t.id === tid);
+            if (!tree || !tree.file) { alert('文件不存在'); return; }
+            openFileView(`${tree.num} ${tree.name}`, tree.file, tree.desc);
+        }
+
+        function openPart2B() {
+            path.push('叶色分类');
+            moduleTitle.textContent = '叶色分类';
+            moduleSub.textContent = '7个色系';
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
+            html += `<div class="grid-cards">`;
+            COLOR_SERIES.forEach(c => {
+                html += `
+                    <div class="grid-card" onclick="openColorDetail('${c.id}')">
+                        <div class="name">${c.name}</div>
+                        <div class="sub">${c.desc}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
+        }
+
+        function openColorDetail(cid) {
+            const color = COLOR_SERIES.find(c => c.id === cid);
+            if (!color || !color.file) { alert('文件不存在'); return; }
+            openFileView(`${color.name}`, color.file, color.desc);
+        }
+
+        function openPart2C() {
+            path.push('叶形分类');
+            moduleTitle.textContent = '叶形分类';
+            moduleSub.textContent = '6种叶形';
+            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
+            html += `<div class="grid-cards">`;
+            LEAF_TYPES.forEach(l => {
+                html += `
+                    <div class="grid-card" onclick="openLeafDetail('${l.id}')">
+                        <div class="name">${l.name}</div>
+                        <div class="sub">${l.desc}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
+        }
+
+        function openLeafDetail(lid) {
+            const leaf = LEAF_TYPES.find(l => l.id === lid);
+            if (!leaf || !leaf.file) { alert('文件不存在'); return; }
+            openFileView(`${leaf.name}`, leaf.file, leaf.desc);
+        }
+
+        // -------- Part3: 场景 --------
+        function renderPart3() {
+            if (path.length === 0) {
+                path = ['场景节点速查手册'];
+                moduleTitle.textContent = '场景节点速查手册';
+                moduleSub.textContent = '八大场景';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">79个节点</div>`;
+                html += `<div class="grid-cards">`;
+                SCENES.forEach(s => {
+                    html += `
+                        <div class="grid-card" onclick="openScene('${s.id}')">
+                            <span class="num" style="font-size:16px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
+                            <div class="name">${s.name}</div>
+                            <div class="sub">${s.desc}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            }
+        }
+
+        function openScene(sid) {
+            const scene = SCENES.find(s => s.id === sid);
+            if (!scene || !scene.file) { alert('文件不存在'); return; }
+            openFileView(scene.name, scene.file, `${scene.nodes} · ${scene.desc}`);
+        }
+
+        // -------- Part4: 话术 --------
+        function renderPart4() {
+            if (path.length === 0) {
+                path = ['全体系话术手册'];
+                moduleTitle.textContent = '全体系话术手册';
+                moduleSub.textContent = '六大话术体系';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
+                html += `<div class="script-list">`;
+                SCRIPT_TYPES.forEach(s => {
+                    html += `
+                        <div class="script-item" onclick="openScript('${s.id}')">
+                            <div class="name">${s.name}</div>
+                            <div class="desc">${s.desc}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            }
+        }
+
+        function openScript(sid) {
+            const script = SCRIPT_TYPES.find(s => s.id === sid);
+            if (!script || !script.file) { alert('文件不存在'); return; }
+            openFileView(script.name, script.file, script.desc);
+        }
+
+        // -------- Part5: 品种 --------
+        function renderPart5() {
+            if (path.length === 0) {
+                path = ['主播品种速查手册'];
+                moduleTitle.textContent = '主播品种速查手册';
+                moduleSub.textContent = '29个品种';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                let html = `<div style="margin-bottom:12px;font-size:13px;color:rgba(0,0,0,0.25);">完整档案</div>`;
+                html += `<div class="variety-list">`;
+                VARIETIES.forEach(v => {
+                    html += `
+                        <div class="variety-item" onclick="openVariety('${v.id}')">
+                            <span class="name">${v.name}</span>
+                            <span class="latin">${v.latin}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            }
+        }
+
+        function openVariety(vid) {
+            openFileView('品种速查手册', VARIETIES_FILE, '29个品种 · 完整档案');
+        }
+
+        // ================================================================
+        //  事件绑定
+        // ================================================================
+        document.querySelectorAll('.card-item').forEach(card => {
+            card.addEventListener('click', () => {
+                const module = card.dataset.module;
+                if (!module) return;
+                currentModule = module;
+                path = [];
+                showModule();
+                renderCurrentModule();
+            });
+        });
+
+        moduleBack.addEventListener('click', navigateBack);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && moduleView.classList.contains('active')) {
+                navigateBack();
+            }
+        });
+
+        // 暴露函数到全局
+        window.openCourse = openCourse;
+        window.openTreeDetail = openTreeDetail;
+        window.openColorDetail = openColorDetail;
+        window.openLeafDetail = openLeafDetail;
+        window.openScene = openScene;
+        window.openScript = openScript;
+        window.openVariety = openVariety;
+        window.openPart2A = openPart2A;
+        window.openPart2B = openPart2B;
+        window.openPart2C = openPart2C;
+        window.goBackTo = goBackTo;
+        window.navigateBack = navigateBack;
+
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
+        console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
+        console.log('📁 请确保所有 part*.html 文件与 index.html 在同一目录下');
+    </script>
+
+</body>
+</html>

@@ -12,74 +12,144 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
         /* ===== 全局重置 ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-            height: 100%; height: -webkit-fill-available;
+            height: 100%;
+            height: -webkit-fill-available;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             -webkit-tap-highlight-color: transparent;
         }
         .bg-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
             transition: background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .theme-mint .bg-layer { background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%); }
-        .theme-spring .bg-layer { background: linear-gradient(145deg, #d8e8e0 0%, #e8f2ec 100%); }
-        .theme-misty .bg-layer { background: linear-gradient(145deg, #d5e2e8 0%, #e6eef2 100%); }
+        /* ----- 浅色 (mint) ----- */
+        .theme-mint .bg-layer {
+            background: linear-gradient(145deg, #dcece8 0%, #eaf5f2 100%);
+        }
+        /* ----- 暗色霓虹 (neon) ----- */
+        .theme-neon .bg-layer {
+            background: linear-gradient(145deg, #0b111f 0%, #141b2d 50%, #0f1628 100%);
+        }
+
         .bg-blur-circles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            pointer-events: none; overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
         .bg-blur-circles .circle {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
             transition: background 0.8s ease, transform 0.8s ease;
         }
-        .bg-blur-circles .c1 { width: 400px; height: 400px; top: -120px; right: -100px; }
-        .bg-blur-circles .c2 { width: 350px; height: 350px; bottom: -80px; left: -80px; }
-        .bg-blur-circles .c3 { width: 200px; height: 200px; top: 40%; left: 50%; transform: translateX(-50%); }
-        .theme-mint .bg-blur-circles .c1 { background: rgba(127,193,197,0.25); }
-        .theme-mint .bg-blur-circles .c2 { background: rgba(95,168,166,0.20); }
-        .theme-mint .bg-blur-circles .c3 { background: rgba(167,212,210,0.15); }
-        .theme-spring .bg-blur-circles .c1 { background: rgba(107,170,158,0.25); }
-        .theme-spring .bg-blur-circles .c2 { background: rgba(80,150,138,0.20); }
-        .theme-spring .bg-blur-circles .c3 { background: rgba(150,200,188,0.15); }
-        .theme-misty .bg-blur-circles .c1 { background: rgba(110,155,181,0.25); }
-        .theme-misty .bg-blur-circles .c2 { background: rgba(90,135,161,0.20); }
-        .theme-misty .bg-blur-circles .c3 { background: rgba(160,190,210,0.15); }
+        .bg-blur-circles .c1 {
+            width: 400px;
+            height: 400px;
+            top: -120px;
+            right: -100px;
+        }
+        .bg-blur-circles .c2 {
+            width: 350px;
+            height: 350px;
+            bottom: -80px;
+            left: -80px;
+        }
+        .bg-blur-circles .c3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        /* 浅色光晕 */
+        .theme-mint .bg-blur-circles .c1 {
+            background: rgba(127, 193, 197, 0.25);
+        }
+        .theme-mint .bg-blur-circles .c2 {
+            background: rgba(95, 168, 166, 0.20);
+        }
+        .theme-mint .bg-blur-circles .c3 {
+            background: rgba(167, 212, 210, 0.15);
+        }
+        /* 暗色霓虹光晕 */
+        .theme-neon .bg-blur-circles .c1 {
+            background: rgba(0, 180, 255, 0.10);
+        }
+        .theme-neon .bg-blur-circles .c2 {
+            background: rgba(120, 50, 255, 0.08);
+        }
+        .theme-neon .bg-blur-circles .c3 {
+            background: rgba(0, 200, 255, 0.05);
+        }
 
         #app {
-            position: relative; width: 100%; height: 100%; height: -webkit-fill-available;
-            z-index: 1; overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            z-index: 1;
+            overflow: hidden;
         }
 
         /* ===== 首页视图 ===== */
         #homeView {
-            width: 100%; height: 100%; height: -webkit-fill-available;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
             overflow-y: auto;
             padding: 16px 20px 16px;
             padding-top: max(16px, env(safe-area-inset-top, 16px));
             padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
-            display: flex; flex-direction: column;
-            position: relative; z-index: 2;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
             -webkit-overflow-scrolling: touch;
         }
-        #homeView::-webkit-scrollbar { width: 0; background: transparent; }
+        #homeView::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
 
         /* ===== 顶部栏 ===== */
         .top-bar {
-            display: flex; align-items: center; justify-content: flex-end;
-            gap: 16px; margin-bottom: 12px; padding-top: 4px;
-            flex-shrink: 0; position: relative; z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-bottom: 12px;
+            padding-top: 4px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 3;
         }
         .brand-logo {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             flex-shrink: 0;
-            background: rgba(255,255,255,0.20);
-            border: 2px solid rgba(255,255,255,0.20);
+            background: rgba(255, 255, 255, 0.20);
+            border: 2px solid rgba(255, 255, 255, 0.20);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: flex;
@@ -87,17 +157,19 @@
             justify-content: center;
             overflow: hidden;
             user-select: none;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease;
             position: relative;
         }
         .brand-logo img {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
         }
         .brand-logo .logo-text {
             font-size: 36px;
             font-weight: 600;
-            color: rgba(0,0,0,0.20);
+            color: rgba(0, 0, 0, 0.20);
             letter-spacing: 1px;
             display: none;
             position: absolute;
@@ -111,43 +183,84 @@
         .brand-logo.fallback img {
             display: none;
         }
+        .theme-neon .brand-logo {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.10);
+        }
+        .theme-neon .brand-logo .logo-text {
+            color: rgba(255, 255, 255, 0.30);
+        }
 
         .theme-dots {
-            display: flex; gap: 12px; flex-shrink: 0;
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
             padding: 6px 14px;
-            background: rgba(255,255,255,0.20);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .theme-neon .theme-dots {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.08);
         }
         .theme-dots .dot {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.4);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
             flex-shrink: 0;
         }
-        .theme-dots .dot:active { transform: scale(0.85); }
+        .theme-dots .dot:active {
+            transform: scale(0.85);
+        }
         .theme-dots .dot.active {
             border-color: #ffffff;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
             transform: scale(1.12);
         }
-        .theme-dots .dot.d1 { background: #7fc1c5; }
-        .theme-dots .dot.d2 { background: #6baa9e; }
-        .theme-dots .dot.d3 { background: #6e9bb5; }
+        .theme-neon .theme-dots .dot.active {
+            box-shadow: 0 0 0 4px rgba(0, 180, 255, 0.25);
+            border-color: #00ccff;
+        }
+        /* 浅色点 (mint) */
+        .theme-dots .dot.d1 {
+            background: #7fc1c5;
+        }
+        /* 暗色点 (neon) */
+        .theme-dots .dot.d4 {
+            background: linear-gradient(135deg, #1a1a3e, #2d1b69);
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+        .theme-dots .dot.d4.active {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.25);
+        }
+        .theme-neon .theme-dots .dot.d4.active {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.30);
+        }
 
         /* ===== 头部 ===== */
-        .home-header { margin-bottom: 14px; flex-shrink: 0; }
+        .home-header {
+            margin-bottom: 14px;
+            flex-shrink: 0;
+        }
         .home-header .brand {
             font-size: 18px;
             font-weight: 500;
             letter-spacing: 3px;
             text-transform: uppercase;
             transition: color 0.6s ease;
-            color: rgba(0,0,0,0.20);
+            color: rgba(0, 0, 0, 0.20);
+        }
+        .theme-neon .home-header .brand {
+            color: rgba(255, 255, 255, 0.20);
         }
         .home-header h1 {
             font-size: 40px;
@@ -157,30 +270,55 @@
             margin-top: 4px;
             background: linear-gradient(90deg, #4a8c8a, #7fc1c5, #4a8c8a, #7fc1c5);
             background-size: 300% 100%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: shimmerTitle 5s ease-in-out infinite;
         }
         @keyframes shimmerTitle {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
         .theme-mint .home-header h1 {
             background: linear-gradient(90deg, #3a7a78, #7fc1c5, #3a7a78, #7fc1c5);
             background-size: 300% 100%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerTitle 5s ease-in-out infinite;
+        }
+        .theme-neon .home-header h1 {
+            background: linear-gradient(90deg, #7ec8f0, #00ccff, #a78bfa, #7ec8f0);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: shimmerTitle 5s ease-in-out infinite;
         }
         .home-header .sub {
             font-size: 20px;
-            color: rgba(0,0,0,0.25);
+            color: rgba(0, 0, 0, 0.25);
             margin-top: 4px;
             letter-spacing: 0.3px;
             transition: color 0.6s ease;
         }
-        .home-header .sub strong { color: rgba(0,0,0,0.40); font-weight: 500; }
+        .home-header .sub strong {
+            color: rgba(0, 0, 0, 0.40);
+            font-weight: 500;
+        }
+        .theme-neon .home-header .sub {
+            color: rgba(255, 255, 255, 0.35);
+        }
+        .theme-neon .home-header .sub strong {
+            color: rgba(255, 255, 255, 0.55);
+        }
 
         /* ===== 卡片网格 ===== */
         .card-grid {
@@ -198,38 +336,69 @@
             -webkit-tap-highlight-color: transparent;
             position: relative;
             overflow: hidden;
-            background: rgba(255,255,255,0.40);
+            background: rgba(255, 255, 255, 0.40);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.25);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 20px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.01);
-            transition: background 0.4s ease, transform 0.3s ease, border-color 0.4s ease;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.01);
+            transition: background 0.4s ease, transform 0.3s ease, border-color 0.4s ease, color 0.4s ease;
             display: flex;
             flex-direction: column;
             justify-content: center;
             min-height: 100px;
             height: auto;
         }
-        .card-item:active { transform: scale(0.96); background: rgba(255,255,255,0.55); }
-        .card-item .glow {
-            position: absolute; top: -1px; left: 10%; right: 10%;
-            height: 1px; opacity: 0; transition: opacity 0.4s;
+        .card-item:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.55);
         }
-        .card-item:hover .glow { opacity: 1; }
-        .theme-mint .card-item .glow { background: linear-gradient(90deg, transparent, rgba(127,193,197,0.30), transparent); }
+        .theme-neon .card-item {
+            background: rgba(14, 22, 44, 0.60);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.20);
+        }
+        .theme-neon .card-item:active {
+            background: rgba(14, 22, 44, 0.80);
+        }
+        .card-item .glow {
+            position: absolute;
+            top: -1px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .card-item:hover .glow {
+            opacity: 1;
+        }
+        .theme-mint .card-item .glow {
+            background: linear-gradient(90deg, transparent, rgba(127, 193, 197, 0.30), transparent);
+        }
+        .theme-neon .card-item .glow {
+            background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.30), transparent);
+        }
         .card-item .title {
             font-size: 22px;
             font-weight: 600;
             color: #1c2e2a;
             letter-spacing: 0.1px;
             line-height: 1.2;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .card-item .title {
+            color: rgba(255, 255, 255, 0.88);
         }
         .card-item .desc {
             font-size: 16px;
-            color: rgba(0,0,0,0.30);
+            color: rgba(0, 0, 0, 0.30);
             line-height: 1.4;
             margin-top: 2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .card-item .desc {
+            color: rgba(255, 255, 255, 0.45);
         }
         .card-item .meta {
             display: inline-block;
@@ -242,100 +411,207 @@
             transition: background 0.4s ease, color 0.4s ease;
             align-self: flex-start;
         }
-        .theme-mint .card-item .meta { color: #5fa8a6; background: rgba(95,168,166,0.06); }
+        .theme-mint .card-item .meta {
+            color: #5fa8a6;
+            background: rgba(95, 168, 166, 0.06);
+        }
+        .theme-neon .card-item .meta {
+            color: #00ccff;
+            background: rgba(0, 204, 255, 0.08);
+        }
         .card-item .card-number {
             font-size: 14px;
             font-weight: 500;
-            color: rgba(0,0,0,0.06);
+            color: rgba(0, 0, 0, 0.06);
             letter-spacing: 0.4px;
             margin-bottom: 2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .card-item .card-number {
+            color: rgba(255, 255, 255, 0.08);
         }
         .card-item.full-width {
             grid-column: 1 / -1;
         }
 
         .home-footer {
-            margin-top: 10px; padding-top: 12px;
-            border-top: 1px solid rgba(0,0,0,0.02);
-            text-align: center; flex-shrink: 0;
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.02);
+            text-align: center;
+            flex-shrink: 0;
+            transition: border-color 0.4s ease;
+        }
+        .theme-neon .home-footer {
+            border-top-color: rgba(255, 255, 255, 0.04);
         }
         .home-footer .copyright {
             font-size: 16px;
-            color: rgba(0,0,0,0.10);
+            color: rgba(0, 0, 0, 0.10);
             letter-spacing: 0.6px;
             line-height: 1.6;
+            transition: color 0.4s ease;
         }
-        .home-footer .copyright strong { color: rgba(0,0,0,0.18); font-weight: 500; }
+        .home-footer .copyright strong {
+            color: rgba(0, 0, 0, 0.18);
+            font-weight: 500;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .home-footer .copyright {
+            color: rgba(255, 255, 255, 0.08);
+        }
+        .theme-neon .home-footer .copyright strong {
+            color: rgba(255, 255, 255, 0.15);
+        }
 
         /* ===== 模块视图 ===== */
         .module-view {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; height: -webkit-fill-available;
-            display: flex; flex-direction: column;
-            opacity: 0; pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
             transition: opacity 0.4s ease, transform 0.4s ease;
             transform: translateX(20px);
             will-change: transform, opacity;
             z-index: 20;
-            background: rgba(255,255,255,0.50);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.50);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding-top: env(safe-area-inset-top, 0);
             padding-bottom: env(safe-area-inset-bottom, 0);
         }
         .module-view.active {
-            opacity: 1; pointer-events: auto; transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+        .theme-neon .module-view {
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .module-header {
             flex-shrink: 0;
             padding: 14px 18px 14px;
-            background: rgba(255,255,255,0.30);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.20);
-            display: flex; align-items: center; gap: 14px;
-            position: sticky; top: 0; z-index: 10;
+            background: rgba(255, 255, 255, 0.30);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.20);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
             min-height: 64px;
             flex-wrap: wrap;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .theme-neon .module-header {
+            background: rgba(0, 0, 0, 0.50);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .module-header.hide {
+            display: none !important;
         }
         .module-header .back-btn {
-            display: flex; align-items: center; justify-content: center;
-            width: 44px; height: 44px; border-radius: 50%;
-            border: 1px solid rgba(0,0,0,0.04);
-            background: rgba(255,255,255,0.30);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.30);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             font-size: 24px;
             color: #555;
-            cursor: pointer; transition: all 0.2s;
-            flex-shrink: 0; font-weight: 300; line-height: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-weight: 300;
+            line-height: 1;
             -webkit-tap-highlight-color: transparent;
         }
-        .module-header .back-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.50); }
+        .module-header .back-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.50);
+        }
+        .theme-neon .module-header .back-btn {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.50);
+        }
+        .theme-neon .module-header .back-btn:active {
+            background: rgba(255, 255, 255, 0.12);
+        }
         .module-header .title {
             font-size: 22px;
             font-weight: 600;
             color: #1c2e2a;
             flex: 0 1 auto;
             letter-spacing: -0.2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .module-header .title {
+            color: rgba(255, 255, 255, 0.88);
         }
         .module-header .sub {
             font-size: 16px;
-            color: rgba(0,0,0,0.25);
+            color: rgba(0, 0, 0, 0.25);
             letter-spacing: 0.4px;
             flex-shrink: 0;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .module-header .sub {
+            color: rgba(255, 255, 255, 0.30);
         }
         .module-header .breadcrumb {
             font-size: 16px;
-            color: rgba(0,0,0,0.25);
+            color: rgba(0, 0, 0, 0.25);
             flex: 1;
             min-width: 60px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.4s ease;
         }
-        .module-header .breadcrumb span { cursor: pointer; transition: color 0.2s; }
-        .module-header .breadcrumb span:hover { color: #3a7a78; }
-        .module-header .breadcrumb .sep { color: rgba(0,0,0,0.08); cursor: default; }
-        .module-header .breadcrumb .current { color: #3a7a78; font-weight: 500; cursor: default; }
+        .theme-neon .module-header .breadcrumb {
+            color: rgba(255, 255, 255, 0.25);
+        }
+        .module-header .breadcrumb span {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .module-header .breadcrumb span:hover {
+            color: #3a7a78;
+        }
+        .theme-neon .module-header .breadcrumb span:hover {
+            color: #00ccff;
+        }
+        .module-header .breadcrumb .sep {
+            color: rgba(0, 0, 0, 0.08);
+            cursor: default;
+        }
+        .theme-neon .module-header .breadcrumb .sep {
+            color: rgba(255, 255, 255, 0.08);
+        }
+        .module-header .breadcrumb .current {
+            color: #3a7a78;
+            font-weight: 500;
+            cursor: default;
+        }
+        .theme-neon .module-header .breadcrumb .current {
+            color: #00ccff;
+        }
 
         /* ===== 滚动容器 ===== */
         .module-scroll {
@@ -344,9 +620,23 @@
             padding: 16px 20px 20px;
             -webkit-overflow-scrolling: touch;
             display: block;
+            transition: color 0.4s ease;
         }
-        .module-scroll::-webkit-scrollbar { width: 3px; }
-        .module-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 10px; }
+        .module-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .module-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+        }
+        .theme-neon .module-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .module-scroll .list-view>div:last-child,
+        .module-scroll .script-list>div:last-child,
+        .module-scroll .grid-cards>div:last-child {
+            margin-bottom: 0;
+        }
 
         /* ===== 文件全屏模式 ===== */
         .module-scroll.file-mode {
@@ -379,10 +669,10 @@
 
         /* ===== 列表项 ===== */
         .list-item {
-            background: rgba(255,255,255,0.30);
+            background: rgba(255, 255, 255, 0.30);
             border-radius: 16px;
             padding: 16px 20px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             cursor: pointer;
             transition: all 0.2s;
             margin-bottom: 12px;
@@ -391,19 +681,41 @@
             align-items: center;
             backdrop-filter: blur(4px);
         }
-        .list-item:active { transform: scale(0.97); background: rgba(255,255,255,0.50); }
+        .list-item:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.50);
+        }
+        .theme-neon .list-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .theme-neon .list-item:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
         .list-item .left .title {
             font-weight: 500;
             color: #1c2e2a;
             font-size: 20px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .list-item .left .title {
+            color: rgba(255, 255, 255, 0.85);
         }
         .list-item .left .sub {
             font-size: 16px;
-            color: rgba(0,0,0,0.30);
+            color: rgba(0, 0, 0, 0.30);
+            transition: color 0.4s ease;
+        }
+        .theme-neon .list-item .left .sub {
+            color: rgba(255, 255, 255, 0.30);
         }
         .list-item .arrow {
-            color: rgba(0,0,0,0.12);
+            color: rgba(0, 0, 0, 0.12);
             font-size: 22px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .list-item .arrow {
+            color: rgba(255, 255, 255, 0.12);
         }
 
         /* ===== 网格卡片 ===== */
@@ -414,68 +726,112 @@
             margin-top: 10px;
         }
         .grid-card {
-            background: rgba(255,255,255,0.30);
+            background: rgba(255, 255, 255, 0.30);
             border-radius: 16px;
             padding: 18px 14px;
-            border: 1px solid rgba(255,255,255,0.10);
+            border: 1px solid rgba(255, 255, 255, 0.10);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
             backdrop-filter: blur(4px);
         }
-        .grid-card:active { transform: scale(0.95); background: rgba(255,255,255,0.50); }
+        .grid-card:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.50);
+        }
+        .theme-neon .grid-card {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .theme-neon .grid-card:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
         .grid-card .num {
             font-size: 26px;
             font-weight: 700;
             color: #3a7a78;
             display: block;
             line-height: 1.2;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .grid-card .num {
+            color: #00ccff;
         }
         .grid-card .name {
             font-size: 18px;
             font-weight: 500;
             color: #1c2e2a;
             margin-top: 4px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .grid-card .name {
+            color: rgba(255, 255, 255, 0.85);
         }
         .grid-card .sub {
             font-size: 14px;
-            color: rgba(0,0,0,0.25);
+            color: rgba(0, 0, 0, 0.25);
             margin-top: 2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .grid-card .sub {
+            color: rgba(255, 255, 255, 0.30);
         }
 
         /* ===== 节点列表 ===== */
         .node-item {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 14px;
             padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .node-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .node-item:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.45);
+        }
+        .theme-neon .node-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .theme-neon .node-item:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
         .node-item .id {
             font-weight: 700;
             color: #3a7a78;
             font-size: 16px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .node-item .id {
+            color: #00ccff;
         }
         .node-item .name {
             font-weight: 500;
             color: #1c2e2a;
             font-size: 18px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .node-item .name {
+            color: rgba(255, 255, 255, 0.85);
         }
         .node-item .desc {
             font-size: 15px;
-            color: rgba(0,0,0,0.40);
+            color: rgba(0, 0, 0, 0.40);
             margin-top: 2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .node-item .desc {
+            color: rgba(255, 255, 255, 0.30);
         }
 
         /* ===== 品种列表 ===== */
         .variety-item {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 14px;
             padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s;
@@ -483,49 +839,97 @@
             justify-content: space-between;
             align-items: center;
         }
-        .variety-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .variety-item:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.45);
+        }
+        .theme-neon .variety-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .theme-neon .variety-item:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
         .variety-item .name {
             font-weight: 500;
             color: #1c2e2a;
             font-size: 18px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .variety-item .name {
+            color: rgba(255, 255, 255, 0.85);
         }
         .variety-item .latin {
             font-size: 15px;
-            color: rgba(0,0,0,0.25);
+            color: rgba(0, 0, 0, 0.25);
             font-style: italic;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .variety-item .latin {
+            color: rgba(255, 255, 255, 0.25);
         }
 
         /* ===== 话术列表 ===== */
         .script-item {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 14px;
             padding: 16px 18px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .script-item:active { transform: scale(0.97); background: rgba(255,255,255,0.45); }
+        .script-item:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.45);
+        }
+        .theme-neon .script-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .theme-neon .script-item:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
         .script-item .name {
             font-weight: 500;
             color: #1c2e2a;
             font-size: 18px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .script-item .name {
+            color: rgba(255, 255, 255, 0.85);
         }
         .script-item .desc {
             font-size: 15px;
-            color: rgba(0,0,0,0.35);
+            color: rgba(0, 0, 0, 0.35);
             margin-top: 2px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .script-item .desc {
+            color: rgba(255, 255, 255, 0.30);
+        }
+
+        /* ===== 通用文字样式 ===== */
+        .module-scroll>div[style*="color:rgba(0,0,0,0.25)"] {
+            transition: color 0.4s ease;
+        }
+        .theme-neon .module-scroll>div[style*="color:rgba(0,0,0,0.25)"] {
+            color: rgba(255, 255, 255, 0.25) !important;
         }
 
         /* ===== iframe 文件视图 ===== */
         .file-view {
             flex: 1;
             position: relative;
-            background: rgba(255,255,255,0.10);
+            background: rgba(255, 255, 255, 0.10);
             border-radius: 16px;
             overflow: hidden;
             margin-top: 4px;
             min-height: 400px;
+            transition: background 0.4s ease;
+        }
+        .theme-neon .file-view {
+            background: rgba(255, 255, 255, 0.03);
         }
         .file-view iframe {
             width: 100%;
@@ -542,10 +946,14 @@
             justify-content: center;
             height: 100%;
             min-height: 300px;
-            color: rgba(0,0,0,0.20);
+            color: rgba(0, 0, 0, 0.20);
             font-size: 18px;
             text-align: center;
             padding: 40px 20px;
+            transition: color 0.4s ease;
+        }
+        .theme-neon .file-view .file-placeholder {
+            color: rgba(255, 255, 255, 0.20);
         }
         .file-view .file-placeholder .big {
             font-size: 44px;
@@ -555,10 +963,19 @@
 
         /* ===== 响应式 ===== */
         @media (max-width: 640px) {
-            .grid-cards { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-            .grid-card { padding: 12px 8px; }
-            .grid-card .num { font-size: 20px; }
-            .grid-card .name { font-size: 15px; }
+            .grid-cards {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+            }
+            .grid-card {
+                padding: 12px 8px;
+            }
+            .grid-card .num {
+                font-size: 20px;
+            }
+            .grid-card .name {
+                font-size: 15px;
+            }
         }
         @media (max-width: 480px) {
             #homeView {
@@ -879,10 +1296,10 @@
                     <img id="brandImage" src="shanqiu_logo.png" alt="山秋枫树园" />
                     <span class="logo-text">山秋</span>
                 </div>
+                <!-- ===== 精简为两个色点 ===== -->
                 <div class="theme-dots">
                     <div class="dot d1 active" data-theme="mint"></div>
-                    <div class="dot d2" data-theme="spring"></div>
-                    <div class="dot d3" data-theme="misty"></div>
+                    <div class="dot d4" data-theme="neon"></div>
                 </div>
             </div>
 
@@ -954,13 +1371,13 @@
 
     <script>
         // ================================================================
-        //  主题切换
+        //  主题切换（两套：mint / neon）
         // ================================================================
         const appEl = document.getElementById('app');
         const dots = document.querySelectorAll('.theme-dots .dot');
 
         function setTheme(theme) {
-            appEl.classList.remove('theme-mint', 'theme-spring', 'theme-misty');
+            appEl.classList.remove('theme-mint', 'theme-neon');
             appEl.classList.add('theme-' + theme);
             dots.forEach(d => { d.classList.toggle('active', d.dataset.theme === theme); });
             localStorage.setItem('preferred-theme', theme);
@@ -968,8 +1385,15 @@
         dots.forEach(dot => {
             dot.addEventListener('click', () => { setTheme(dot.dataset.theme); });
         });
-        const savedTheme = localStorage.getItem('preferred-theme') || 'mint';
-        setTheme(savedTheme);
+
+        // 初始化：仅允许 mint 和 neon，其他回退到 mint
+        const savedTheme = localStorage.getItem('preferred-theme');
+        const validThemes = ['mint', 'neon'];
+        if (savedTheme && validThemes.includes(savedTheme)) {
+            setTheme(savedTheme);
+        } else {
+            setTheme('mint');
+        }
 
         // ================================================================
         //  品牌标识
@@ -1085,16 +1509,16 @@
         const moduleTitle = document.getElementById('moduleTitle');
         const moduleSub = document.getElementById('moduleSub');
         const moduleBreadcrumb = document.getElementById('moduleBreadcrumb');
+        const moduleHeader = document.getElementById('moduleHeader');
 
         let currentModule = null;
         let path = [];
-
-        // 历史记录堆栈（用于浏览器后退同步）
         let historyStack = [];
 
         function showModule() {
             homeView.style.display = 'none';
             moduleView.classList.add('active');
+            moduleHeader.classList.remove('hide');
         }
 
         function hideModule() {
@@ -1104,10 +1528,10 @@
             currentModule = null;
             path = [];
             historyStack = [];
-            // 清除历史状态
             if (window.history && window.history.state) {
                 history.replaceState(null, '', window.location.pathname);
             }
+            moduleHeader.classList.remove('hide');
         }
 
         function renderBreadcrumb() {
@@ -1123,7 +1547,6 @@
             return html;
         }
 
-        // 将当前导航状态推入浏览器历史
         function pushHistoryState(title) {
             const state = { module: currentModule, path: [...path], title: title };
             historyStack.push(state);
@@ -1133,14 +1556,15 @@
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
             path = path.slice(0, level);
+            updateHeaderFromPath();
             renderCurrentModule();
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            // 同步历史
             if (path.length > 0) {
                 pushHistoryState(path[path.length - 1]);
             } else {
                 hideModule();
             }
+            updateModuleHeaderVisibility();
         }
 
         function navigateBack() {
@@ -1149,6 +1573,70 @@
                 return;
             }
             goBackTo(path.length - 1);
+        }
+
+        function updateHeaderFromPath() {
+            if (!currentModule) return;
+            const root = path[0] || '';
+            if (currentModule === 'part1') {
+                moduleTitle.textContent = root || '日本枫树入门课程';
+                moduleSub.textContent = '7门课程';
+            } else if (currentModule === 'part2') {
+                if (path.length === 1) {
+                    moduleTitle.textContent = '形态分类话术手册';
+                    moduleSub.textContent = '树形 · 叶色 · 叶形';
+                } else if (path.length === 2) {
+                    const sub = path[1];
+                    if (sub === '树形分类') {
+                        moduleTitle.textContent = '树形分类';
+                        moduleSub.textContent = '12种树形';
+                    } else if (sub === '叶色分类') {
+                        moduleTitle.textContent = '叶色分类';
+                        moduleSub.textContent = '7个色系';
+                    } else if (sub === '叶形分类') {
+                        moduleTitle.textContent = '叶形分类';
+                        moduleSub.textContent = '6种叶形';
+                    } else {
+                        moduleTitle.textContent = sub || '形态分类话术手册';
+                        moduleSub.textContent = '';
+                    }
+                } else if (path.length === 3) {
+                    moduleTitle.textContent = path[2] || '详情';
+                    moduleSub.textContent = '';
+                }
+            } else if (currentModule === 'part3') {
+                if (path.length === 1) {
+                    moduleTitle.textContent = '场景节点速查手册';
+                    moduleSub.textContent = '八大场景';
+                } else {
+                    moduleTitle.textContent = path[1] || '场景详情';
+                    moduleSub.textContent = '';
+                }
+            } else if (currentModule === 'part4') {
+                if (path.length === 1) {
+                    moduleTitle.textContent = '全体系话术手册';
+                    moduleSub.textContent = '六大话术体系';
+                } else {
+                    moduleTitle.textContent = path[1] || '话术详情';
+                    moduleSub.textContent = '';
+                }
+            } else if (currentModule === 'part5') {
+                if (path.length === 1) {
+                    moduleTitle.textContent = '主播品种速查手册';
+                    moduleSub.textContent = '29个品种 · 完整档案';
+                } else {
+                    moduleTitle.textContent = path[1] || '品种详情';
+                    moduleSub.textContent = '品种详情';
+                }
+            }
+        }
+
+        function updateModuleHeaderVisibility() {
+            if (currentModule === 'part5' && path.length === 2) {
+                moduleHeader.classList.add('hide');
+            } else {
+                moduleHeader.classList.remove('hide');
+            }
         }
 
         // ================================================================
@@ -1162,11 +1650,14 @@
             else if (currentModule === 'part3') renderPart3();
             else if (currentModule === 'part4') renderPart4();
             else if (currentModule === 'part5') renderPart5Direct();
+            updateModuleHeaderVisibility();
         }
 
-        // -------- 通用：打开文件（iframe）并隐藏内页返回按钮 + 去除上传功能 --------
-        function openFileView(title, file, sub) {
-            path.push(title);
+        // -------- 通用：打开文件（iframe） --------
+        function openFileView(title, file, sub, keepBackBtn = false) {
+            if (path.length === 0 || path[path.length - 1] !== title) {
+                path.push(title);
+            }
             moduleTitle.textContent = title;
             moduleSub.textContent = sub || '';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
@@ -1178,7 +1669,6 @@
                     <iframe id="fileIframe" src="${fileUrl}" title="${title}"></iframe>
                 </div>
             `;
-            // 推入历史
             pushHistoryState(title);
 
             const iframe = document.getElementById('fileIframe');
@@ -1187,30 +1677,30 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 隐藏返回按钮
-                            const selectors = [
-                                '.back-btn', '[data-back]', '.module-header .back-btn',
-                                '.back-link', '.top-mini .back-link', '.detail-back',
-                                'button.back-btn', 'a.back-link'
-                            ];
-                            selectors.forEach(sel => {
-                                doc.querySelectorAll(sel).forEach(el => {
+                            if (!keepBackBtn) {
+                                const selectors = [
+                                    '.back-btn', '[data-back]', '.module-header .back-btn',
+                                    '.back-link', '.top-mini .back-link', '.detail-back',
+                                    'button.back-btn', 'a.back-link'
+                                ];
+                                selectors.forEach(sel => {
+                                    doc.querySelectorAll(sel).forEach(el => {
+                                        el.style.display = 'none';
+                                        el.style.pointerEvents = 'none';
+                                    });
+                                });
+                                doc.querySelectorAll('button, a').forEach(btn => {
+                                    const txt = btn.textContent.trim();
+                                    if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back') {
+                                        btn.style.display = 'none';
+                                        btn.style.pointerEvents = 'none';
+                                    }
+                                });
+                                doc.querySelectorAll('.back, .back-btn, .back-link, .nav-back').forEach(el => {
                                     el.style.display = 'none';
                                     el.style.pointerEvents = 'none';
                                 });
-                            });
-                            doc.querySelectorAll('button, a').forEach(btn => {
-                                const txt = btn.textContent.trim();
-                                if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back') {
-                                    btn.style.display = 'none';
-                                    btn.style.pointerEvents = 'none';
-                                }
-                            });
-                            doc.querySelectorAll('.back, .back-btn, .back-link, .nav-back').forEach(el => {
-                                el.style.display = 'none';
-                                el.style.pointerEvents = 'none';
-                            });
-                            // 隐藏上传
+                            }
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1220,10 +1710,13 @@
                                         el.style.display = 'none';
                                     }
                                 });
-                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container')
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
                                 .forEach(el => {
                                     el.style.display = 'none';
                                 });
+                            doc.querySelectorAll('img[src*="upload"], img[src*="blob"]').forEach(img => {
+                                img.src = 'shanqiu_logo.png';
+                            });
                         }
                     } catch (e) {
                         console.log('无法操作iframe内容（可能跨域）:', e);
@@ -1238,15 +1731,16 @@
                         </div>
                     `;
                 };
-                // 延迟再处理一次
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back').forEach(el => {
-                                el.style.display = 'none';
-                                el.style.pointerEvents = 'none';
-                            });
+                            if (!keepBackBtn) {
+                                doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back').forEach(el => {
+                                    el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
+                                });
+                            }
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1256,10 +1750,18 @@
                                         el.style.display = 'none';
                                     }
                                 });
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
+                                .forEach(el => {
+                                    el.style.display = 'none';
+                                });
+                            doc.querySelectorAll('img[src*="upload"], img[src*="blob"]').forEach(img => {
+                                img.src = 'shanqiu_logo.png';
+                            });
                         }
                     } catch (e) {}
                 }, 1500);
             }
+            updateModuleHeaderVisibility();
         }
 
         // -------- Part1: 课程 --------
@@ -1302,104 +1804,146 @@
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 pushHistoryState('形态分类话术手册');
             }
-            moduleScroll.innerHTML = `
-                <div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择分类</div>
-                <div class="list-view">
-                    <div class="list-item" onclick="openPart2A()">
-                        <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
-                        <span class="arrow">›</span>
+
+            const root = path[0];
+            if (path.length === 1) {
+                moduleTitle.textContent = '形态分类话术手册';
+                moduleSub.textContent = '树形 · 叶色 · 叶形';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                moduleScroll.innerHTML = `
+                    <div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择分类</div>
+                    <div class="list-view">
+                        <div class="list-item" onclick="openPart2A()">
+                            <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="list-item" onclick="openPart2B()">
+                            <div class="left"><div class="title">B. 叶色分类</div><div class="sub">7个色系 · 色彩科学</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="list-item" onclick="openPart2C()">
+                            <div class="left"><div class="title">C. 叶形分类</div><div class="sub">6种叶形 · 形态辨识</div></div>
+                            <span class="arrow">›</span>
+                        </div>
                     </div>
-                    <div class="list-item" onclick="openPart2B()">
-                        <div class="left"><div class="title">B. 叶色分类</div><div class="sub">7个色系 · 色彩科学</div></div>
-                        <span class="arrow">›</span>
-                    </div>
-                    <div class="list-item" onclick="openPart2C()">
-                        <div class="left"><div class="title">C. 叶形分类</div><div class="sub">6种叶形 · 形态辨识</div></div>
-                        <span class="arrow">›</span>
-                    </div>
-                </div>
-            `;
+                `;
+            } else if (path.length === 2) {
+                const sub = path[1];
+                if (sub === '树形分类') {
+                    moduleTitle.textContent = '树形分类';
+                    moduleSub.textContent = '12种树形';
+                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                    let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
+                    html += `<div class="grid-cards">`;
+                    TREE_TYPES.forEach(t => {
+                        html += `
+                            <div class="grid-card" onclick="openTreeDetail('${t.id}')">
+                                <span class="num">${t.num}</span>
+                                <div class="name">${t.name}</div>
+                                <div class="sub">${t.desc}</div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                    moduleScroll.innerHTML = html;
+                } else if (sub === '叶色分类') {
+                    moduleTitle.textContent = '叶色分类';
+                    moduleSub.textContent = '7个色系';
+                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                    let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
+                    html += `<div class="grid-cards">`;
+                    COLOR_SERIES.forEach(c => {
+                        html += `
+                            <div class="grid-card" onclick="openColorDetail('${c.id}')">
+                                <div class="name">${c.name}</div>
+                                <div class="sub">${c.desc}</div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                    moduleScroll.innerHTML = html;
+                } else if (sub === '叶形分类') {
+                    moduleTitle.textContent = '叶形分类';
+                    moduleSub.textContent = '6种叶形';
+                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                    let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
+                    html += `<div class="grid-cards">`;
+                    LEAF_TYPES.forEach(l => {
+                        html += `
+                            <div class="grid-card" onclick="openLeafDetail('${l.id}')">
+                                <div class="name">${l.name}</div>
+                                <div class="sub">${l.desc}</div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                    moduleScroll.innerHTML = html;
+                } else {
+                    path = [root];
+                    renderPart2();
+                }
+            } else if (path.length === 3) {
+                moduleTitle.textContent = path[2] || '详情';
+                moduleSub.textContent = '';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                if (!document.querySelector('#moduleScroll .file-view')) {
+                    goBackTo(path.length - 1);
+                }
+            }
+            updateModuleHeaderVisibility();
         }
 
         function openPart2A() {
-            moduleScroll.classList.remove('file-mode');
+            if (path.length > 0) path = [path[0]];
             path.push('树形分类');
-            moduleTitle.textContent = '树形分类';
-            moduleSub.textContent = '12种树形';
-            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            renderPart2();
             pushHistoryState('树形分类');
-            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
-            html += `<div class="grid-cards">`;
-            TREE_TYPES.forEach(t => {
-                html += `
-                    <div class="grid-card" onclick="openTreeDetail('${t.id}')">
-                        <span class="num">${t.num}</span>
-                        <div class="name">${t.name}</div>
-                        <div class="sub">${t.desc}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            moduleScroll.innerHTML = html;
+        }
+
+        function openPart2B() {
+            if (path.length > 0) path = [path[0]];
+            path.push('叶色分类');
+            renderPart2();
+            pushHistoryState('叶色分类');
+        }
+
+        function openPart2C() {
+            if (path.length > 0) path = [path[0]];
+            path.push('叶形分类');
+            renderPart2();
+            pushHistoryState('叶形分类');
         }
 
         function openTreeDetail(tid) {
             const tree = TREE_TYPES.find(t => t.id === tid);
             if (!tree || !tree.file) { alert('文件不存在'); return; }
+            if (path.length < 2 || path[1] !== '树形分类') {
+                if (path.length > 0) path = [path[0]];
+                path.push('树形分类');
+                renderPart2();
+            }
             openFileView(`${tree.num} ${tree.name}`, tree.file, tree.desc);
-        }
-
-        function openPart2B() {
-            moduleScroll.classList.remove('file-mode');
-            path.push('叶色分类');
-            moduleTitle.textContent = '叶色分类';
-            moduleSub.textContent = '7个色系';
-            moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            pushHistoryState('叶色分类');
-            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
-            html += `<div class="grid-cards">`;
-            COLOR_SERIES.forEach(c => {
-                html += `
-                    <div class="grid-card" onclick="openColorDetail('${c.id}')">
-                        <div class="name">${c.name}</div>
-                        <div class="sub">${c.desc}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            moduleScroll.innerHTML = html;
         }
 
         function openColorDetail(cid) {
             const color = COLOR_SERIES.find(c => c.id === cid);
             if (!color || !color.file) { alert('文件不存在'); return; }
+            if (path.length < 2 || path[1] !== '叶色分类') {
+                if (path.length > 0) path = [path[0]];
+                path.push('叶色分类');
+                renderPart2();
+            }
             openFileView(`${color.name}`, color.file, color.desc);
-        }
-
-        function openPart2C() {
-            moduleScroll.classList.remove('file-mode');
-            path.push('叶形分类');
-            moduleTitle.textContent = '叶形分类';
-            moduleSub.textContent = '6种叶形';
-            moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            pushHistoryState('叶形分类');
-            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
-            html += `<div class="grid-cards">`;
-            LEAF_TYPES.forEach(l => {
-                html += `
-                    <div class="grid-card" onclick="openLeafDetail('${l.id}')">
-                        <div class="name">${l.name}</div>
-                        <div class="sub">${l.desc}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            moduleScroll.innerHTML = html;
         }
 
         function openLeafDetail(lid) {
             const leaf = LEAF_TYPES.find(l => l.id === lid);
             if (!leaf || !leaf.file) { alert('文件不存在'); return; }
+            if (path.length < 2 || path[1] !== '叶形分类') {
+                if (path.length > 0) path = [path[0]];
+                path.push('叶形分类');
+                renderPart2();
+            }
             openFileView(`${leaf.name}`, leaf.file, leaf.desc);
         }
 
@@ -1413,24 +1957,35 @@
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 pushHistoryState('场景节点速查手册');
             }
-            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">79个节点</div>`;
-            html += `<div class="grid-cards">`;
-            SCENES.forEach(s => {
-                html += `
-                    <div class="grid-card" onclick="openScene('${s.id}')">
-                        <span class="num" style="font-size:20px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
-                        <div class="name">${s.name}</div>
-                        <div class="sub">${s.desc}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            moduleScroll.innerHTML = html;
+            if (path.length === 1) {
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">79个节点</div>`;
+                html += `<div class="grid-cards">`;
+                SCENES.forEach(s => {
+                    html += `
+                        <div class="grid-card" onclick="openScene('${s.id}')">
+                            <span class="num" style="font-size:20px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
+                            <div class="name">${s.name}</div>
+                            <div class="sub">${s.desc}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            } else {
+                moduleTitle.textContent = path[1] || '场景详情';
+                moduleSub.textContent = '';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                if (!document.querySelector('#moduleScroll .file-view')) {
+                    goBackTo(1);
+                }
+            }
+            updateModuleHeaderVisibility();
         }
 
         function openScene(sid) {
             const scene = SCENES.find(s => s.id === sid);
             if (!scene || !scene.file) { alert('文件不存在'); return; }
+            if (path.length === 0) path = ['场景节点速查手册'];
             openFileView(scene.name, scene.file, `${scene.nodes} · ${scene.desc}`);
         }
 
@@ -1444,51 +1999,62 @@
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 pushHistoryState('全体系话术手册');
             }
-            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
-            html += `<div class="script-list">`;
-            SCRIPT_TYPES.forEach(s => {
-                html += `
-                    <div class="script-item" onclick="openScript('${s.id}')">
-                        <div class="name">${s.name}</div>
-                        <div class="desc">${s.desc}</div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            moduleScroll.innerHTML = html;
+            if (path.length === 1) {
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
+                html += `<div class="script-list">`;
+                SCRIPT_TYPES.forEach(s => {
+                    html += `
+                        <div class="script-item" onclick="openScript('${s.id}')">
+                            <div class="name">${s.name}</div>
+                            <div class="desc">${s.desc}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+            } else {
+                moduleTitle.textContent = path[1] || '话术详情';
+                moduleSub.textContent = '';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                if (!document.querySelector('#moduleScroll .file-view')) {
+                    goBackTo(1);
+                }
+            }
+            updateModuleHeaderVisibility();
         }
 
         function openScript(sid) {
             const script = SCRIPT_TYPES.find(s => s.id === sid);
             if (!script || !script.file) { alert('文件不存在'); return; }
+            if (path.length === 0) path = ['全体系话术手册'];
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种速查（带 postMessage 双向通信） --------
+        // -------- Part5: 品种速查 --------
         function renderPart5Direct() {
+            moduleScroll.classList.remove('file-mode');
             if (path.length === 0) {
                 path = ['主播品种速查手册'];
                 moduleTitle.textContent = '主播品种速查手册';
                 moduleSub.textContent = '29个品种 · 完整档案';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                 pushHistoryState('主播品种速查手册');
+            }
+
+            let url = VARIETIES_FILE;
+            if (path.length === 2) {
+                const detailName = encodeURIComponent(path[1]);
+                url += `?detail=${detailName}`;
+                moduleTitle.textContent = path[1] || '品种详情';
+                moduleSub.textContent = '品种详情';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
             } else {
-                // 如果 path 长度 > 1，说明是从详情返回，保持在当前层级
-                const last = path[path.length - 1];
-                moduleTitle.textContent = last;
-                moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                moduleTitle.textContent = '主播品种速查手册';
+                moduleSub.textContent = '29个品种 · 完整档案';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
             }
 
             moduleScroll.classList.add('file-mode');
-
-            // 构建 iframe URL，带上当前 path 信息（方便 part5.html 恢复状态）
-            let url = VARIETIES_FILE;
-            if (path.length > 1) {
-                const detailName = encodeURIComponent(path[path.length - 1]);
-                url += `?detail=${detailName}`;
-            }
-
             moduleScroll.innerHTML = `
                 <div class="file-view" id="fileViewContainer">
                     <iframe id="fileIframe" src="${url}" title="品种速查手册"></iframe>
@@ -1501,24 +2067,6 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 隐藏返回按钮
-                            const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link',
-                                '.detail-back'
-                            ];
-                            selectors.forEach(sel => {
-                                doc.querySelectorAll(sel).forEach(el => {
-                                    el.style.display = 'none';
-                                    el.style.pointerEvents = 'none';
-                                });
-                            });
-                            doc.querySelectorAll('button, a').forEach(btn => {
-                                const txt = btn.textContent.trim();
-                                if (txt === '‹' || txt === '←' || txt === '返回') {
-                                    btn.style.display = 'none';
-                                    btn.style.pointerEvents = 'none';
-                                }
-                            });
-                            // 隐藏上传
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1528,10 +2076,17 @@
                                         el.style.display = 'none';
                                     }
                                 });
-                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container')
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
                                 .forEach(el => {
                                     el.style.display = 'none';
                                 });
+                            doc.querySelectorAll('img[src*="upload"], img[src*="blob"]').forEach(img => {
+                                img.src = 'shanqiu_logo.png';
+                            });
+                            doc.querySelectorAll('.back-btn, .back-link, .detail-back').forEach(el => {
+                                el.style.display = '';
+                                el.style.pointerEvents = '';
+                            });
                         }
                     } catch (e) {}
                 };
@@ -1544,16 +2099,10 @@
                         </div>
                     `;
                 };
-                // 延迟处理
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back')
-                                .forEach(el => {
-                                    el.style.display = 'none';
-                                    el.style.pointerEvents = 'none';
-                                });
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1563,38 +2112,44 @@
                                         el.style.display = 'none';
                                     }
                                 });
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
+                                .forEach(el => {
+                                    el.style.display = 'none';
+                                });
+                            doc.querySelectorAll('img[src*="upload"], img[src*="blob"]').forEach(img => {
+                                img.src = 'shanqiu_logo.png';
+                            });
+                            doc.querySelectorAll('.back-btn, .back-link, .detail-back').forEach(el => {
+                                el.style.display = '';
+                                el.style.pointerEvents = '';
+                            });
                         }
                     } catch (e) {}
                 }, 2000);
             }
+            updateModuleHeaderVisibility();
         }
 
         // ================================================================
-        //  监听来自 iframe 的 postMessage（用于 Part5 内部导航同步）
+        //  监听来自 iframe 的 postMessage
         // ================================================================
         window.addEventListener('message', function(event) {
             const data = event.data;
             if (data && data.type === 'navigate' && Array.isArray(data.path) && data.path.length > 0) {
-                // 来自 part5.html 的导航消息
-                // 保留第一个元素作为根，后面的作为层级
                 const root = data.path[0];
                 const rest = data.path.slice(1);
-                // 如果当前模块是 part5，更新 path
                 if (currentModule === 'part5') {
-                    // 构建新 path：保持根不变，后面的按顺序
                     const newPath = [root, ...rest];
-                    // 检查是否真的有变化
                     if (JSON.stringify(newPath) !== JSON.stringify(path)) {
                         path = newPath;
-                        const last = path[path.length - 1];
-                        moduleTitle.textContent = last;
-                        moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                        renderPart5Direct();
                         moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                        const last = path[path.length - 1];
                         pushHistoryState(last);
+                        updateModuleHeaderVisibility();
                     }
                 }
             }
-            // 处理来自 iframe 的后退请求（让外部执行后退）
             if (data && data.type === 'backRequest') {
                 if (currentModule === 'part5' && path.length > 1) {
                     goBackTo(path.length - 1);
@@ -1609,27 +2164,20 @@
         // ================================================================
         window.addEventListener('popstate', function(event) {
             const state = event.state;
-            if (state && state.module && state.path) {
-                // 从历史状态恢复
+            if (state && state.module && state.path && state.path.length > 0) {
                 const targetModule = state.module;
                 const targetPath = state.path;
-                if (targetModule && targetPath && targetPath.length > 0) {
+                if (targetModule && targetPath) {
                     currentModule = targetModule;
                     path = targetPath;
                     showModule();
                     renderCurrentModule();
                     moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                    const last = path[path.length - 1];
-                    moduleTitle.textContent = last;
-                    if (targetModule === 'part5') {
-                        moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
-                    } else {
-                        moduleSub.textContent = '';
-                    }
+                    updateHeaderFromPath();
+                    updateModuleHeaderVisibility();
                     return;
                 }
             }
-            // 如果没有有效状态，回退到首页
             if (moduleView.classList.contains('active')) {
                 hideModule();
             }
@@ -1646,10 +2194,10 @@
                 path = [];
                 showModule();
                 renderCurrentModule();
-                // 推入历史
                 if (path.length > 0) {
                     pushHistoryState(path[0]);
                 }
+                updateModuleHeaderVisibility();
             });
         });
 
@@ -1661,10 +2209,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && moduleView.classList.contains('active')) {
                 navigateBack();
-            }
-            // 处理 Android 返回键（通过 popstate 已经处理，但增加额外保障）
-            if (e.key === 'Back' && moduleView.classList.contains('active')) {
-                // 部分 Android 浏览器会触发 popstate，不需要额外处理
             }
         });
 
@@ -1684,9 +2228,10 @@
         console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
         console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(1)');
         console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
+        console.log('🎨 支持两套主题: mint（浅色） · neon（暗色霓虹）');
         console.log('🖼️ 品牌图标已放大至 150px');
         console.log('📝 文件视图已强制全屏，并自动隐藏上传功能');
-        console.log('🔙 后退功能已修复：支持逐级返回，并与浏览器/手机返回键同步');
+        console.log('🔍 品种详情页已完全隐藏顶栏，仅保留内部返回');
     </script>
 
 </body>

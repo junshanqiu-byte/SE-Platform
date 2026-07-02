@@ -73,7 +73,6 @@
             gap: 16px; margin-bottom: 12px; padding-top: 4px;
             flex-shrink: 0; position: relative; z-index: 3;
         }
-        /* 品牌标识 — 再次放大至 150px */
         .brand-logo {
             width: 150px;
             height: 150px;
@@ -344,18 +343,18 @@
             overflow-y: auto;
             padding: 16px 20px 20px;
             -webkit-overflow-scrolling: touch;
-            display: block; /* 默认block */
+            display: block;
         }
         .module-scroll::-webkit-scrollbar { width: 3px; }
         .module-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 10px; }
 
-        /* ===== 🆕 文件全屏模式（彻底撑满剩余高度） ===== */
+        /* ===== 文件全屏模式 ===== */
         .module-scroll.file-mode {
             display: flex !important;
             flex-direction: column !important;
             padding: 0 !important;
             overflow: hidden !important;
-            height: 100% !important;  /* 强制占满父容器剩余高度 */
+            height: 100% !important;
         }
         .module-scroll.file-mode .file-view {
             flex: 1 1 auto !important;
@@ -518,7 +517,7 @@
             margin-top: 2px;
         }
 
-        /* ===== iframe 文件视图（基础样式） ===== */
+        /* ===== iframe 文件视图 ===== */
         .file-view {
             flex: 1;
             position: relative;
@@ -572,7 +571,7 @@
                 margin-bottom: 8px;
             }
             .brand-logo {
-                width: 110px;  /* 小屏下适当缩小，但保持较大 */
+                width: 110px;
                 height: 110px;
             }
             .brand-logo .logo-text {
@@ -876,7 +875,6 @@
         <!-- ===== 首页 ===== -->
         <div id="homeView">
             <div class="top-bar">
-                <!-- 品牌标识：放大至 150px -->
                 <div class="brand-logo" id="brandLogo">
                     <img id="brandImage" src="shanqiu_logo.png" alt="山秋枫树园" />
                     <span class="logo-text">山秋</span>
@@ -1091,6 +1089,9 @@
         let currentModule = null;
         let path = [];
 
+        // 历史记录堆栈（用于浏览器后退同步）
+        let historyStack = [];
+
         function showModule() {
             homeView.style.display = 'none';
             moduleView.classList.add('active');
@@ -1099,9 +1100,14 @@
         function hideModule() {
             homeView.style.display = 'flex';
             moduleView.classList.remove('active');
-            moduleScroll.classList.remove('file-mode'); // 退出全屏模式
+            moduleScroll.classList.remove('file-mode');
             currentModule = null;
             path = [];
+            historyStack = [];
+            // 清除历史状态
+            if (window.history && window.history.state) {
+                history.replaceState(null, '', window.location.pathname);
+            }
         }
 
         function renderBreadcrumb() {
@@ -1117,19 +1123,32 @@
             return html;
         }
 
+        // 将当前导航状态推入浏览器历史
+        function pushHistoryState(title) {
+            const state = { module: currentModule, path: [...path], title: title };
+            historyStack.push(state);
+            history.pushState(state, title, window.location.pathname + '?state=' + encodeURIComponent(JSON.stringify(state)));
+        }
+
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
             path = path.slice(0, level);
             renderCurrentModule();
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            // 同步历史
+            if (path.length > 0) {
+                pushHistoryState(path[path.length - 1]);
+            } else {
+                hideModule();
+            }
         }
 
         function navigateBack() {
             if (path.length <= 1) {
                 hideModule();
-            } else {
-                goBackTo(path.length - 1);
+                return;
             }
+            goBackTo(path.length - 1);
         }
 
         // ================================================================
@@ -1137,7 +1156,7 @@
         // ================================================================
         function renderCurrentModule() {
             if (!currentModule) return;
-            moduleScroll.classList.remove('file-mode'); // 默认移除
+            moduleScroll.classList.remove('file-mode');
             if (currentModule === 'part1') renderPart1();
             else if (currentModule === 'part2') renderPart2();
             else if (currentModule === 'part3') renderPart3();
@@ -1151,8 +1170,6 @@
             moduleTitle.textContent = title;
             moduleSub.textContent = sub || '';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
-
-            // 启用文件全屏模式
             moduleScroll.classList.add('file-mode');
 
             const fileUrl = file;
@@ -1161,61 +1178,54 @@
                     <iframe id="fileIframe" src="${fileUrl}" title="${title}"></iframe>
                 </div>
             `;
+            // 推入历史
+            pushHistoryState(title);
+
             const iframe = document.getElementById('fileIframe');
             if (iframe) {
                 iframe.onload = function() {
-                    // 隐藏iframe内的返回按钮以及上传相关元素
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 1. 隐藏各种返回按钮
+                            // 隐藏返回按钮
                             const selectors = [
                                 '.back-btn', '[data-back]', '.module-header .back-btn',
                                 '.back-link', '.top-mini .back-link', '.detail-back',
                                 'button.back-btn', 'a.back-link'
                             ];
                             selectors.forEach(sel => {
-                                const els = doc.querySelectorAll(sel);
-                                els.forEach(el => {
+                                doc.querySelectorAll(sel).forEach(el => {
                                     el.style.display = 'none';
                                     el.style.pointerEvents = 'none';
                                 });
                             });
-                            // 遍历所有按钮和链接，隐藏文本为返回的
-                            const allButtons = doc.querySelectorAll('button, a');
-                            allButtons.forEach(btn => {
+                            doc.querySelectorAll('button, a').forEach(btn => {
                                 const txt = btn.textContent.trim();
                                 if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back') {
                                     btn.style.display = 'none';
                                     btn.style.pointerEvents = 'none';
                                 }
                             });
-                            // 通用返回类
                             doc.querySelectorAll('.back, .back-btn, .back-link, .nav-back').forEach(el => {
                                 el.style.display = 'none';
                                 el.style.pointerEvents = 'none';
                             });
-
-                            // 2. 🆕 隐藏上传相关元素（去除图片上传功能）
-                            // 隐藏所有 input[type="file"]
+                            // 隐藏上传
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
-                            // 隐藏包含“上传”文本的按钮或链接
-                            doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]').forEach(
-                            el => {
-                                if (el.textContent && el.textContent.includes('上传')) {
-                                    el.style.display = 'none';
-                                }
-                            });
-                            // 隐藏可能的上传区域（根据常见类名）
-                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container').forEach(
-                                el => {
+                            doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
+                                .forEach(el => {
+                                    if (el.textContent && el.textContent.includes('上传')) {
+                                        el.style.display = 'none';
+                                    }
+                                });
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container')
+                                .forEach(el => {
                                     el.style.display = 'none';
                                 });
                         }
                     } catch (e) {
-                        // 跨域或其他错误静默处理
                         console.log('无法操作iframe内容（可能跨域）:', e);
                     }
                 };
@@ -1228,26 +1238,24 @@
                         </div>
                     `;
                 };
-                // 额外的延迟处理，确保iframe内容完全加载
+                // 延迟再处理一次
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 再次隐藏返回按钮
                             doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back').forEach(el => {
                                 el.style.display = 'none';
                                 el.style.pointerEvents = 'none';
                             });
-                            // 再次隐藏上传
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
                             doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
-                            .forEach(el => {
-                                if (el.textContent && el.textContent.includes('上传')) {
-                                    el.style.display = 'none';
-                                }
-                            });
+                                .forEach(el => {
+                                    if (el.textContent && el.textContent.includes('上传')) {
+                                        el.style.display = 'none';
+                                    }
+                                });
                         }
                     } catch (e) {}
                 }, 1500);
@@ -1262,19 +1270,20 @@
                 moduleTitle.textContent = '日本枫树入门课程';
                 moduleSub.textContent = '7门课程';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
-                html += `<div class="list-view">`;
-                COURSES.forEach(c => {
-                    html += `
-                        <div class="list-item" onclick="openCourse('${c.id}')">
-                            <div class="left"><div class="title">${c.title}</div></div>
-                            <span class="arrow">›</span>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-                moduleScroll.innerHTML = html;
+                pushHistoryState('日本枫树入门课程');
             }
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">系统化主播成长体系 · 七堂课</div>`;
+            html += `<div class="list-view">`;
+            COURSES.forEach(c => {
+                html += `
+                    <div class="list-item" onclick="openCourse('${c.id}')">
+                        <div class="left"><div class="title">${c.title}</div></div>
+                        <span class="arrow">›</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
         }
 
         function openCourse(cid) {
@@ -1291,24 +1300,25 @@
                 moduleTitle.textContent = '形态分类话术手册';
                 moduleSub.textContent = '树形 · 叶色 · 叶形';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                moduleScroll.innerHTML = `
-                    <div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择分类</div>
-                    <div class="list-view">
-                        <div class="list-item" onclick="openPart2A()">
-                            <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
-                            <span class="arrow">›</span>
-                        </div>
-                        <div class="list-item" onclick="openPart2B()">
-                            <div class="left"><div class="title">B. 叶色分类</div><div class="sub">7个色系 · 色彩科学</div></div>
-                            <span class="arrow">›</span>
-                        </div>
-                        <div class="list-item" onclick="openPart2C()">
-                            <div class="left"><div class="title">C. 叶形分类</div><div class="sub">6种叶形 · 形态辨识</div></div>
-                            <span class="arrow">›</span>
-                        </div>
-                    </div>
-                `;
+                pushHistoryState('形态分类话术手册');
             }
+            moduleScroll.innerHTML = `
+                <div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择分类</div>
+                <div class="list-view">
+                    <div class="list-item" onclick="openPart2A()">
+                        <div class="left"><div class="title">A. 树形分类</div><div class="sub">12种树形 · 骨架价值</div></div>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="list-item" onclick="openPart2B()">
+                        <div class="left"><div class="title">B. 叶色分类</div><div class="sub">7个色系 · 色彩科学</div></div>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="list-item" onclick="openPart2C()">
+                        <div class="left"><div class="title">C. 叶形分类</div><div class="sub">6种叶形 · 形态辨识</div></div>
+                        <span class="arrow">›</span>
+                    </div>
+                </div>
+            `;
         }
 
         function openPart2A() {
@@ -1317,6 +1327,7 @@
             moduleTitle.textContent = '树形分类';
             moduleSub.textContent = '12种树形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            pushHistoryState('树形分类');
             let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">骨架价值</div>`;
             html += `<div class="grid-cards">`;
             TREE_TYPES.forEach(t => {
@@ -1344,6 +1355,7 @@
             moduleTitle.textContent = '叶色分类';
             moduleSub.textContent = '7个色系';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            pushHistoryState('叶色分类');
             let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
             html += `<div class="grid-cards">`;
             COLOR_SERIES.forEach(c => {
@@ -1370,6 +1382,7 @@
             moduleTitle.textContent = '叶形分类';
             moduleSub.textContent = '6种叶形';
             moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            pushHistoryState('叶形分类');
             let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">形态辨识</div>`;
             html += `<div class="grid-cards">`;
             LEAF_TYPES.forEach(l => {
@@ -1398,20 +1411,21 @@
                 moduleTitle.textContent = '场景节点速查手册';
                 moduleSub.textContent = '八大场景';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">79个节点</div>`;
-                html += `<div class="grid-cards">`;
-                SCENES.forEach(s => {
-                    html += `
-                        <div class="grid-card" onclick="openScene('${s.id}')">
-                            <span class="num" style="font-size:20px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
-                            <div class="name">${s.name}</div>
-                            <div class="sub">${s.desc}</div>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-                moduleScroll.innerHTML = html;
+                pushHistoryState('场景节点速查手册');
             }
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">79个节点</div>`;
+            html += `<div class="grid-cards">`;
+            SCENES.forEach(s => {
+                html += `
+                    <div class="grid-card" onclick="openScene('${s.id}')">
+                        <span class="num" style="font-size:20px;font-weight:500;color:#3a7a78;">${s.nodes}</span>
+                        <div class="name">${s.name}</div>
+                        <div class="sub">${s.desc}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
         }
 
         function openScene(sid) {
@@ -1428,19 +1442,20 @@
                 moduleTitle.textContent = '全体系话术手册';
                 moduleSub.textContent = '六大话术体系';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
-                html += `<div class="script-list">`;
-                SCRIPT_TYPES.forEach(s => {
-                    html += `
-                        <div class="script-item" onclick="openScript('${s.id}')">
-                            <div class="name">${s.name}</div>
-                            <div class="desc">${s.desc}</div>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-                moduleScroll.innerHTML = html;
+                pushHistoryState('全体系话术手册');
             }
+            let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">顾问式沟通</div>`;
+            html += `<div class="script-list">`;
+            SCRIPT_TYPES.forEach(s => {
+                html += `
+                    <div class="script-item" onclick="openScript('${s.id}')">
+                        <div class="name">${s.name}</div>
+                        <div class="desc">${s.desc}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            moduleScroll.innerHTML = html;
         }
 
         function openScript(sid) {
@@ -1449,110 +1464,174 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种速查 —— 直接加载 part5.html --------
+        // -------- Part5: 品种速查（带 postMessage 双向通信） --------
         function renderPart5Direct() {
             if (path.length === 0) {
                 path = ['主播品种速查手册'];
                 moduleTitle.textContent = '主播品种速查手册';
                 moduleSub.textContent = '29个品种 · 完整档案';
                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                pushHistoryState('主播品种速查手册');
+            } else {
+                // 如果 path 长度 > 1，说明是从详情返回，保持在当前层级
+                const last = path[path.length - 1];
+                moduleTitle.textContent = last;
+                moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+            }
 
-                // 启用文件全屏模式
-                moduleScroll.classList.add('file-mode');
+            moduleScroll.classList.add('file-mode');
 
-                const fileUrl = VARIETIES_FILE;
-                moduleScroll.innerHTML = `
-                    <div class="file-view" id="fileViewContainer">
-                        <iframe id="fileIframe" src="${fileUrl}" title="品种速查手册"></iframe>
-                    </div>
-                `;
-                const iframe = document.getElementById('fileIframe');
-                if (iframe) {
-                    iframe.onload = function() {
-                        try {
-                            const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                            if (doc) {
-                                // 隐藏返回按钮
-                                const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link',
-                                    '.detail-back'
-                                ];
-                                selectors.forEach(sel => {
-                                    doc.querySelectorAll(sel).forEach(el => {
-                                        el.style.display = 'none';
-                                        el.style.pointerEvents = 'none';
-                                    });
+            // 构建 iframe URL，带上当前 path 信息（方便 part5.html 恢复状态）
+            let url = VARIETIES_FILE;
+            if (path.length > 1) {
+                const detailName = encodeURIComponent(path[path.length - 1]);
+                url += `?detail=${detailName}`;
+            }
+
+            moduleScroll.innerHTML = `
+                <div class="file-view" id="fileViewContainer">
+                    <iframe id="fileIframe" src="${url}" title="品种速查手册"></iframe>
+                </div>
+            `;
+
+            const iframe = document.getElementById('fileIframe');
+            if (iframe) {
+                iframe.onload = function() {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (doc) {
+                            // 隐藏返回按钮
+                            const selectors = ['.back-btn', '[data-back]', '.module-header .back-btn', '.back-link',
+                                '.detail-back'
+                            ];
+                            selectors.forEach(sel => {
+                                doc.querySelectorAll(sel).forEach(el => {
+                                    el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
                                 });
-                                doc.querySelectorAll('button, a').forEach(btn => {
-                                    const txt = btn.textContent.trim();
-                                    if (txt === '‹' || txt === '←' || txt === '返回') {
-                                        btn.style.display = 'none';
-                                        btn.style.pointerEvents = 'none';
+                            });
+                            doc.querySelectorAll('button, a').forEach(btn => {
+                                const txt = btn.textContent.trim();
+                                if (txt === '‹' || txt === '←' || txt === '返回') {
+                                    btn.style.display = 'none';
+                                    btn.style.pointerEvents = 'none';
+                                }
+                            });
+                            // 隐藏上传
+                            doc.querySelectorAll('input[type="file"]').forEach(el => {
+                                el.style.display = 'none';
+                            });
+                            doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
+                                .forEach(el => {
+                                    if (el.textContent && el.textContent.includes('上传')) {
+                                        el.style.display = 'none';
                                     }
                                 });
-                                // 🆕 隐藏上传元素
-                                doc.querySelectorAll('input[type="file"]').forEach(el => {
+                            doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container')
+                                .forEach(el => {
                                     el.style.display = 'none';
                                 });
-                                doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
-                                    .forEach(el => {
-                                        if (el.textContent && el.textContent.includes('上传')) {
-                                            el.style.display = 'none';
-                                        }
-                                    });
-                                doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container')
-                                    .forEach(el => {
-                                        el.style.display = 'none';
-                                    });
-                            }
-                        } catch (e) {}
-                    };
-                    iframe.onerror = function() {
-                        document.getElementById('fileViewContainer').innerHTML = `
-                            <div class="file-placeholder">
-                                <div class="big">📄</div>
-                                <div>文件加载失败</div>
-                                <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${fileUrl} 存在于同一目录下</div>
-                            </div>
-                        `;
-                    };
-                    setTimeout(() => {
-                        try {
-                            const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                            if (doc) {
-                                doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back')
-                                    .forEach(el => {
-                                        el.style.display = 'none';
-                                        el.style.pointerEvents = 'none';
-                                    });
-                                doc.querySelectorAll('input[type="file"]').forEach(el => {
+                        }
+                    } catch (e) {}
+                };
+                iframe.onerror = function() {
+                    document.getElementById('fileViewContainer').innerHTML = `
+                        <div class="file-placeholder">
+                            <div class="big">📄</div>
+                            <div>文件加载失败</div>
+                            <div style="font-size:13px;color:rgba(0,0,0,0.15);margin-top:4px;">请确认 ${VARIETIES_FILE} 存在于同一目录下</div>
+                        </div>
+                    `;
+                };
+                // 延迟处理
+                setTimeout(() => {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                        if (doc) {
+                            doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back')
+                                .forEach(el => {
                                     el.style.display = 'none';
+                                    el.style.pointerEvents = 'none';
                                 });
-                                doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
-                                    .forEach(el => {
-                                        if (el.textContent && el.textContent.includes('上传')) {
-                                            el.style.display = 'none';
-                                        }
-                                    });
-                            }
-                        } catch (e) {}
-                    }, 2000);
-                }
+                            doc.querySelectorAll('input[type="file"]').forEach(el => {
+                                el.style.display = 'none';
+                            });
+                            doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
+                                .forEach(el => {
+                                    if (el.textContent && el.textContent.includes('上传')) {
+                                        el.style.display = 'none';
+                                    }
+                                });
+                        }
+                    } catch (e) {}
+                }, 2000);
             }
         }
 
         // ================================================================
-        //  监听来自 iframe 的消息（用于第5模块内部导航同步）
+        //  监听来自 iframe 的 postMessage（用于 Part5 内部导航同步）
         // ================================================================
         window.addEventListener('message', function(event) {
             const data = event.data;
-            if (data && data.type === 'navigate') {
-                if (Array.isArray(data.path) && data.path.length > 0) {
-                    path = data.path;
+            if (data && data.type === 'navigate' && Array.isArray(data.path) && data.path.length > 0) {
+                // 来自 part5.html 的导航消息
+                // 保留第一个元素作为根，后面的作为层级
+                const root = data.path[0];
+                const rest = data.path.slice(1);
+                // 如果当前模块是 part5，更新 path
+                if (currentModule === 'part5') {
+                    // 构建新 path：保持根不变，后面的按顺序
+                    const newPath = [root, ...rest];
+                    // 检查是否真的有变化
+                    if (JSON.stringify(newPath) !== JSON.stringify(path)) {
+                        path = newPath;
+                        const last = path[path.length - 1];
+                        moduleTitle.textContent = last;
+                        moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                        moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                        pushHistoryState(last);
+                    }
+                }
+            }
+            // 处理来自 iframe 的后退请求（让外部执行后退）
+            if (data && data.type === 'backRequest') {
+                if (currentModule === 'part5' && path.length > 1) {
+                    goBackTo(path.length - 1);
+                } else {
+                    navigateBack();
+                }
+            }
+        });
+
+        // ================================================================
+        //  浏览器后退 / 手机物理返回键 同步
+        // ================================================================
+        window.addEventListener('popstate', function(event) {
+            const state = event.state;
+            if (state && state.module && state.path) {
+                // 从历史状态恢复
+                const targetModule = state.module;
+                const targetPath = state.path;
+                if (targetModule && targetPath && targetPath.length > 0) {
+                    currentModule = targetModule;
+                    path = targetPath;
+                    showModule();
+                    renderCurrentModule();
+                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
                     const last = path[path.length - 1];
                     moduleTitle.textContent = last;
-                    moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
-                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                    if (targetModule === 'part5') {
+                        moduleSub.textContent = path.length === 1 ? '29个品种 · 完整档案' : '品种详情';
+                    } else {
+                        moduleSub.textContent = '';
+                    }
+                    return;
                 }
+            }
+            // 如果没有有效状态，回退到首页
+            if (moduleView.classList.contains('active')) {
+                hideModule();
             }
         });
 
@@ -1567,14 +1646,25 @@
                 path = [];
                 showModule();
                 renderCurrentModule();
+                // 推入历史
+                if (path.length > 0) {
+                    pushHistoryState(path[0]);
+                }
             });
         });
 
-        moduleBack.addEventListener('click', navigateBack);
+        moduleBack.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateBack();
+        });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && moduleView.classList.contains('active')) {
                 navigateBack();
+            }
+            // 处理 Android 返回键（通过 popstate 已经处理，但增加额外保障）
+            if (e.key === 'Back' && moduleView.classList.contains('active')) {
+                // 部分 Android 浏览器会触发 popstate，不需要额外处理
             }
         });
 
@@ -1596,6 +1686,7 @@
         console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
         console.log('🖼️ 品牌图标已放大至 150px');
         console.log('📝 文件视图已强制全屏，并自动隐藏上传功能');
+        console.log('🔙 后退功能已修复：支持逐级返回，并与浏览器/手机返回键同步');
     </script>
 
 </body>

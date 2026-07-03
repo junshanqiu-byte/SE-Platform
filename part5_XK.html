@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>茜空 · 品种详情</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+            background: #dcece8;
+            color: #1c2e2a;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .bg-layer {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(145deg, #dcece8, #eaf5f2);
+            z-index:0;
+        }
+        .app {
+            position: relative;
+            width:100%; height:100%;
+            z-index:1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255,255,255,0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+        .detail-header {
+            flex-shrink:0;
+            padding: 16px 20px 12px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .detail-title {
+            font-size: 22px;
+            font-weight: 600;
+            flex:1;
+        }
+        .detail-title .sub {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(0,0,0,0.35);
+            margin-left: 6px;
+        }
+        .detail-latin {
+            font-size: 13px;
+            color: rgba(0,0,0,0.25);
+            font-style: italic;
+            margin-left: 8px;
+        }
+        .btn-gallery {
+            background: rgba(127,193,197,0.12);
+            border: 1px solid rgba(127,193,197,0.15);
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3a7a78;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink:0;
+        }
+        .btn-gallery:active { transform:scale(0.95); background: rgba(127,193,197,0.2); }
+        .detail-scroll {
+            flex:1;
+            overflow-y: auto;
+            padding: 16px 20px 28px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .detail-block {
+            background: rgba(255,255,255,0.18);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(4px);
+        }
+        .block-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3a7a78;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .block-label::after {
+            content: '';
+            flex:1;
+            height: 1.5px;
+            background: linear-gradient(90deg, rgba(127,193,197,0.12), transparent);
+        }
+        .block-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: rgba(0,0,0,0.72);
+            white-space: pre-wrap;
+        }
+        .block-text strong { color: #1c4e4a; font-weight:600; }
+        .hardiness-badge {
+            display: inline-block;
+            background: rgba(58,122,120,0.10);
+            border: 1px solid rgba(58,122,120,0.15);
+            border-radius: 20px;
+            padding: 2px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2d6e6b;
+            margin-right: 6px;
+        }
+        .hardiness-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            margin-top: 8px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.20);
+            border-radius: 12px;
+        }
+        .hardiness-grid .item {
+            font-size: 13px;
+            color: rgba(0,0,0,0.60);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .hardiness-grid .item .tag {
+            background: rgba(58,122,120,0.08);
+            border-radius: 4px;
+            padding: 0 8px;
+            font-size: 11px;
+            color: #3a7a78;
+        }
+        .season-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .season-item {
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+        .season-item .s-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(58,122,120,0.5);
+        }
+        .season-item .s-text {
+            font-size: 13px;
+            color: rgba(0,0,0,0.6);
+            line-height:1.5;
+        }
+        .gallery-overlay {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .gallery-overlay.active { display: flex; }
+        .gallery-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.5);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 210;
+        }
+        .gallery-counter {
+            position: absolute;
+            top: 20px; left: 20px;
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            z-index: 210;
+        }
+        .gallery-track-container {
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            overflow: hidden;
+            position: relative;
+            touch-action: pan-y;
+        }
+        .gallery-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            will-change: transform;
+        }
+        .gallery-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(0,0,0,0.02);
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            padding: 0 10px;
+        }
+        .gallery-nav button {
+            pointer-events: auto;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: rgba(255,255,255,0.4);
+            font-size: 22px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .gallery-nav button:disabled {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .gallery-nav button:active { background: rgba(255,255,255,0.2); }
+        .gallery-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 210;
+        }
+        .gallery-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s;
+        }
+        .gallery-dots span.active {
+            background: #7fc1c5;
+            transform: scale(1.2);
+        }
+        @media (max-width:480px) {
+            .detail-title { font-size: 18px; }
+            .detail-title .sub { font-size: 12px; }
+            .season-grid { grid-template-columns:1fr; }
+            .gallery-track-container { width: 95%; height: 60vh; }
+            .hardiness-grid { flex-direction: column; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="app">
+    <div class="detail-header">
+        <span class="detail-title">
+            茜空
+            <span class="sub">Akane-sora</span>
+            <span class="detail-latin">Acer palmatum 'Akane-sora'</span>
+        </span>
+        <button class="btn-gallery" id="galleryBtn">实景图片</button>
+    </div>
+
+    <div class="detail-scroll">
+        <!-- 品种来源 -->
+        <div class="detail-block">
+            <div class="block-label">📌 品种来源</div>
+            <div class="block-text">一款近年来备受关注的日本枫树品种，其名"茜空"（Akane-sora）在日语中意为"染红的晚霞天空"，形象地描绘了其春季新叶如晚霞般温暖绚丽的色彩。它被归类为"黄金枫"品种，以春季明亮的橙黄色、出色的生长速度和良好的抗性而著称，是一款皮实好养、适合新手入门的高性价比品种。</div>
+        </div>
+
+        <!-- 树形与长势 -->
+        <div class="detail-block">
+            <div class="block-label">🌳 树形与长势</div>
+            <div class="block-text"><strong>树形：</strong>直立生长，树形开阔，生长迅速。资料显示其成树高度可达约5米，属于中型乔木，适合作为庭院的独立焦点树或骨干树种。其快速的生长势意味着能在较短时间内形成理想的景观体量。
+
+                <strong>尺寸与长势：</strong>成树高度可达约5米，生长迅速。</div>
+        </div>
+
+        <!-- 耐寒区 -->
+        <div class="detail-block" style="border-left: 4px solid #4a9e9a;">
+            <div class="block-label">❄️ 耐寒区</div>
+            <div class="block-text">
+                <span class="hardiness-badge">六区 ~ 九区</span>
+                <span style="font-size:14px;color:rgba(0,0,0,0.6);">约 -20℃ ~ 0℃</span>
+                <div class="hardiness-grid">
+                    <span class="item">📍 适宜种植区域：</span>
+                    <span class="item"><span class="tag">北京</span></span>
+                    <span class="item"><span class="tag">天津</span></span>
+                    <span class="item"><span class="tag">河北中南部</span></span>
+                    <span class="item"><span class="tag">山东</span></span>
+                    <span class="item"><span class="tag">河南</span></span>
+                    <span class="item"><span class="tag">江苏</span></span>
+                    <span class="item"><span class="tag">浙江</span></span>
+                    <span class="item"><span class="tag">湖北</span></span>
+                    <span class="item"><span class="tag">四川盆地</span></span>
+                    <span class="item"><span class="tag">及以南地区</span></span>
+                </div>
+                <div style="margin-top:6px;font-size:13px;color:rgba(0,0,0,0.5);">抗性好，在所有枫树品种中耐晒性最强之一。建议在极端寒冷地区对幼苗期植株进行冬季防护。</div>
+            </div>
+        </div>
+
+        <!-- 叶形 -->
+        <div class="detail-block">
+            <div class="block-label">🍃 叶形</div>
+            <div class="block-text">叶片为典型的掌状裂叶，形态舒展优雅。叶色随季节呈现丰富的色彩变化。</div>
+        </div>
+
+        <!-- 季节表现 -->
+        <div class="detail-block">
+            <div class="block-label">🌿 季节表现</div>
+            <div class="season-grid">
+                <div class="season-item"><div class="s-label">🌸 春</div><div class="s-text">新叶展开时呈现明亮的橙黄色至橘红色。初展的新叶色彩饱和度高，如同被夕阳染红的晚霞，温暖而充满活力。随着叶片伸展，色彩逐渐由橘红变为橘黄，再转为金黄色，最终过渡为浅绿色。这一渐变过程持续数周，是全年最具观赏性的阶段。</div></div>
+                <div class="season-item"><div class="s-label">☀️ 夏</div><div class="s-text">叶片转为浅绿色至黄绿色，清新宜人。在夏季高温期，新抽生的枝叶仍可能带有粉红色调，为树冠增添层次感。</div></div>
+                <div class="season-item"><div class="s-label">🍂 秋</div><div class="s-text">叶片再度焕发色彩，变为红色稍带黄色或橘红色至亮红色，为秋日花园带来温暖的收官。</div></div>
+                <div class="season-item"><div class="s-label">❄️ 冬</div><div class="s-text">冬季落叶，树形开阔。</div></div>
+            </div>
+        </div>
+
+        <!-- 价值提炼 -->
+        <div class="detail-block">
+            <div class="block-label">✨ 价值提炼</div>
+            <div class="block-text"><strong>美学价值：</strong>它是一位"晚霞的诗人"。其名"茜空"所描绘的如晚霞般温暖的橙黄色新叶，是春季花园中最先奏响的色彩乐章。从橘红到橘黄、金黄再到浅绿的渐变过程，如同一幅动态的水彩画，充满诗意与生命力。
+
+                <strong>空间价值：</strong>其快速的生长速度和开阔的树形，使其能较快地形成理想的景观体量，非常适合作为庭院焦点树或骨干树种。出色的耐晒性和良好的抗性，使其在阳光充足的花园中也能表现优异。
+
+                <strong>精神价值：</strong>种植'茜空'意味着选择一份"确定的美"。它被誉为最好养护的枫树品种之一——不娇气、不挑剔，以稳定而出色的色彩表现回报园丁的付出。其名所承载的"晚霞"意象，更赋予品种一种温暖而浪漫的情感色彩。对于追求低维护、高观赏价值的园艺爱好者而言，'茜空'是无需犹豫的可靠之选。
+
+                总而言之，'茜空'是一款以春季如晚霞般温暖的橙黄色、快速生长和良好抗性为特色的日本枫树。它不追求极致的稀有或复杂的养护，而是以稳定而出色的色彩表现和皮实好养的品性，成为新手入门与进阶收藏皆宜的可靠之选。</div>
+        </div>
+    </div>
+</div>
+
+<!-- 图片画廊 -->
+<div class="gallery-overlay" id="galleryOverlay">
+    <button class="gallery-close" id="galleryClose">✕</button>
+    <div class="gallery-counter" id="galleryCounter">1 / 10</div>
+    <div class="gallery-track-container" id="galleryContainer">
+        <div class="gallery-track" id="galleryTrack"></div>
+        <div class="gallery-nav">
+            <button id="prevBtn" disabled>◀</button>
+            <button id="nextBtn">▶</button>
+        </div>
+        <div class="gallery-dots" id="galleryDots"></div>
+    </div>
+</div>
+
+<script>
+    const imageList = [
+        'part5_XK_001.jpg', 'part5_XK_002.jpg', 'part5_XK_003.jpg', 'part5_XK_004.jpg', 'part5_XK_005.jpg',
+        'part5_XK_006.jpg', 'part5_XK_007.jpg', 'part5_XK_008.jpg', 'part5_XK_009.jpg', 'part5_XK_010.jpg'
+    ];
+
+    const overlay = document.getElementById('galleryOverlay');
+    const track = document.getElementById('galleryTrack');
+    const dots = document.getElementById('galleryDots');
+    const counter = document.getElementById('galleryCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const closeBtn = document.getElementById('galleryClose');
+    const openBtn = document.getElementById('galleryBtn');
+
+    let currentIndex = 0;
+    const total = imageList.length;
+
+    function renderGallery() {
+        track.innerHTML = imageList.map(src => `
+            <div class="gallery-slide" style="background-image:url('${src}');"></div>
+        `).join('');
+        dots.innerHTML = imageList.map((_, i) => `<span class="${i===0?'active':''}"></span>`).join('');
+        updateGallery();
+    }
+
+    function updateGallery() {
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        counter.textContent = `${currentIndex+1} / ${total}`;
+        dots.querySelectorAll('span').forEach((d, i) => d.classList.toggle('active', i===currentIndex));
+        prevBtn.disabled = (currentIndex === 0);
+        nextBtn.disabled = (currentIndex === total - 1);
+    }
+
+    function goTo(index) {
+        if (index < 0) index = 0;
+        if (index >= total) index = total - 1;
+        if (index === currentIndex) return;
+        currentIndex = index;
+        updateGallery();
+    }
+
+    openBtn.addEventListener('click', () => {
+        if (total === 0) { alert('暂无图片'); return; }
+        currentIndex = 0;
+        renderGallery();
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) { closeBtn.click(); }
+    });
+
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentIndex-1); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentIndex+1); });
+
+    document.addEventListener('keydown', (e) => {
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(currentIndex-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(currentIndex+1); }
+        if (e.key === 'Escape') { closeBtn.click(); }
+    });
+
+    let startX = 0, startY = 0, isSwiping = false;
+    const container = document.getElementById('galleryContainer');
+    container.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        isSwiping = true;
+    }, {passive:true});
+    container.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) e.preventDefault();
+    }, {passive:false});
+    container.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) {
+            dx < 0 ? goTo(currentIndex+1) : goTo(currentIndex-1);
+        }
+    }, {passive:true});
+
+    let mouseDown = false, mStartX = 0;
+    container.addEventListener('mousedown', (e) => { mouseDown = true; mStartX = e.clientX; e.preventDefault(); });
+    document.addEventListener('mousemove', (e) => {
+        if (!mouseDown) return;
+        const dx = e.clientX - mStartX;
+        if (Math.abs(dx) > 20) e.preventDefault();
+    });
+    document.addEventListener('mouseup', (e) => {
+        if (!mouseDown) return;
+        mouseDown = false;
+        const dx = e.clientX - mStartX;
+        if (Math.abs(dx) > 40) {
+            dx < 0 ? goTo(currentIndex+1) : goTo(currentIndex-1);
+        }
+    });
+</script>
+</body>
+</html>

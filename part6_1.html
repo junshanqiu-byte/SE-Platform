@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>物流包装展示 · 山秋枫树园</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            overflow: hidden;
+            background: #1a1a1a;
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* ===== 幻灯片容器 ===== */
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            height: -webkit-fill-available;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        /* ===== 滑动轨道 ===== */
+        .slider-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        /* ===== 每一张幻灯片 ===== */
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #0a0a0a;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: #0a0a0a;
+            pointer-events: none;
+        }
+
+        /* ===== 底部文字 ===== */
+        .caption {
+            position: absolute;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 28px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 1.2px;
+            color: rgba(255, 255, 255, 0.85);
+            white-space: nowrap;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .caption strong {
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 导航箭头 ===== */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: rgba(255, 255, 255, 0.60);
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            z-index: 10;
+            outline: none;
+            touch-action: manipulation;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+        }
+        .arrow:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.20);
+        }
+        .arrow:active {
+            transform: translateY(-50%) scale(0.92);
+            background: rgba(255, 255, 255, 0.20);
+        }
+        .arrow-left {
+            left: 20px;
+        }
+        .arrow-right {
+            right: 20px;
+        }
+        .arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== 页码指示器 ===== */
+        .dots {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.20);
+            transition: all 0.3s ease;
+            border: none;
+            pointer-events: auto;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+        }
+        .dots .dot.active {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1.25);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+        }
+        .dots .dot:hover {
+            background: rgba(255, 255, 255, 0.45);
+        }
+        .dots .dot.active:hover {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        /* ===== 隐藏箭头（移动端或单张时） ===== */
+        .arrow.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            .arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            .arrow svg {
+                width: 18px;
+                height: 18px;
+            }
+            .arrow-left {
+                left: 10px;
+            }
+            .arrow-right {
+                right: 10px;
+            }
+            .caption {
+                bottom: 32px;
+                padding: 10px 18px;
+                font-size: 13px;
+                letter-spacing: 0.8px;
+                white-space: normal;
+                max-width: 90%;
+                border-radius: 28px;
+            }
+            .dots {
+                bottom: 88px;
+                gap: 8px;
+            }
+            .dots .dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .caption {
+                font-size: 11px;
+                padding: 8px 14px;
+                bottom: 28px;
+            }
+            .dots {
+                bottom: 76px;
+            }
+            .arrow {
+                width: 34px;
+                height: 34px;
+            }
+            .arrow svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .caption {
+                bottom: 64px;
+                padding: 14px 36px;
+                font-size: 17px;
+            }
+            .dots {
+                bottom: 140px;
+            }
+        }
+
+        /* ===== 过渡动画 ===== */
+        .slide-enter {
+            animation: fadeIn 0.6s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0.3;
+                transform: scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===== 顶部品牌标识（极简） ===== */
+        .brand-tag {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.15);
+            text-transform: uppercase;
+            pointer-events: none;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+        }
+        @media (max-width: 640px) {
+            .brand-tag {
+                top: 14px;
+                font-size: 9px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slider" id="slider">
+        <!-- 品牌标识 -->
+        <div class="brand-tag">山秋枫树园</div>
+
+        <!-- 滑动轨道 -->
+        <div class="slider-track" id="track">
+            <!-- 4张图片由JS动态生成 -->
+        </div>
+
+        <!-- 箭头：左 -->
+        <button class="arrow arrow-left" id="prevBtn" aria-label="上一张">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <!-- 箭头：右 -->
+        <button class="arrow arrow-right" id="nextBtn" aria-label="下一张">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <!-- 底部文字 -->
+        <div class="caption" id="caption">
+            <strong>全冠木架膜封包装</strong> &nbsp;·&nbsp; 京东物流送货上门
+        </div>
+
+        <!-- 页码指示器 -->
+        <div class="dots" id="dotsContainer"></div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== 配置 =====
+            const IMAGES = [
+                'part6_wl_001.jpg',
+                'part6_wl_002.jpg',
+                'part6_wl_003.jpg',
+                'part6_wl_004.jpg'
+            ];
+            const TOTAL = IMAGES.length;
+
+            // ===== DOM 引用 =====
+            const track = document.getElementById('track');
+            const dotsContainer = document.getElementById('dotsContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const caption = document.getElementById('caption');
+
+            let currentIndex = 0;
+            let isTransitioning = false;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let isSwiping = false;
+
+            // ===== 构建幻灯片 =====
+            function buildSlides() {
+                track.innerHTML = '';
+                IMAGES.forEach((src, idx) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'slide';
+                    slide.dataset.index = idx;
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `物流包装展示 ${idx + 1}`;
+                    img.loading = 'lazy';
+                    // 首张优先加载
+                    if (idx === 0) img.fetchPriority = 'high';
+                    slide.appendChild(img);
+                    track.appendChild(slide);
+                });
+            }
+
+            // ===== 构建指示点 =====
+            function buildDots() {
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < TOTAL; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.setAttribute('aria-label', `跳转到第 ${i + 1} 张`);
+                    dot.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        goTo(parseInt(this.dataset.index));
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            // ===== 更新视图 =====
+            function updateSlide(index, animate = true) {
+                if (index < 0) index = 0;
+                if (index >= TOTAL) index = TOTAL - 1;
+                if (index === currentIndex && animate) return;
+
+                currentIndex = index;
+                const offset = -currentIndex * 100;
+                track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
+                track.style.transform = `translateX(${offset}%)`;
+
+                // 更新指示点
+                const dots = dotsContainer.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+
+                // 箭头显示状态
+                updateArrows();
+
+                // 预加载相邻图片
+                preloadAdjacent();
+            }
+
+            function updateArrows() {
+                prevBtn.classList.toggle('hidden', currentIndex === 0);
+                nextBtn.classList.toggle('hidden', currentIndex === TOTAL - 1);
+            }
+
+            // ===== 跳转到指定索引 =====
+            function goTo(index, animate = true) {
+                if (isTransitioning) return;
+                if (index < 0) index = 0;
+                if (index >= TOTAL) index = TOTAL - 1;
+                if (index === currentIndex) return;
+                isTransitioning = true;
+                updateSlide(index, animate);
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 550);
+            }
+
+            // ===== 上一张 / 下一张 =====
+            function prev() {
+                if (currentIndex > 0) goTo(currentIndex - 1);
+            }
+
+            function next() {
+                if (currentIndex < TOTAL - 1) goTo(currentIndex + 1);
+            }
+
+            // ===== 预加载相邻图片 =====
+            function preloadAdjacent() {
+                const indices = [currentIndex - 1, currentIndex + 1];
+                indices.forEach(idx => {
+                    if (idx >= 0 && idx < TOTAL) {
+                        const img = new Image();
+                        img.src = IMAGES[idx];
+                    }
+                });
+            }
+
+            // ===== 键盘事件 =====
+            function handleKeydown(e) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prev();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    next();
+                }
+            }
+
+            // ===== 触摸事件（滑动支持） =====
+            function handleTouchStart(e) {
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                isSwiping = false;
+            }
+
+            function handleTouchMove(e) {
+                if (!touchStartX) return;
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                const deltaY = touch.clientY - touchStartY;
+
+                // 判断是否为水平滑动（水平距离 > 垂直距离 且 水平距离 > 15px）
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+                    isSwiping = true;
+                    e.preventDefault(); // 防止页面滚动
+                }
+            }
+
+            function handleTouchEnd(e) {
+                if (!touchStartX || !isSwiping) {
+                    touchStartX = 0;
+                    touchStartY = 0;
+                    isSwiping = false;
+                    return;
+                }
+                const deltaX = (e.changedTouches[0]?.clientX || 0) - touchStartX;
+                if (Math.abs(deltaX) > 40) {
+                    if (deltaX < 0) {
+                        next();
+                    } else {
+                        prev();
+                    }
+                }
+                touchStartX = 0;
+                touchStartY = 0;
+                isSwiping = false;
+            }
+
+            // ===== 鼠标拖拽支持（桌面端滑动） =====
+            let mouseDown = false;
+            let mouseStartX = 0;
+            let mouseStartY = 0;
+            let mouseMoved = false;
+
+            function handleMouseDown(e) {
+                mouseDown = true;
+                mouseStartX = e.clientX;
+                mouseStartY = e.clientY;
+                mouseMoved = false;
+                e.preventDefault();
+            }
+
+            function handleMouseMove(e) {
+                if (!mouseDown) return;
+                const deltaX = e.clientX - mouseStartX;
+                const deltaY = e.clientY - mouseStartY;
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+                    mouseMoved = true;
+                    e.preventDefault();
+                }
+            }
+
+            function handleMouseUp(e) {
+                if (!mouseDown) return;
+                mouseDown = false;
+                if (mouseMoved) {
+                    const deltaX = e.clientX - mouseStartX;
+                    if (Math.abs(deltaX) > 40) {
+                        if (deltaX < 0) {
+                            next();
+                        } else {
+                            prev();
+                        }
+                    }
+                }
+                mouseMoved = false;
+            }
+
+            // ===== 初始化 =====
+            function init() {
+                buildSlides();
+                buildDots();
+                // 初始定位，无动画
+                updateSlide(0, false);
+                // 预加载所有图片（提升体验）
+                IMAGES.forEach(src => {
+                    const img = new Image();
+                    img.src = src;
+                });
+
+                // 事件绑定
+                document.addEventListener('keydown', handleKeydown);
+
+                const slider = document.getElementById('slider');
+                slider.addEventListener('touchstart', handleTouchStart, { passive: true });
+                slider.addEventListener('touchmove', handleTouchMove, { passive: false });
+                slider.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+                // 鼠标拖拽
+                slider.addEventListener('mousedown', handleMouseDown);
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+
+                // 按钮事件
+                prevBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    prev();
+                });
+                nextBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    next();
+                });
+
+                // 窗口 resize 不做特殊处理，保持全屏
+                // 预加载首张之后的图片
+                setTimeout(preloadAdjacent, 300);
+
+                console.log('📦 物流包装展示已启动，共 ' + TOTAL + ' 张图片');
+            }
+
+            // DOM 就绪后启动
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+</body>
+</html>

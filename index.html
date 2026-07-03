@@ -877,7 +877,6 @@
             appEl.classList.add('theme-' + theme);
             dots.forEach(d => { d.classList.toggle('active', d.dataset.theme === theme); });
             localStorage.setItem('preferred-theme', theme);
-            console.log('🌓 主题切换为:', theme);
         }
 
         const savedTheme = localStorage.getItem('preferred-theme') || 'mint';
@@ -1053,7 +1052,6 @@
         let currentModule = null;
         let path = [];
         let historyStack = [];
-        let isInternalNav = false; // 防止 popstate 递归
 
         function showModule() {
             homeView.style.display = 'none';
@@ -1068,11 +1066,11 @@
             currentModule = null;
             path = [];
             historyStack = [];
+            // 清空历史状态，避免残留
             if (window.history && window.history.state) {
                 history.replaceState(null, '', window.location.pathname);
             }
             moduleHeader.classList.remove('hide');
-            isInternalNav = false;
         }
 
         function renderBreadcrumb() {
@@ -1088,41 +1086,30 @@
             return html;
         }
 
+        // 使用 pushState 记录状态
         function pushHistoryState(title) {
             const state = { module: currentModule, path: [...path], title: title };
             historyStack.push(state);
-            // 使用 replaceState 避免触发 popstate 递归，同时保留状态
             const url = window.location.pathname + '?state=' + encodeURIComponent(JSON.stringify(state));
-            history.replaceState(state, title, url);
+            history.pushState(state, title, url);
         }
 
+        // 返回指定层级（利用浏览器历史后退多步）
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
-            // 防止重复调用
-            if (path.length <= level && level === path.length) {
-                // 已经在目标层级，不做任何事
-                return;
-            }
-            isInternalNav = true;
-            path = path.slice(0, level);
-            updateHeaderFromPath();
-            renderCurrentModule();
-            moduleBreadcrumb.innerHTML = renderBreadcrumb();
-            if (path.length > 0) {
-                pushHistoryState(path[path.length - 1]);
-            } else {
-                hideModule();
-            }
-            updateModuleHeaderVisibility();
-            setTimeout(() => { isInternalNav = false; }, 300);
+            const steps = path.length - level;
+            if (steps <= 0) return;
+            // 使用 history.go 后退指定步数，触发 popstate
+            history.go(-steps);
         }
 
+        // 返回上一级
         function navigateBack() {
             if (path.length <= 1) {
                 hideModule();
                 return;
             }
-            goBackTo(path.length - 1);
+            history.back();
         }
 
         function updateHeaderFromPath() {
@@ -1190,7 +1177,6 @@
         }
 
         function updateModuleHeaderVisibility() {
-            // 品种详情（path.length === 2）时隐藏头部，让 iframe 全屏展示
             if (currentModule === 'part5' && path.length === 2) {
                 moduleHeader.classList.add('hide');
             } else {
@@ -1215,7 +1201,7 @@
 
         // -------- 通用：打开文件（iframe） --------
         function openFileView(title, file, sub, keepBackBtn = false, extraInject = null) {
-            // 保持路径一致性
+            // 更新路径
             if (path.length === 0 || path[path.length - 1] !== title) {
                 path.push(title);
             }
@@ -1238,7 +1224,6 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 隐藏内部返回按钮（除非 keepBackBtn = true）
                             if (!keepBackBtn) {
                                 const selectors = [
                                     '.back-btn', '[data-back]', '.module-header .back-btn',
@@ -1263,7 +1248,6 @@
                                     el.style.pointerEvents = 'none';
                                 });
                             }
-                            // 隐藏上传相关元素
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1298,7 +1282,6 @@
                         </div>
                     `;
                 };
-                // 延迟再尝试注入一次（应对加载慢的情况）
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -1644,7 +1627,6 @@
                     return;
                 }
 
-                // 修复：galleryInject 中为关闭按钮绑定事件，并处理返回
                 const galleryInject = function(doc) {
                     // 注入画廊样式
                     const style = doc.createElement('style');
@@ -1782,7 +1764,7 @@
                     `;
                     doc.head.appendChild(style);
 
-                    // 隐藏 doc 中所有返回按钮（避免干扰）
+                    // 隐藏 doc 中所有返回按钮
                     doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back, .nav-back, .module-header .back-btn')
                         .forEach(el => {
                             el.style.display = 'none';
@@ -1807,7 +1789,6 @@
                         }
                     } catch(e) {}
 
-                    // 如果没找到图片，显示占位
                     if (!imageList || imageList.length === 0) {
                         imageList = ['shanqiu_logo.png'];
                         currentIndex = 0;
@@ -1818,41 +1799,23 @@
                     galleryContainer.className = 'gallery-overlay';
                     galleryContainer.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:0;margin:0;z-index:9999;';
 
-                    // 关闭按钮
+                    // 关闭按钮（触发返回）
                     const closeBtn = doc.createElement('div');
                     closeBtn.className = 'gallery-close';
                     closeBtn.textContent = '✕';
                     closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;z-index:20;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;';
-                    // 绑定关闭事件 —— 修复：点击叉号返回品种列表
-                    closeBtn.onclick = function(e) {
+                    // 绑定关闭事件 —— 通过 postMessage 通知父级返回
+                    const doBack = function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         try {
-                            // 调用主页面的 goBackTo(1) 回到品种列表
-                            if (window.parent && typeof window.parent.goBackTo === 'function') {
-                                window.parent.goBackTo(1);
-                            } else {
-                                window.parent.postMessage({ type: 'backRequest' }, '*');
-                            }
-                        } catch(err) {
-                            console.warn('关闭画廊失败:', err);
                             window.parent.postMessage({ type: 'backRequest' }, '*');
+                        } catch(err) {
+                            console.warn('postMessage backRequest failed:', err);
                         }
                     };
-                    // 移动端 touch 事件
-                    closeBtn.addEventListener('touchstart', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        try {
-                            if (window.parent && typeof window.parent.goBackTo === 'function') {
-                                window.parent.goBackTo(1);
-                            } else {
-                                window.parent.postMessage({ type: 'backRequest' }, '*');
-                            }
-                        } catch(err) {
-                            window.parent.postMessage({ type: 'backRequest' }, '*');
-                        }
-                    }, { passive: false });
+                    closeBtn.onclick = doBack;
+                    closeBtn.addEventListener('touchstart', doBack, { passive: false });
 
                     // 计数器
                     const counter = doc.createElement('div');
@@ -1945,26 +1908,19 @@
                     galleryContainer.appendChild(nav);
                     galleryContainer.appendChild(dotsContainer);
 
-                    // 追加到 body
                     doc.body.appendChild(galleryContainer);
 
-                    // 也处理键盘 ESC
+                    // 键盘 ESC
                     doc.addEventListener('keydown', function(e) {
                         if (e.key === 'Escape') {
                             e.preventDefault();
                             try {
-                                if (window.parent && typeof window.parent.goBackTo === 'function') {
-                                    window.parent.goBackTo(1);
-                                } else {
-                                    window.parent.postMessage({ type: 'backRequest' }, '*');
-                                }
-                            } catch(err) {
                                 window.parent.postMessage({ type: 'backRequest' }, '*');
-                            }
+                            } catch(err) {}
                         }
                     });
 
-                    // 触摸滑动支持（简单）
+                    // 触摸滑动
                     let startX = 0;
                     let isDragging = false;
                     const container = trackContainer;
@@ -2011,7 +1967,6 @@
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
-                // 使用 keepBackBtn = true 保留 iframe 中的返回按钮，但 galleryInject 会隐藏它们并创建自己的关闭按钮
                 openFileView(displayName, variety.file, '品种详情', false, galleryInject);
             }
         }
@@ -2099,46 +2054,33 @@
                     }
                 }
             }
-            // 处理来自 iframe 的返回请求
+            // 处理返回请求 —— 执行历史后退
             if (data && data.type === 'backRequest') {
-                if (currentModule === 'part5' && path.length > 1) {
-                    goBackTo(path.length - 1);
+                if (currentModule && path.length > 1) {
+                    history.back();
                 } else {
-                    navigateBack();
+                    hideModule();
                 }
             }
         });
 
         // ================================================================
-        //  浏览器后退 / 手机物理返回键 同步（修复移动端问题）
+        //  浏览器后退 / 手机物理返回键 同步（使用浏览器历史驱动）
         // ================================================================
         window.addEventListener('popstate', function(event) {
-            // 如果是内部导航触发的，忽略
-            if (isInternalNav) {
-                return;
-            }
             const state = event.state;
-            if (state && state.module && state.path && state.path.length > 0) {
-                const targetModule = state.module;
-                const targetPath = state.path;
-                if (targetModule && targetPath) {
-                    currentModule = targetModule;
-                    path = targetPath;
-                    showModule();
-                    renderCurrentModule();
-                    moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                    updateHeaderFromPath();
-                    updateModuleHeaderVisibility();
-                    return;
-                }
-            }
-            // 如果 state 无效，尝试逐级返回而不是直接退出（移动端修复）
-            if (moduleView.classList.contains('active')) {
-                if (path.length > 1) {
-                    // 回到上一级
-                    goBackTo(path.length - 1);
-                } else {
-                    // 如果已经在最顶层，退出模块
+            if (state && state.module && state.path) {
+                // 恢复状态
+                currentModule = state.module;
+                path = state.path;
+                showModule();
+                renderCurrentModule();
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                updateHeaderFromPath();
+                updateModuleHeaderVisibility();
+            } else {
+                // 如果当前模块激活但状态无效，退出模块
+                if (moduleView.classList.contains('active')) {
                     hideModule();
                 }
             }
@@ -2187,17 +2129,8 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台');
-        console.log('📚 模块: 课程(7) · 形态(树形12/色系7/叶形6) · 场景(8) · 话术(6) · 品种(52) · 物流及赠品(3)');
-        console.log('📁 请确保所有 part*.html 文件与 shanqiu_logo.png 在同一目录下');
-        console.log('🎨 支持两套主题: mint（浅色） · neon（暗色霓虹）');
-        console.log('🖼️ 品牌图标已放大至 150px');
-        console.log('📝 文件视图已强制全屏，并自动隐藏上传功能');
-        console.log('🔍 品种模块现由 52 个独立文件组成，支持逐级进退');
-        console.log('📦 模块六：物流及赠品，包含 3 个子项');
-        console.log('🖼️ 品种图片画廊已优化：全屏显示、图片自适应、箭头浮于图上、自动读取实际图片数量');
-        console.log('📌 品种显示名称已简化（如"东林黄枫"等），按钮尺寸缩小，排列更紧密');
-        console.log('📱 移动端修复：品种详情页关闭按钮(✕)现已绑定返回事件，导航返回逐级退回');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (移动端返回修复版)');
+        console.log('📱 品种详情页关闭按钮已绑定逐级返回，物理返回键同步支持');
     </script>
 
 </body>

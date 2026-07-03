@@ -600,14 +600,14 @@
         /* ===== 品种网格（紧凑版） ===== */
         .variety-grid {
             display:grid;
-            grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); /* 减小最小宽度 */
-            gap:6px; /* 减小间距 */
+            grid-template-columns:repeat(auto-fill, minmax(90px, 1fr));
+            gap:6px;
             margin-top:6px;
         }
         .variety-item {
             background:rgba(255,255,255,0.25);
-            border-radius:10px; /* 缩小圆角 */
-            padding:8px 4px; /* 减小内边距 */
+            border-radius:10px;
+            padding:8px 4px;
             border:1px solid rgba(255,255,255,0.08);
             cursor:pointer;
             transition:all 0.2s;
@@ -616,8 +616,8 @@
             flex-direction:column;
             align-items:center;
             justify-content:center;
-            min-height:44px; /* 降低最小高度 */
-            font-size:13px; /* 缩小字体 */
+            min-height:44px;
+            font-size:13px;
         }
         .variety-item:active { transform:scale(0.95); background:rgba(255,255,255,0.45); }
         .theme-neon .variety-item { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); }
@@ -625,7 +625,7 @@
         .variety-item .name {
             font-weight:500;
             color:#1c2e2a;
-            font-size:13px; /* 缩小字体 */
+            font-size:13px;
             line-height:1.3;
         }
         .theme-neon .variety-item .name { color:rgba(255,255,255,0.90); }
@@ -633,7 +633,7 @@
             font-size:10px;
             color:rgba(0,0,0,0.25);
             font-style:italic;
-            display:none; /* 隐藏拉丁名，更紧凑 */
+            display:none;
         }
         .theme-neon .variety-item .latin { color:rgba(255,255,255,0.45); }
 
@@ -976,7 +976,6 @@
         ];
 
         // -------- Part5: 品种列表 (52个) --------
-        // 每个品种增加 shortName 用于显示，简化名称
         const VARIETIES = [
             { id: 'AJ', name: '奥久慈锦', shortName: '奥久慈锦', file: 'part5_AJ.html' },
             { id: 'AM', name: '奥马', shortName: '奥马', file: 'part5_AM.html' },
@@ -1054,6 +1053,7 @@
         let currentModule = null;
         let path = [];
         let historyStack = [];
+        let isInternalNav = false; // 防止 popstate 递归
 
         function showModule() {
             homeView.style.display = 'none';
@@ -1072,6 +1072,7 @@
                 history.replaceState(null, '', window.location.pathname);
             }
             moduleHeader.classList.remove('hide');
+            isInternalNav = false;
         }
 
         function renderBreadcrumb() {
@@ -1090,11 +1091,19 @@
         function pushHistoryState(title) {
             const state = { module: currentModule, path: [...path], title: title };
             historyStack.push(state);
-            history.pushState(state, title, window.location.pathname + '?state=' + encodeURIComponent(JSON.stringify(state)));
+            // 使用 replaceState 避免触发 popstate 递归，同时保留状态
+            const url = window.location.pathname + '?state=' + encodeURIComponent(JSON.stringify(state));
+            history.replaceState(state, title, url);
         }
 
         function goBackTo(level) {
             if (level < 1) { hideModule(); return; }
+            // 防止重复调用
+            if (path.length <= level && level === path.length) {
+                // 已经在目标层级，不做任何事
+                return;
+            }
+            isInternalNav = true;
             path = path.slice(0, level);
             updateHeaderFromPath();
             renderCurrentModule();
@@ -1105,6 +1114,7 @@
                 hideModule();
             }
             updateModuleHeaderVisibility();
+            setTimeout(() => { isInternalNav = false; }, 300);
         }
 
         function navigateBack() {
@@ -1180,6 +1190,7 @@
         }
 
         function updateModuleHeaderVisibility() {
+            // 品种详情（path.length === 2）时隐藏头部，让 iframe 全屏展示
             if (currentModule === 'part5' && path.length === 2) {
                 moduleHeader.classList.add('hide');
             } else {
@@ -1204,6 +1215,7 @@
 
         // -------- 通用：打开文件（iframe） --------
         function openFileView(title, file, sub, keepBackBtn = false, extraInject = null) {
+            // 保持路径一致性
             if (path.length === 0 || path[path.length - 1] !== title) {
                 path.push(title);
             }
@@ -1226,6 +1238,7 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
+                            // 隐藏内部返回按钮（除非 keepBackBtn = true）
                             if (!keepBackBtn) {
                                 const selectors = [
                                     '.back-btn', '[data-back]', '.module-header .back-btn',
@@ -1250,6 +1263,7 @@
                                     el.style.pointerEvents = 'none';
                                 });
                             }
+                            // 隐藏上传相关元素
                             doc.querySelectorAll('input[type="file"]').forEach(el => {
                                 el.style.display = 'none';
                             });
@@ -1284,6 +1298,7 @@
                         </div>
                     `;
                 };
+                // 延迟再尝试注入一次（应对加载慢的情况）
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -1409,7 +1424,6 @@
                     moduleTitle.textContent = '叶色分类';
                     moduleSub.textContent = '7个色系';
                     moduleBreadcrumb.innerHTML = renderBreadcrumb();
-                    // 使用 color-grid 类
                     let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">色彩科学</div>`;
                     html += `<div class="grid-cards color-grid">`;
                     COLOR_SERIES.forEach(c => {
@@ -1598,7 +1612,7 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // -------- Part5: 品种速查 --------
+        // -------- Part5: 品种速查（移动端修复版） --------
         function renderPart5() {
             moduleScroll.classList.remove('file-mode');
             if (path.length === 0) {
@@ -1613,7 +1627,6 @@
                 let html = `<div style="margin-bottom:6px;font-size:14px;color:rgba(0,0,0,0.25);">共 ${VARIETIES.length} 个品种，点击进入详情</div>`;
                 html += `<div class="variety-grid">`;
                 VARIETIES.forEach(v => {
-                    // 使用 shortName 显示
                     html += `
                         <div class="variety-item" onclick="openVariety('${v.id}')" title="${v.name}">
                             <span class="name">${v.shortName}</span>
@@ -1630,7 +1643,10 @@
                     goBackTo(1);
                     return;
                 }
+
+                // 修复：galleryInject 中为关闭按钮绑定事件，并处理返回
                 const galleryInject = function(doc) {
+                    // 注入画廊样式
                     const style = doc.createElement('style');
                     style.textContent = `
                         .gallery-overlay {
@@ -1741,6 +1757,11 @@
                             display: flex !important;
                             align-items: center !important;
                             justify-content: center !important;
+                            touch-action: manipulation !important;
+                        }
+                        .gallery-close:active {
+                            transform: scale(0.9);
+                            background: rgba(0,0,0,0.5);
                         }
                         .gallery-counter {
                             position: absolute !important;
@@ -1761,40 +1782,236 @@
                     `;
                     doc.head.appendChild(style);
 
-                    let attempts = 0;
-                    const maxAttempts = 20;
-                    const interval = setInterval(() => {
-                        attempts++;
+                    // 隐藏 doc 中所有返回按钮（避免干扰）
+                    doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back, .nav-back, .module-header .back-btn')
+                        .forEach(el => {
+                            el.style.display = 'none';
+                            el.style.pointerEvents = 'none';
+                        });
+                    doc.querySelectorAll('button, a').forEach(btn => {
+                        const txt = btn.textContent.trim();
+                        if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back' || txt === '✕' || txt === '×') {
+                            btn.style.display = 'none';
+                            btn.style.pointerEvents = 'none';
+                        }
+                    });
+
+                    // 获取图片列表
+                    let imageList = [];
+                    let currentIndex = 0;
+                    try {
+                        const win = doc.defaultView || doc.parentWindow;
+                        if (win && win.imageList && Array.isArray(win.imageList)) {
+                            imageList = win.imageList;
+                            currentIndex = win.currentIndex || 0;
+                        }
+                    } catch(e) {}
+
+                    // 如果没找到图片，显示占位
+                    if (!imageList || imageList.length === 0) {
+                        imageList = ['shanqiu_logo.png'];
+                        currentIndex = 0;
+                    }
+
+                    // 创建画廊容器
+                    const galleryContainer = doc.createElement('div');
+                    galleryContainer.className = 'gallery-overlay';
+                    galleryContainer.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:0;margin:0;z-index:9999;';
+
+                    // 关闭按钮
+                    const closeBtn = doc.createElement('div');
+                    closeBtn.className = 'gallery-close';
+                    closeBtn.textContent = '✕';
+                    closeBtn.style.cssText = 'position:absolute;top:20px;right:20px;z-index:20;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;';
+                    // 绑定关闭事件 —— 修复：点击叉号返回品种列表
+                    closeBtn.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         try {
-                            const win = doc.defaultView || doc.parentWindow;
-                            if (win && win.imageList && Array.isArray(win.imageList) && win.imageList.length > 0) {
-                                const total = win.imageList.length;
-                                const currentIdx = win.currentIndex || 0;
-                                const counter = doc.getElementById('galleryCounter');
-                                const dots = doc.getElementById('galleryDots');
-                                if (counter) counter.textContent = `${currentIdx+1} / ${total}`;
-                                if (dots) {
-                                    dots.innerHTML = win.imageList.map((_, i) =>
-                                        `<span class="${i===currentIdx?'active':''}"></span>`
-                                    ).join('');
-                                }
-                                const prevBtn = doc.getElementById('prevBtn');
-                                const nextBtn = doc.getElementById('nextBtn');
-                                if (prevBtn) prevBtn.disabled = (currentIdx === 0);
-                                if (nextBtn) nextBtn.disabled = (currentIdx === total - 1);
-                                clearInterval(interval);
-                                return;
+                            // 调用主页面的 goBackTo(1) 回到品种列表
+                            if (window.parent && typeof window.parent.goBackTo === 'function') {
+                                window.parent.goBackTo(1);
+                            } else {
+                                window.parent.postMessage({ type: 'backRequest' }, '*');
                             }
-                        } catch(e) {}
-                        if (attempts >= maxAttempts) clearInterval(interval);
-                    }, 300);
+                        } catch(err) {
+                            console.warn('关闭画廊失败:', err);
+                            window.parent.postMessage({ type: 'backRequest' }, '*');
+                        }
+                    };
+                    // 移动端 touch 事件
+                    closeBtn.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        try {
+                            if (window.parent && typeof window.parent.goBackTo === 'function') {
+                                window.parent.goBackTo(1);
+                            } else {
+                                window.parent.postMessage({ type: 'backRequest' }, '*');
+                            }
+                        } catch(err) {
+                            window.parent.postMessage({ type: 'backRequest' }, '*');
+                        }
+                    }, { passive: false });
+
+                    // 计数器
+                    const counter = doc.createElement('div');
+                    counter.className = 'gallery-counter';
+                    counter.id = 'galleryCounter';
+                    counter.textContent = `${currentIndex+1} / ${imageList.length}`;
+
+                    // 轨道容器
+                    const trackContainer = doc.createElement('div');
+                    trackContainer.className = 'gallery-track-container';
+                    trackContainer.style.cssText = 'width:100vw;height:100vh;max-width:none;max-height:none;overflow:hidden;position:relative;touch-action:pan-y;';
+
+                    const track = doc.createElement('div');
+                    track.className = 'gallery-track';
+                    track.style.cssText = 'display:flex;height:100%;transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);will-change:transform;';
+
+                    imageList.forEach((imgSrc, idx) => {
+                        const slide = doc.createElement('div');
+                        slide.className = 'gallery-slide';
+                        slide.style.cssText = `flex:0 0 100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:transparent;display:flex;align-items:center;justify-content:center;`;
+                        slide.style.backgroundImage = `url(${imgSrc})`;
+                        track.appendChild(slide);
+                    });
+
+                    trackContainer.appendChild(track);
+
+                    // 导航按钮
+                    const nav = doc.createElement('div');
+                    nav.className = 'gallery-nav';
+                    nav.style.cssText = 'position:absolute;top:50%;transform:translateY(-50%);width:100%;display:flex;justify-content:space-between;pointer-events:none;padding:0 10px;z-index:10;';
+
+                    const prevBtn = doc.createElement('button');
+                    prevBtn.id = 'prevBtn';
+                    prevBtn.textContent = '‹';
+                    prevBtn.disabled = (currentIndex === 0);
+                    prevBtn.style.cssText = 'pointer-events:auto;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:44px;height:44px;font-size:22px;color:#fff;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;';
+                    prevBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            counter.textContent = `${currentIndex+1} / ${imageList.length}`;
+                            prevBtn.disabled = (currentIndex === 0);
+                            nextBtn.disabled = (currentIndex === imageList.length - 1);
+                            const dots = doc.querySelectorAll('.gallery-dots span');
+                            dots.forEach((dot, i) => {
+                                dot.classList.toggle('active', i === currentIndex);
+                            });
+                        }
+                    };
+
+                    const nextBtn = doc.createElement('button');
+                    nextBtn.id = 'nextBtn';
+                    nextBtn.textContent = '›';
+                    nextBtn.disabled = (currentIndex === imageList.length - 1);
+                    nextBtn.style.cssText = 'pointer-events:auto;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:44px;height:44px;font-size:22px;color:#fff;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;';
+                    nextBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        if (currentIndex < imageList.length - 1) {
+                            currentIndex++;
+                            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            counter.textContent = `${currentIndex+1} / ${imageList.length}`;
+                            prevBtn.disabled = (currentIndex === 0);
+                            nextBtn.disabled = (currentIndex === imageList.length - 1);
+                            const dots = doc.querySelectorAll('.gallery-dots span');
+                            dots.forEach((dot, i) => {
+                                dot.classList.toggle('active', i === currentIndex);
+                            });
+                        }
+                    };
+
+                    nav.appendChild(prevBtn);
+                    nav.appendChild(nextBtn);
+
+                    // 底部 dots
+                    const dotsContainer = doc.createElement('div');
+                    dotsContainer.className = 'gallery-dots';
+                    dotsContainer.id = 'galleryDots';
+                    dotsContainer.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10;';
+                    imageList.forEach((_, idx) => {
+                        const dot = doc.createElement('span');
+                        dot.className = (idx === currentIndex) ? 'active' : '';
+                        dotsContainer.appendChild(dot);
+                    });
+
+                    // 组装
+                    galleryContainer.appendChild(closeBtn);
+                    galleryContainer.appendChild(counter);
+                    galleryContainer.appendChild(trackContainer);
+                    galleryContainer.appendChild(nav);
+                    galleryContainer.appendChild(dotsContainer);
+
+                    // 追加到 body
+                    doc.body.appendChild(galleryContainer);
+
+                    // 也处理键盘 ESC
+                    doc.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            e.preventDefault();
+                            try {
+                                if (window.parent && typeof window.parent.goBackTo === 'function') {
+                                    window.parent.goBackTo(1);
+                                } else {
+                                    window.parent.postMessage({ type: 'backRequest' }, '*');
+                                }
+                            } catch(err) {
+                                window.parent.postMessage({ type: 'backRequest' }, '*');
+                            }
+                        }
+                    });
+
+                    // 触摸滑动支持（简单）
+                    let startX = 0;
+                    let isDragging = false;
+                    const container = trackContainer;
+                    container.addEventListener('touchstart', function(e) {
+                        startX = e.touches[0].clientX;
+                        isDragging = true;
+                    }, { passive: true });
+                    container.addEventListener('touchmove', function(e) {
+                        if (!isDragging) return;
+                        const dx = e.touches[0].clientX - startX;
+                        if (Math.abs(dx) > 30) {
+                            if (dx > 0 && currentIndex > 0) {
+                                currentIndex--;
+                                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                                counter.textContent = `${currentIndex+1} / ${imageList.length}`;
+                                prevBtn.disabled = (currentIndex === 0);
+                                nextBtn.disabled = (currentIndex === imageList.length - 1);
+                                const dots = doc.querySelectorAll('.gallery-dots span');
+                                dots.forEach((dot, i) => {
+                                    dot.classList.toggle('active', i === currentIndex);
+                                });
+                                isDragging = false;
+                            } else if (dx < 0 && currentIndex < imageList.length - 1) {
+                                currentIndex++;
+                                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                                counter.textContent = `${currentIndex+1} / ${imageList.length}`;
+                                prevBtn.disabled = (currentIndex === 0);
+                                nextBtn.disabled = (currentIndex === imageList.length - 1);
+                                const dots = doc.querySelectorAll('.gallery-dots span');
+                                dots.forEach((dot, i) => {
+                                    dot.classList.toggle('active', i === currentIndex);
+                                });
+                                isDragging = false;
+                            }
+                            startX = e.touches[0].clientX;
+                        }
+                    }, { passive: true });
+                    container.addEventListener('touchend', function() {
+                        isDragging = false;
+                    }, { passive: true });
                 };
 
-                // 用 shortName 作为显示标题
                 const displayName = variety.shortName;
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
+                // 使用 keepBackBtn = true 保留 iframe 中的返回按钮，但 galleryInject 会隐藏它们并创建自己的关闭按钮
                 openFileView(displayName, variety.file, '品种详情', false, galleryInject);
             }
         }
@@ -1882,6 +2099,7 @@
                     }
                 }
             }
+            // 处理来自 iframe 的返回请求
             if (data && data.type === 'backRequest') {
                 if (currentModule === 'part5' && path.length > 1) {
                     goBackTo(path.length - 1);
@@ -1892,9 +2110,13 @@
         });
 
         // ================================================================
-        //  浏览器后退 / 手机物理返回键 同步
+        //  浏览器后退 / 手机物理返回键 同步（修复移动端问题）
         // ================================================================
         window.addEventListener('popstate', function(event) {
+            // 如果是内部导航触发的，忽略
+            if (isInternalNav) {
+                return;
+            }
             const state = event.state;
             if (state && state.module && state.path && state.path.length > 0) {
                 const targetModule = state.module;
@@ -1910,8 +2132,15 @@
                     return;
                 }
             }
+            // 如果 state 无效，尝试逐级返回而不是直接退出（移动端修复）
             if (moduleView.classList.contains('active')) {
-                hideModule();
+                if (path.length > 1) {
+                    // 回到上一级
+                    goBackTo(path.length - 1);
+                } else {
+                    // 如果已经在最顶层，退出模块
+                    hideModule();
+                }
             }
         });
 
@@ -1968,6 +2197,7 @@
         console.log('📦 模块六：物流及赠品，包含 3 个子项');
         console.log('🖼️ 品种图片画廊已优化：全屏显示、图片自适应、箭头浮于图上、自动读取实际图片数量');
         console.log('📌 品种显示名称已简化（如"东林黄枫"等），按钮尺寸缩小，排列更紧密');
+        console.log('📱 移动端修复：品种详情页关闭按钮(✕)现已绑定返回事件，导航返回逐级退回');
     </script>
 
 </body>

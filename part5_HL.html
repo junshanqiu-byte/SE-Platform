@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>红涟 · 品种详情</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+            background: #dcece8;
+            color: #1c2e2a;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .bg-layer {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(145deg, #dcece8, #eaf5f2);
+            z-index:0;
+        }
+        .app {
+            position: relative;
+            width:100%; height:100%;
+            z-index:1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255,255,255,0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+        .detail-header {
+            flex-shrink:0;
+            padding: 16px 20px 12px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .detail-title {
+            font-size: 22px;
+            font-weight: 600;
+            flex:1;
+        }
+        .detail-title .sub {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(0,0,0,0.35);
+            margin-left: 6px;
+        }
+        .detail-latin {
+            font-size: 13px;
+            color: rgba(0,0,0,0.25);
+            font-style: italic;
+            margin-left: 8px;
+        }
+        .btn-gallery {
+            background: rgba(127,193,197,0.12);
+            border: 1px solid rgba(127,193,197,0.15);
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3a7a78;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink:0;
+        }
+        .btn-gallery:active { transform:scale(0.95); background: rgba(127,193,197,0.2); }
+        .detail-scroll {
+            flex:1;
+            overflow-y: auto;
+            padding: 16px 20px 28px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .detail-block {
+            background: rgba(255,255,255,0.18);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(4px);
+        }
+        .block-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3a7a78;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .block-label::after {
+            content: '';
+            flex:1;
+            height: 1.5px;
+            background: linear-gradient(90deg, rgba(127,193,197,0.12), transparent);
+        }
+        .block-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: rgba(0,0,0,0.72);
+            white-space: pre-wrap;
+        }
+        .block-text strong { color: #1c4e4a; font-weight:600; }
+        .hardiness-badge {
+            display: inline-block;
+            background: rgba(58,122,120,0.10);
+            border: 1px solid rgba(58,122,120,0.15);
+            border-radius: 20px;
+            padding: 2px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2d6e6b;
+            margin-right: 6px;
+        }
+        .hardiness-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            margin-top: 8px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.20);
+            border-radius: 12px;
+        }
+        .hardiness-grid .item {
+            font-size: 13px;
+            color: rgba(0,0,0,0.60);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .hardiness-grid .item .tag {
+            background: rgba(58,122,120,0.08);
+            border-radius: 4px;
+            padding: 0 8px;
+            font-size: 11px;
+            color: #3a7a78;
+        }
+        .season-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .season-item {
+            background: rgba(255,255,255,0.25);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+        .season-item .s-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(58,122,120,0.5);
+        }
+        .season-item .s-text {
+            font-size: 13px;
+            color: rgba(0,0,0,0.6);
+            line-height:1.5;
+        }
+        .gallery-overlay {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .gallery-overlay.active { display: flex; }
+        .gallery-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.5);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 210;
+        }
+        .gallery-counter {
+            position: absolute;
+            top: 20px; left: 20px;
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            z-index: 210;
+        }
+        .gallery-track-container {
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            overflow: hidden;
+            position: relative;
+            touch-action: pan-y;
+        }
+        .gallery-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            will-change: transform;
+        }
+        .gallery-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(0,0,0,0.02);
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            padding: 0 10px;
+        }
+        .gallery-nav button {
+            pointer-events: auto;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: rgba(255,255,255,0.4);
+            font-size: 22px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .gallery-nav button:disabled {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .gallery-nav button:active { background: rgba(255,255,255,0.2); }
+        .gallery-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 210;
+        }
+        .gallery-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.3s;
+        }
+        .gallery-dots span.active {
+            background: #7fc1c5;
+            transform: scale(1.2);
+        }
+        @media (max-width:480px) {
+            .detail-title { font-size: 18px; }
+            .detail-title .sub { font-size: 12px; }
+            .season-grid { grid-template-columns:1fr; }
+            .gallery-track-container { width: 95%; height: 60vh; }
+            .hardiness-grid { flex-direction: column; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="app">
+    <div class="detail-header">
+        <span class="detail-title">
+            红涟
+            <span class="sub">Beni-sazanami</span>
+            <span class="detail-latin">Acer palmatum 'Beni-sazanami'</span>
+        </span>
+        <button class="btn-gallery" id="galleryBtn">实景图片</button>
+    </div>
+
+    <div class="detail-scroll">
+        <!-- 品种来源 -->
+        <div class="detail-block">
+            <div class="block-label">📌 品种来源</div>
+            <div class="block-text">一款于1991年选育的珍稀品种，其名称意为"红色涟漪"，既指其鲜艳的红色叶片，也指叶缘如波浪般起伏的独特质感。它由'涟波'的实生苗中选育而来，春季亮橙红色的新叶与夏季鲜明的绿色叶脉形成强烈对比，秋日再度绽放鲜红色泽，深受收藏家喜爱。</div>
+        </div>
+
+        <!-- 树形与长势 -->
+        <div class="detail-block">
+            <div class="block-label">🌳 树形与长势</div>
+            <div class="block-text"><strong>树形（核心优势）：</strong>这是一款直立、略带垂坠形态的紧凑型小乔木，树形优雅而有动感。成年树高约2.5—3米，冠幅约1.5—1.8米，属于体型适中的小型品种。其枝条自然舒展，略呈垂坠感，非常适合小型庭院、容器栽培，甚至盆景造型。
+
+                <strong>尺寸与长势：</strong>生长速度中等。成熟高度约2.5—3米，冠幅约1.5—1.8米。非常适合小型花园、岩石花园、容器栽培或盆景。</div>
+        </div>
+
+        <!-- 耐寒区 -->
+        <div class="detail-block" style="border-left: 4px solid #4a9e9a;">
+            <div class="block-label">❄️ 耐寒区</div>
+            <div class="block-text">
+                <span class="hardiness-badge">五区 ~ 八区</span>
+                <span style="font-size:14px;color:rgba(0,0,0,0.6);">约 -25℃ ~ -5℃</span>
+                <div class="hardiness-grid">
+                    <span class="item">📍 适宜种植区域：</span>
+                    <span class="item"><span class="tag">辽宁</span></span>
+                    <span class="item"><span class="tag">河北</span></span>
+                    <span class="item"><span class="tag">北京</span></span>
+                    <span class="item"><span class="tag">山东</span></span>
+                    <span class="item"><span class="tag">河南</span></span>
+                    <span class="item"><span class="tag">江苏</span></span>
+                    <span class="item"><span class="tag">浙江</span></span>
+                    <span class="item"><span class="tag">湖北</span></span>
+                    <span class="item"><span class="tag">四川盆地</span></span>
+                </div>
+                <div style="margin-top:6px;font-size:13px;color:rgba(0,0,0,0.5);">耐寒性良好，在以上区域均可种植。</div>
+            </div>
+        </div>
+
+        <!-- 叶形 -->
+        <div class="detail-block">
+            <div class="block-label">🍃 叶形</div>
+            <div class="block-text">叶片小巧，掌状深裂，裂片边缘具有明显的重锯齿，呈现出波浪般起伏的皱褶效果，恰如其名"涟"——涟漪般波动。这种独特的叶缘纹理赋予了叶片一种轻盈、律动的质感，远观如层层细浪，近看则似一袭华丽的红色荷叶边裙摆，极具辨识度。</div>
+        </div>
+
+        <!-- 季节表现 -->
+        <div class="detail-block">
+            <div class="block-label">🌿 季节表现</div>
+            <div class="season-grid">
+                <div class="season-item"><div class="s-label">🌸 春</div><div class="s-text">新叶初绽时呈亮丽的橙红色至粉橙色，色彩饱和而温暖，是全年最耀眼的时刻。</div></div>
+                <div class="season-item"><div class="s-label">☀️ 夏</div><div class="s-text">叶片逐渐转为绿色，但极为独特的是，其绿色叶片上保留着鲜明亮绿的叶脉，形成细腻的脉络纹理，使叶片在绿意中依然富有层次感。</div></div>
+                <div class="season-item"><div class="s-label">🍂 秋</div><div class="s-text">再度迎来高光时刻——叶片变回灿烂的鲜红色，部分叶片带橙色调，色彩饱满而持久，为秋日花园注入一簇跃动的火焰。</div></div>
+                <div class="season-item"><div class="s-label">❄️ 冬</div><div class="s-text">冬季落叶，枝干优雅。</div></div>
+            </div>
+        </div>
+
+        <!-- 价值提炼 -->
+        <div class="detail-block">
+            <div class="block-label">✨ 价值提炼</div>
+            <div class="block-text"><strong>美学价值：</strong>它是一位"叶缘的舞者"。波浪般起伏的叶缘与鲜亮的红色叶片相映成趣，如同一曲凝固的涟漪。春季的橙红、夏季的绿脉、秋季的鲜红，每个季节都展现出截然不同的面貌，为花园带来持续的视觉惊喜。
+
+                <strong>空间价值：</strong>紧凑的体型和优雅的垂坠姿态，使其成为小型空间中的理想选择。无论是作为庭院的焦点、边界种植的点缀，还是置于阳台容器、打造成盆景，它都能以精致的姿态融入环境而不显局促。
+
+                <strong>精神价值：</strong>培育'红涟'是一场关于发现与收藏的乐趣。它不追求宏大，而在于细节之美——那波浪般的叶缘、鲜明的叶脉、季节流转间色彩的巧妙变换，都值得细细品味。
+
+                总而言之，'红涟'是一款兼具独特叶形与丰富色彩变化的收藏级日本枫树。它凭借波浪般的皱褶叶缘、春季亮眼的橙红、夏季醒目的绿脉以及秋季灿烂的红叶，在众多品种中脱颖而出，成为小型花园、容器栽培与盆景爱好者的理想之选，是收藏家不可错过的珍品。</div>
+        </div>
+    </div>
+</div>
+
+<!-- 图片画廊 -->
+<div class="gallery-overlay" id="galleryOverlay">
+    <button class="gallery-close" id="galleryClose">✕</button>
+    <div class="gallery-counter" id="galleryCounter">1 / 10</div>
+    <div class="gallery-track-container" id="galleryContainer">
+        <div class="gallery-track" id="galleryTrack"></div>
+        <div class="gallery-nav">
+            <button id="prevBtn" disabled>◀</button>
+            <button id="nextBtn">▶</button>
+        </div>
+        <div class="gallery-dots" id="galleryDots"></div>
+    </div>
+</div>
+
+<script>
+    const imageList = [
+        'part5_HL_001.jpg', 'part5_HL_002.jpg', 'part5_HL_003.jpg', 'part5_HL_004.jpg', 'part5_HL_005.jpg',
+        'part5_HL_006.jpg', 'part5_HL_007.jpg', 'part5_HL_008.jpg', 'part5_HL_009.jpg', 'part5_HL_010.jpg'
+    ];
+
+    const overlay = document.getElementById('galleryOverlay');
+    const track = document.getElementById('galleryTrack');
+    const dots = document.getElementById('galleryDots');
+    const counter = document.getElementById('galleryCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const closeBtn = document.getElementById('galleryClose');
+    const openBtn = document.getElementById('galleryBtn');
+
+    let currentIndex = 0;
+    const total = imageList.length;
+
+    function renderGallery() {
+        track.innerHTML = imageList.map(src => `
+            <div class="gallery-slide" style="background-image:url('${src}');"></div>
+        `).join('');
+        dots.innerHTML = imageList.map((_, i) => `<span class="${i===0?'active':''}"></span>`).join('');
+        updateGallery();
+    }
+
+    function updateGallery() {
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        counter.textContent = `${currentIndex+1} / ${total}`;
+        dots.querySelectorAll('span').forEach((d, i) => d.classList.toggle('active', i===currentIndex));
+        prevBtn.disabled = (currentIndex === 0);
+        nextBtn.disabled = (currentIndex === total - 1);
+    }
+
+    function goTo(index) {
+        if (index < 0) index = 0;
+        if (index >= total) index = total - 1;
+        if (index === currentIndex) return;
+        currentIndex = index;
+        updateGallery();
+    }
+
+    openBtn.addEventListener('click', () => {
+        if (total === 0) { alert('暂无图片'); return; }
+        currentIndex = 0;
+        renderGallery();
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) { closeBtn.click(); }
+    });
+
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentIndex-1); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(currentIndex+1); });
+
+    document.addEventListener('keydown', (e) => {
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(currentIndex-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(currentIndex+1); }
+        if (e.key === 'Escape') { closeBtn.click(); }
+    });
+
+    let startX = 0, startY = 0, isSwiping = false;
+    const container = document.getElementById('galleryContainer');
+    container.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        isSwiping = true;
+    }, {passive:true});
+    container.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) e.preventDefault();
+    }, {passive:false});
+    container.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) {
+            dx < 0 ? goTo(currentIndex+1) : goTo(currentIndex-1);
+        }
+    }, {passive:true});
+
+    let mouseDown = false, mStartX = 0;
+    container.addEventListener('mousedown', (e) => { mouseDown = true; mStartX = e.clientX; e.preventDefault(); });
+    document.addEventListener('mousemove', (e) => {
+        if (!mouseDown) return;
+        const dx = e.clientX - mStartX;
+        if (Math.abs(dx) > 20) e.preventDefault();
+    });
+    document.addEventListener('mouseup', (e) => {
+        if (!mouseDown) return;
+        mouseDown = false;
+        const dx = e.clientX - mStartX;
+        if (Math.abs(dx) > 40) {
+            dx < 0 ? goTo(currentIndex+1) : goTo(currentIndex-1);
+        }
+    });
+</script>
+</body>
+</html>

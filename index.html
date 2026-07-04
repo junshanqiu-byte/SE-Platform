@@ -1610,7 +1610,7 @@
         }
 
         // ================================================================
-        //  Part5: 品种速查（动态事件绑定，无额外注入）
+        //  ★★★ Part5: 品种速查（仅使用 click 事件，避免滑动误触）★★★
         // ================================================================
         function renderPart5() {
             moduleScroll.classList.remove('file-mode');
@@ -1637,7 +1637,9 @@
 
                 const grid = document.getElementById('varietyGrid');
                 if (grid) {
-                    const handler = function(e) {
+                    // 仅使用 click 事件，移动端配合 touch-action: manipulation 消除延迟
+                    // 滑动时不会触发 click，因此不会误进入详情
+                    grid.addEventListener('click', function(e) {
                         let target = e.target.closest('.variety-item');
                         if (!target) return;
                         const id = target.dataset.id;
@@ -1645,9 +1647,7 @@
                             e.preventDefault();
                             openVariety(id);
                         }
-                    };
-                    grid.addEventListener('click', handler);
-                    grid.addEventListener('touchstart', handler, { passive: false });
+                    });
                 }
 
                 updateModuleHeaderVisibility();
@@ -1855,8 +1855,8 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (最终修复)');
-        console.log('📦 模块六专用肥图片同行等高，模块五品种详情原生加载');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (滑动误触修复)');
+        console.log('📦 模块五品种列表仅响应点击，滑动不触发进入详情');
     </script>
 
 </body>

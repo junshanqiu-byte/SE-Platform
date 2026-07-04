@@ -607,6 +607,7 @@
             justify-content:center;
             min-height:44px;
             font-size:13px;
+            touch-action: manipulation; /* 新增：提升移动端响应 */
         }
         .variety-item:active { transform:scale(0.95); background:rgba(255,255,255,0.45); }
         .theme-neon .variety-item { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); }
@@ -616,6 +617,7 @@
             color:#1c2e2a;
             font-size:13px;
             line-height:1.3;
+            pointer-events: none; /* 确保点击事件由父元素捕获 */
         }
         .theme-neon .variety-item .name { color:rgba(255,255,255,0.90); }
         .variety-item .latin {
@@ -1577,10 +1579,9 @@
         }
 
         // ================================================================
-        //  ★★★ 修复1: 重写 galleryInject — 缩略图模式，不自动全屏 ★★★
+        //  ★★★ 品种详情页画廊注入（缩略图模式） ★★★
         // ================================================================
         function buildGalleryInject(doc) {
-            // 检查是否有图片数据
             let imageList = [];
             let currentIndex = 0;
             try {
@@ -1605,7 +1606,6 @@
                 }
             });
 
-            // 如果没有图片，显示占位信息
             if (!imageList || imageList.length === 0) {
                 const placeholder = doc.createElement('div');
                 placeholder.style.cssText =
@@ -1620,8 +1620,6 @@
                 return;
             }
 
-            // ---- 有图片：在详情页底部创建缩略图区域 ----
-            // 先检查是否已经存在画廊容器，避免重复注入
             if (doc.getElementById('gallery-thumb-container')) return;
 
             const container = doc.createElement('div');
@@ -1629,7 +1627,6 @@
             container.style.cssText =
                 'padding:14px 12px 18px;background:rgba(0,0,0,0.02);border-top:1px solid rgba(0,0,0,0.06);margin-top:18px;';
 
-            // 标题栏
             const header = doc.createElement('div');
             header.style.cssText =
                 'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;';
@@ -1639,14 +1636,13 @@
             `;
             container.appendChild(header);
 
-            // 缩略图滚动区
             const thumbWrap = doc.createElement('div');
             thumbWrap.style.cssText =
                 'display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;';
             imageList.forEach((src, idx) => {
                 const thumb = doc.createElement('div');
                 thumb.style.cssText =
-                    `flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid ${idx === currentIndex ? '#7fc1c5' : 'transparent'};background:#f0f0f0;display:flex;align-items:center;justify-content:center;`;
+                    `flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid ${idx === currentIndex ? '#7fc1c5' : 'transparent'};background:#f0f0f0;display:flex;align-items:center;justify-content:center;touch-action:manipulation;`;
                 const img = doc.createElement('img');
                 img.src = src;
                 img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
@@ -1662,7 +1658,6 @@
             container.appendChild(thumbWrap);
             doc.body.appendChild(container);
 
-            // "查看全部" 按钮事件
             const btn = doc.getElementById('viewGalleryBtn');
             if (btn) {
                 btn.addEventListener('click', function(e) {
@@ -1671,9 +1666,7 @@
                 });
             }
 
-            // ---- 全屏画廊函数（在iframe内部） ----
             function openFullGallery(doc, images, startIdx) {
-                // 避免重复创建
                 if (doc.getElementById('gallery-full-overlay')) return;
 
                 const overlay = doc.createElement('div');
@@ -1686,7 +1679,6 @@
                     touch-action: pan-y;
                 `;
 
-                // 关闭按钮
                 const closeBtn = doc.createElement('button');
                 closeBtn.textContent = '✕';
                 closeBtn.style.cssText = `
@@ -1707,7 +1699,6 @@
                 }, { passive: false });
                 overlay.appendChild(closeBtn);
 
-                // 计数器
                 const counter = doc.createElement('div');
                 counter.style.cssText = `
                     position: absolute; top: 20px; left: 20px; z-index: 20;
@@ -1717,7 +1708,6 @@
                 counter.textContent = `${startIdx+1} / ${images.length}`;
                 overlay.appendChild(counter);
 
-                // 图片容器
                 const trackContainer = doc.createElement('div');
                 trackContainer.style.cssText = `
                     width: 100vw; height: 100vh; max-width: 100%; max-height: 100%;
@@ -1746,7 +1736,6 @@
 
                 trackContainer.appendChild(track);
 
-                // 导航按钮
                 const nav = doc.createElement('div');
                 nav.style.cssText = `
                     position: absolute; top: 50%; left: 0; right: 0;
@@ -1783,7 +1772,6 @@
                     counter.textContent = `${current+1} / ${images.length}`;
                     prevBtn.disabled = (current === 0);
                     nextBtn.disabled = (current === images.length - 1);
-                    // 更新缩略图高亮（如果有）
                     const thumbs = doc.querySelectorAll('#gallery-thumb-container img');
                     thumbs.forEach((img, idx) => {
                         const parent = img.parentElement;
@@ -1802,7 +1790,6 @@
                     if (current < images.length - 1) { current++; updateGallery(); }
                 });
 
-                // 触摸滑动
                 let touchStartX = 0;
                 let isDragging = false;
                 trackContainer.addEventListener('touchstart', function(e) {
@@ -1835,7 +1822,6 @@
                 overlay.appendChild(trackContainer);
                 overlay.appendChild(nav);
 
-                // 底部点
                 const dotsContainer = doc.createElement('div');
                 dotsContainer.style.cssText = `
                     position: absolute; bottom: 24px; left: 50%;
@@ -1845,4 +1831,265 @@
                     const dot = doc.createElement('span');
                     dot.style.cssText = `
                         width: 10px; height: 10px; border-radius: 50%;
-                        background: ${idx === current ? '#7fc1c5' : 'rgba(255,255,
+                        background: ${idx === current ? '#7fc1c5' : 'rgba(255,255,255,0.15)'};
+                        transition: background 0.3s;
+                    `;
+                    dotsContainer.appendChild(dot);
+                });
+                overlay.appendChild(dotsContainer);
+
+                doc.body.appendChild(overlay);
+            }
+        }
+
+        // ================================================================
+        //  ★★★ Part5: 品种速查（修复点击失效） ★★★
+        // ================================================================
+        function renderPart5() {
+            moduleScroll.classList.remove('file-mode');
+            if (path.length === 0) {
+                path = ['主播品种速查手册'];
+                moduleTitle.textContent = '主播品种速查手册';
+                moduleSub.textContent = '52个品种 · 完整档案';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                pushHistoryState('主播品种速查手册');
+            }
+
+            if (path.length === 1) {
+                let html = `<div style="margin-bottom:6px;font-size:14px;color:rgba(0,0,0,0.25);">共 ${VARIETIES.length} 个品种，点击进入详情</div>`;
+                html += `<div class="variety-grid" id="varietyGrid">`;
+                VARIETIES.forEach(v => {
+                    html += `
+                        <div class="variety-item" data-id="${v.id}" title="${v.name}">
+                            <span class="name">${v.shortName}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+                // 使用事件委托监听品种点击
+                const grid = document.getElementById('varietyGrid');
+                if (grid) {
+                    grid.addEventListener('click', function(e) {
+                        const item = e.target.closest('.variety-item');
+                        if (item) {
+                            const vid = item.dataset.id;
+                            if (vid) openVariety(vid);
+                        }
+                    });
+                    // 移动端 touch 支持
+                    grid.addEventListener('touchstart', function(e) {
+                        const item = e.target.closest('.variety-item');
+                        if (item) {
+                            const vid = item.dataset.id;
+                            if (vid) openVariety(vid);
+                        }
+                    }, { passive: true });
+                }
+                updateModuleHeaderVisibility();
+            } else if (path.length === 2) {
+                const varietyName = path[1];
+                const variety = VARIETIES.find(v => v.shortName === varietyName || v.name === varietyName);
+                if (!variety) {
+                    goBackTo(1);
+                    return;
+                }
+                const displayName = variety.shortName;
+                if (path[path.length - 1] !== displayName) {
+                    path[path.length - 1] = displayName;
+                }
+                // 打开文件，并注入画廊
+                openFileView(displayName, variety.file, '品种详情', false, buildGalleryInject);
+            }
+        }
+
+        function openVariety(vid) {
+            const variety = VARIETIES.find(v => v.id === vid);
+            if (!variety) { alert('品种不存在'); return; }
+            if (path.length === 0) path = ['主播品种速查手册'];
+            const displayName = variety.shortName;
+            if (path.length === 1) {
+                path.push(displayName);
+            } else {
+                path[1] = displayName;
+            }
+            renderPart5();
+        }
+
+        // -------- Part6: 物流及赠品 --------
+        function renderPart6() {
+            moduleScroll.classList.remove('file-mode');
+            if (path.length === 0) {
+                path = ['物流及赠品'];
+                moduleTitle.textContent = '物流及赠品';
+                moduleSub.textContent = '3 项内容';
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                pushHistoryState('物流及赠品');
+            }
+
+            if (path.length === 1) {
+                let html = `<div style="margin-bottom:10px;font-size:16px;color:rgba(0,0,0,0.25);">选择查看内容</div>`;
+                html += `<div class="list-view">`;
+                PART6_ITEMS.forEach(item => {
+                    html += `
+                        <div class="list-item" onclick="openPart6Item('${item.id}')">
+                            <div class="left"><div class="title">${item.name}</div></div>
+                            <span class="arrow">›</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                moduleScroll.innerHTML = html;
+                updateModuleHeaderVisibility();
+            } else if (path.length === 2) {
+                const itemName = path[1];
+                const item = PART6_ITEMS.find(i => i.name === itemName);
+                if (!item) {
+                    goBackTo(1);
+                    return;
+                }
+                openFileView(item.name, item.file, '', false);
+                updateModuleHeaderVisibility();
+            }
+        }
+
+        function openPart6Item(id) {
+            const item = PART6_ITEMS.find(i => i.id === id);
+            if (!item) { alert('内容不存在'); return; }
+            if (path.length === 0) path = ['物流及赠品'];
+            if (path.length === 1) {
+                path.push(item.name);
+            } else {
+                path[1] = item.name;
+            }
+            renderPart6();
+        }
+        window.openPart6Item = openPart6Item;
+
+        // ================================================================
+        //  监听来自 iframe 的 postMessage
+        // ================================================================
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data && data.type === 'navigate' && Array.isArray(data.path) && data.path.length > 0) {
+                const root = data.path[0];
+                const rest = data.path.slice(1);
+                if (currentModule === 'part5') {
+                    const newPath = [root, ...rest];
+                    if (JSON.stringify(newPath) !== JSON.stringify(path)) {
+                        path = newPath;
+                        renderPart5();
+                        moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                        const last = path[path.length - 1];
+                        pushHistoryState(last);
+                        updateModuleHeaderVisibility();
+                    }
+                }
+            }
+            if (data && data.type === 'backRequest') {
+                if (currentModule && path.length > 1) {
+                    history.back();
+                } else {
+                    hideModule();
+                }
+            }
+        });
+
+        // ================================================================
+        //  浏览器后退 / 手机物理返回键
+        // ================================================================
+        window.addEventListener('popstate', function(event) {
+            const state = event.state;
+            if (state && state.module && state.path) {
+                currentModule = state.module;
+                path = state.path;
+                showModule();
+                renderCurrentModule();
+                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                updateHeaderFromPath();
+                updateModuleHeaderVisibility();
+            } else {
+                if (moduleView.classList.contains('active')) {
+                    if (currentModule === 'part5' && path.length === 2) {
+                        if (historyStack.length > 1) {
+                            const prev = historyStack[historyStack.length - 2];
+                            if (prev && prev.module === 'part5' && prev.path.length === 1) {
+                                currentModule = prev.module;
+                                path = prev.path;
+                                showModule();
+                                renderCurrentModule();
+                                moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                                updateHeaderFromPath();
+                                updateModuleHeaderVisibility();
+                                pushHistoryState(path[path.length-1]);
+                                return;
+                            }
+                        }
+                        if (path.length > 1) {
+                            path = path.slice(0, 1);
+                            renderCurrentModule();
+                            moduleBreadcrumb.innerHTML = renderBreadcrumb();
+                            updateHeaderFromPath();
+                            updateModuleHeaderVisibility();
+                            pushHistoryState(path[0]);
+                            return;
+                        }
+                    }
+                    if (path.length > 1) {
+                        history.back();
+                    } else {
+                        hideModule();
+                    }
+                }
+            }
+        });
+
+        // ================================================================
+        //  事件绑定
+        // ================================================================
+        document.querySelectorAll('.card-item').forEach(card => {
+            card.addEventListener('click', () => {
+                const module = card.dataset.module;
+                if (!module) return;
+                currentModule = module;
+                path = [];
+                showModule();
+                renderCurrentModule();
+                if (path.length > 0) {
+                    pushHistoryState(path[0]);
+                }
+                updateModuleHeaderVisibility();
+            });
+        });
+
+        moduleBack.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateBack();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && moduleView.classList.contains('active')) {
+                navigateBack();
+            }
+        });
+
+        // 暴露函数到全局
+        window.openCourse = openCourse;
+        window.openTreeDetail = openTreeDetail;
+        window.openColorDetail = openColorDetail;
+        window.openLeafDetail = openLeafDetail;
+        window.openScene = openScene;
+        window.openScript = openScript;
+        window.openPart2A = openPart2A;
+        window.openPart2B = openPart2B;
+        window.openPart2C = openPart2C;
+        window.openVariety = openVariety;
+        window.goBackTo = goBackTo;
+        window.navigateBack = navigateBack;
+
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (移动端点击修复)');
+        console.log('📱 品种详情页点击已优化，返回逻辑完善');
+    </script>
+
+</body>
+</html>

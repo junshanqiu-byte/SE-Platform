@@ -9,7 +9,7 @@
     <title>物流包装展示 · 山秋枫树园</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
         /* ===== 全局重置 ===== */
         * {
@@ -72,32 +72,56 @@
             pointer-events: none;
         }
 
-        /* ===== 底部文字 ===== */
+        /* ===== 底部文字 ———— 右下方贴边设计 ===== */
         .caption {
             position: absolute;
-            bottom: 48px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 12px 28px;
-            border-radius: 40px;
+            bottom: 64px;
+            right: 24px;
+            left: auto;
+            transform: none;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 16px 28px;
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 15px;
-            font-weight: 400;
-            letter-spacing: 1.2px;
-            color: rgba(255, 255, 255, 0.85);
-            white-space: nowrap;
-            text-align: center;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
             pointer-events: none;
             transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            text-align: center;
+            line-height: 1.3;
         }
-        .caption strong {
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: 0.5px;
+        /* 第一行：全冠木架膜封包装 — 金色醒目 */
+        .caption-line1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #E8C87A;
+            text-shadow: 0 0 30px rgba(232, 200, 122, 0.15);
+            margin-bottom: 2px;
+        }
+        /* 第二行：京东物流送货上门 — 更大更醒目 */
+        .caption-line2 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+            margin-top: 2px;
+        }
+        /* 两行之间的装饰分隔（微调） */
+        .caption-divider {
+            width: 28px;
+            height: 2px;
+            background: rgba(232, 200, 122, 0.3);
+            border-radius: 2px;
+            margin: 4px 0 6px 0;
+            flex-shrink: 0;
         }
 
         /* ===== 导航箭头 ===== */
@@ -152,7 +176,7 @@
         /* ===== 页码指示器 ===== */
         .dots {
             position: absolute;
-            bottom: 120px;
+            bottom: 130px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -207,17 +231,33 @@
             .arrow-right {
                 right: 10px;
             }
+
             .caption {
-                bottom: 32px;
-                padding: 10px 18px;
-                font-size: 13px;
-                letter-spacing: 0.8px;
-                white-space: normal;
-                max-width: 90%;
-                border-radius: 28px;
+                bottom: 40px;
+                right: 12px;
+                padding: 12px 18px;
+                border-radius: 16px;
+                min-width: 130px;
+                max-width: 85%;
             }
+            .caption-line1 {
+                font-size: 18px;
+                letter-spacing: 1.5px;
+                margin-bottom: 0px;
+            }
+            .caption-line2 {
+                font-size: 17px;
+                font-weight: 700;
+                letter-spacing: 1.2px;
+                margin-top: 0px;
+            }
+            .caption-divider {
+                width: 20px;
+                margin: 2px 0 4px 0;
+            }
+
             .dots {
-                bottom: 88px;
+                bottom: 95px;
                 gap: 8px;
             }
             .dots .dot {
@@ -228,12 +268,27 @@
 
         @media (max-width: 380px) {
             .caption {
-                font-size: 11px;
-                padding: 8px 14px;
-                bottom: 28px;
+                bottom: 30px;
+                right: 8px;
+                padding: 10px 14px;
+                border-radius: 14px;
+                min-width: 100px;
+            }
+            .caption-line1 {
+                font-size: 15px;
+                letter-spacing: 1px;
+            }
+            .caption-line2 {
+                font-size: 14px;
+                font-weight: 700;
+                letter-spacing: 0.8px;
+            }
+            .caption-divider {
+                width: 16px;
+                margin: 2px 0 3px 0;
             }
             .dots {
-                bottom: 76px;
+                bottom: 80px;
             }
             .arrow {
                 width: 34px;
@@ -247,12 +302,27 @@
 
         @media (min-height: 800px) {
             .caption {
-                bottom: 64px;
-                padding: 14px 36px;
-                font-size: 17px;
+                bottom: 80px;
+                right: 40px;
+                padding: 20px 36px;
+                border-radius: 24px;
+                min-width: 220px;
+            }
+            .caption-line1 {
+                font-size: 28px;
+                letter-spacing: 2.5px;
+            }
+            .caption-line2 {
+                font-size: 26px;
+                font-weight: 700;
+                letter-spacing: 2px;
+            }
+            .caption-divider {
+                width: 36px;
+                margin: 6px 0 8px 0;
             }
             .dots {
-                bottom: 140px;
+                bottom: 160px;
             }
         }
 
@@ -315,9 +385,11 @@
             <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
-        <!-- 底部文字 -->
+        <!-- ===== 右下方贴边文字：两行醒目 ===== -->
         <div class="caption" id="caption">
-            <strong>全冠木架膜封包装</strong> &nbsp;·&nbsp; 京东物流送货上门
+            <div class="caption-line1">全冠木架膜封包装</div>
+            <div class="caption-divider"></div>
+            <div class="caption-line2">京东物流送货上门</div>
         </div>
 
         <!-- 页码指示器 -->
@@ -342,7 +414,6 @@
             const dotsContainer = document.getElementById('dotsContainer');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-            const caption = document.getElementById('caption');
 
             let currentIndex = 0;
             let isTransitioning = false;
@@ -361,7 +432,6 @@
                     img.src = src;
                     img.alt = `物流包装展示 ${idx + 1}`;
                     img.loading = 'lazy';
-                    // 首张优先加载
                     if (idx === 0) img.fetchPriority = 'high';
                     slide.appendChild(img);
                     track.appendChild(slide);
@@ -395,16 +465,12 @@
                 track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
                 track.style.transform = `translateX(${offset}%)`;
 
-                // 更新指示点
                 const dots = dotsContainer.querySelectorAll('.dot');
                 dots.forEach((dot, i) => {
                     dot.classList.toggle('active', i === currentIndex);
                 });
 
-                // 箭头显示状态
                 updateArrows();
-
-                // 预加载相邻图片
                 preloadAdjacent();
             }
 
@@ -457,7 +523,7 @@
                 }
             }
 
-            // ===== 触摸事件（滑动支持） =====
+            // ===== 触摸事件 =====
             function handleTouchStart(e) {
                 const touch = e.touches[0];
                 touchStartX = touch.clientX;
@@ -471,10 +537,9 @@
                 const deltaX = touch.clientX - touchStartX;
                 const deltaY = touch.clientY - touchStartY;
 
-                // 判断是否为水平滑动（水平距离 > 垂直距离 且 水平距离 > 15px）
                 if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
                     isSwiping = true;
-                    e.preventDefault(); // 防止页面滚动
+                    e.preventDefault();
                 }
             }
 
@@ -498,7 +563,7 @@
                 isSwiping = false;
             }
 
-            // ===== 鼠标拖拽支持（桌面端滑动） =====
+            // ===== 鼠标拖拽 =====
             let mouseDown = false;
             let mouseStartX = 0;
             let mouseStartY = 0;
@@ -542,15 +607,13 @@
             function init() {
                 buildSlides();
                 buildDots();
-                // 初始定位，无动画
                 updateSlide(0, false);
-                // 预加载所有图片（提升体验）
+
                 IMAGES.forEach(src => {
                     const img = new Image();
                     img.src = src;
                 });
 
-                // 事件绑定
                 document.addEventListener('keydown', handleKeydown);
 
                 const slider = document.getElementById('slider');
@@ -558,12 +621,10 @@
                 slider.addEventListener('touchmove', handleTouchMove, { passive: false });
                 slider.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-                // 鼠标拖拽
                 slider.addEventListener('mousedown', handleMouseDown);
                 document.addEventListener('mousemove', handleMouseMove);
                 document.addEventListener('mouseup', handleMouseUp);
 
-                // 按钮事件
                 prevBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     prev();
@@ -573,14 +634,11 @@
                     next();
                 });
 
-                // 窗口 resize 不做特殊处理，保持全屏
-                // 预加载首张之后的图片
                 setTimeout(preloadAdjacent, 300);
 
                 console.log('📦 物流包装展示已启动，共 ' + TOTAL + ' 张图片');
             }
 
-            // DOM 就绪后启动
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {

@@ -1290,39 +1290,45 @@
         //  专用修复：枫树专用肥 - 图片同行等高完整显示
         // ================================================================
         function fixFertilizerLayout(doc) {
-            // 查找所有包含至少两张图片的块级父容器
-            const containers = new Set();
-            doc.querySelectorAll('img').forEach(img => {
+            // 强制将所有 img 的父容器（block级）进行 flex 布局处理
+            const allImgs = doc.querySelectorAll('img');
+            if (allImgs.length < 2) return;
+
+            // 按父容器分组
+            const groups = new Map();
+            allImgs.forEach(img => {
                 let parent = img.parentNode;
                 while (parent && parent !== doc.body && parent.nodeType === 1) {
                     const style = window.getComputedStyle(parent);
-                    if (style.display === 'block' || style.display === 'flex' || style.display === 'grid') {
-                        containers.add(parent);
+                    if (style.display === 'block' || style.display === 'flex' || style.display === 'grid' || style.display === 'inline-block') {
+                        if (!groups.has(parent)) groups.set(parent, []);
+                        groups.get(parent).push(img);
                         break;
                     }
                     parent = parent.parentNode;
                 }
             });
 
-            containers.forEach(container => {
-                const imgs = container.querySelectorAll('img');
+            groups.forEach((imgs, container) => {
                 if (imgs.length >= 2) {
-                    container.style.display = 'flex';
-                    container.style.flexWrap = 'nowrap';
-                    container.style.justifyContent = 'center';
-                    container.style.alignItems = 'stretch';
-                    container.style.gap = '4px';
-                    container.style.width = '100%';
+                    // 强制 Flex 行布局，并添加 !important 防止被覆盖
+                    container.style.setProperty('display', 'flex', 'important');
+                    container.style.setProperty('flex-wrap', 'nowrap', 'important');
+                    container.style.setProperty('justify-content', 'center', 'important');
+                    container.style.setProperty('align-items', 'stretch', 'important');
+                    container.style.setProperty('gap', '4px', 'important');
+                    container.style.setProperty('width', '100%', 'important');
                     imgs.forEach(img => {
-                        img.style.flex = '1 1 0';
-                        img.style.maxHeight = '50vh';
-                        img.style.objectFit = 'contain';
-                        img.style.width = 'auto';
-                        img.style.height = 'auto';
-                        img.style.minHeight = '0';
-                        img.style.display = 'block';
+                        img.style.setProperty('flex', '1 1 0', 'important');
+                        img.style.setProperty('max-height', '50vh', 'important');
+                        img.style.setProperty('object-fit', 'contain', 'important');
+                        img.style.setProperty('width', 'auto', 'important');
+                        img.style.setProperty('height', 'auto', 'important');
+                        img.style.setProperty('min-height', '0', 'important');
+                        img.style.setProperty('display', 'block', 'important');
                     });
-                    container.querySelectorAll('br, .break').forEach(el => el.style.display = 'none');
+                    // 移除可能存在的换行元素
+                    container.querySelectorAll('br, .break, .clearfix').forEach(el => el.style.display = 'none');
                 }
             });
         }
@@ -1852,7 +1858,7 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (移动端流程修复)');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (最终修复)');
         console.log('📦 模块六专用肥图片同行等高，模块五保留原生详情页');
     </script>
 

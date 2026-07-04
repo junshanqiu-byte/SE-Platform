@@ -1207,7 +1207,7 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 仅做基础清理，不干预内容显示
+                            // 基础清理
                             if (!keepBackBtn) {
                                 doc.querySelectorAll('.back-btn, [data-back], .module-header .back-btn, .back-link, .top-mini .back-link, .detail-back, button.back-btn, a.back-link')
                                     .forEach(el => {
@@ -1226,7 +1226,6 @@
                                     el.style.pointerEvents = 'none';
                                 });
                             }
-                            // 隐藏上传相关控件
                             doc.querySelectorAll('input[type="file"]').forEach(el => { el.style.display = 'none'; });
                             doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
                                 .forEach(el => {
@@ -1236,7 +1235,7 @@
                                 });
                             doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
                                 .forEach(el => { el.style.display = 'none'; });
-                            // 为所有图片添加 onerror 占位，防止破碎图
+                            // 图片占位
                             doc.querySelectorAll('img').forEach(img => {
                                 if (!img.hasAttribute('data-error-handled')) {
                                     img.setAttribute('data-error-handled', '1');
@@ -1245,7 +1244,7 @@
                                     };
                                 }
                             });
-                            // 执行额外注入（如肥料布局修复、图片查看器）
+                            // 执行额外注入（肥料布局或图片查看器）
                             if (typeof extraInject === 'function') {
                                 extraInject(doc);
                             }
@@ -1263,25 +1262,17 @@
                         </div>
                     `;
                 };
-                // 延迟再次确保图片占位和注入
+                // 延迟再次执行，确保图片查看器生效
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            doc.querySelectorAll('img').forEach(img => {
-                                if (!img.hasAttribute('data-error-handled')) {
-                                    img.setAttribute('data-error-handled', '1');
-                                    img.onerror = function() {
-                                        this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23e0e0e0%22/%3E%3Ctext x=%2250%22 y=%2250%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3E图片%3C/text%3E%3C/svg%3E';
-                                    };
-                                }
-                            });
                             if (typeof extraInject === 'function') {
                                 extraInject(doc);
                             }
                         }
                     } catch (e) {}
-                }, 800);
+                }, 1000);
             }
             updateModuleHeaderVisibility();
         }
@@ -1293,7 +1284,6 @@
             const allImgs = doc.querySelectorAll('img');
             if (allImgs.length < 2) return;
 
-            // 按父容器分组
             const groups = new Map();
             allImgs.forEach(img => {
                 let parent = img.parentNode;
@@ -1331,13 +1321,24 @@
         }
 
         // ================================================================
-        //  ★★★ 全屏图片查看器（用于品种详情页）★★★
+        //  ★★★ 全屏图片查看器（品种详情页专用）★★★
         // ================================================================
         function injectImageViewer(doc) {
-            const imgs = doc.querySelectorAll('img');
-            if (imgs.length === 0) return;
+            // 等待文档加载完成
+            if (doc.readyState === 'loading') {
+                doc.addEventListener('DOMContentLoaded', function() {
+                    initViewer(doc);
+                });
+            } else {
+                initViewer(doc);
+            }
+        }
 
-            // 创建遮罩
+        function initViewer(doc) {
+            const images = doc.querySelectorAll('img');
+            if (images.length === 0) return;
+
+            // 创建遮罩和图片元素
             const overlay = doc.createElement('div');
             overlay.id = 'custom-image-viewer';
             overlay.style.cssText = `
@@ -1346,13 +1347,13 @@
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: rgba(0,0,0,0.92);
+                background: rgba(0,0,0,0.9);
                 z-index: 99999;
                 display: none;
                 align-items: center;
                 justify-content: center;
                 touch-action: none;
-                cursor: pointer;
+                cursor: zoom-out;
                 user-select: none;
                 -webkit-user-select: none;
             `;
@@ -1373,7 +1374,7 @@
                 max-height: 100%;
                 object-fit: contain;
                 touch-action: none;
-                transition: transform 0.05s linear;
+                transition: transform 0.1s linear;
                 will-change: transform;
             `;
             imgContainer.appendChild(imgEl);
@@ -1428,8 +1429,8 @@
                 imgEl.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
             }
 
-            // 点击图片打开
-            imgs.forEach(img => {
+            // 为所有图片绑定点击事件
+            images.forEach(img => {
                 img.style.cursor = 'pointer';
                 img.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -1437,7 +1438,7 @@
                 });
             });
 
-            // 点击背景或关闭按钮关闭
+            // 关闭方式
             overlay.addEventListener('click', function(e) {
                 if (e.target === overlay || e.target === imgContainer) {
                     closeViewer();
@@ -1447,8 +1448,11 @@
                 e.stopPropagation();
                 closeViewer();
             });
+            doc.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeViewer();
+            });
 
-            // 触摸事件
+            // 触摸事件（移动端双指缩放、单指拖动）
             let lastTouchX = 0, lastTouchY = 0;
             imgContainer.addEventListener('touchstart', function(e) {
                 const touches = e.touches;
@@ -1458,7 +1462,7 @@
                     pinchStartDist = Math.sqrt(dx*dx + dy*dy);
                     pinchStartScale = scale;
                     isPinching = true;
-                } else if (touches.length === 1) {
+                } else if (touches.length === 1 && scale > 1) {
                     isDragging = true;
                     startX = touches[0].clientX;
                     startY = touches[0].clientY;
@@ -1478,8 +1482,12 @@
                     let newScale = pinchStartScale * delta;
                     newScale = Math.min(Math.max(newScale, 0.5), 5);
                     scale = newScale;
+                    if (scale === 1) {
+                        translateX = 0;
+                        translateY = 0;
+                    }
                     updateTransform();
-                } else if (touches.length === 1 && isDragging && scale > 1) {
+                } else if (touches.length === 1 && isDragging) {
                     const dx = touches[0].clientX - startX;
                     const dy = touches[0].clientY - startY;
                     translateX = lastTouchX + dx;
@@ -1491,6 +1499,7 @@
             imgContainer.addEventListener('touchend', function(e) {
                 isDragging = false;
                 isPinching = false;
+                // 如果缩放为1，复位位置
                 if (scale === 1) {
                     translateX = 0;
                     translateY = 0;
@@ -1498,7 +1507,7 @@
                 }
             }, { passive: true });
 
-            // 鼠标滚轮缩放
+            // 鼠标滚轮缩放（桌面端）
             imgContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? 0.9 : 1.1;
@@ -1511,13 +1520,6 @@
                 }
                 updateTransform();
             }, { passive: false });
-
-            // 键盘 ESC 关闭
-            doc.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeViewer();
-                }
-            });
         }
 
         // ================================================================
@@ -1850,7 +1852,7 @@
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
-                // 传入图片查看器注入
+                // 注入图片查看器
                 openFileView(displayName, variety.file, '品种详情', false, injectImageViewer);
             }
         }
@@ -2043,8 +2045,8 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (全屏图片查看器)');
-        console.log('📸 模块五品种详情页点击图片即可全屏缩放查看');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (全屏图片查看器已加固)');
+        console.log('📸 点击品种详情中的任意图片即可全屏缩放查看');
     </script>
 
 </body>

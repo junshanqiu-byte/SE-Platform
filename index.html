@@ -1302,7 +1302,332 @@
             updateModuleHeaderVisibility();
         }
 
-        // -------- Part1: 课程 --------
+        // ================================================================
+        //  专用修复函数：枫树专用肥 图片同行等高完整显示
+        // ================================================================
+        function fixFertilizerLayout(doc) {
+            // 先处理所有 img 的 onerror，防止加载失败
+            doc.querySelectorAll('img').forEach(img => {
+                img.onerror = function() { this.src = 'shanqiu_logo.png'; };
+            });
+
+            const imgs = doc.querySelectorAll('img');
+            if (imgs.length < 2) return;
+
+            // 按父容器分组
+            const parentMap = new Map();
+            imgs.forEach(img => {
+                const parent = img.parentNode;
+                if (parent) {
+                    if (!parentMap.has(parent)) parentMap.set(parent, []);
+                    parentMap.get(parent).push(img);
+                }
+            });
+
+            parentMap.forEach((imgsInParent, parent) => {
+                if (imgsInParent.length >= 2) {
+                    // 强制设置为 flex 行内等高
+                    parent.style.display = 'flex';
+                    parent.style.flexWrap = 'nowrap';
+                    parent.style.justifyContent = 'center';
+                    parent.style.alignItems = 'stretch';
+                    parent.style.gap = '4px';
+                    parent.style.width = '100%';
+                    // 每个图片均分宽度，高度自适应，并保持比例
+                    imgsInParent.forEach(img => {
+                        img.style.flex = '1 1 0';
+                        img.style.maxHeight = '50vh';
+                        img.style.objectFit = 'contain';
+                        img.style.width = 'auto';
+                        img.style.height = 'auto';
+                        img.style.minHeight = '0';
+                    });
+                }
+            });
+        }
+
+        // ================================================================
+        //  品种详情页画廊注入（缩略图模式）+ 图片加载失败兜底
+        // ================================================================
+        function buildGalleryInject(doc) {
+            // 为所有图片添加 onerror 兜底
+            doc.querySelectorAll('img').forEach(img => {
+                if (!img.hasAttribute('data-error-handled')) {
+                    img.setAttribute('data-error-handled', '1');
+                    img.onerror = function() { this.src = 'shanqiu_logo.png'; };
+                }
+            });
+
+            let imageList = [];
+            let currentIndex = 0;
+            try {
+                const win = doc.defaultView || doc.parentWindow;
+                if (win && win.imageList && Array.isArray(win.imageList) && win.imageList.length > 0) {
+                    imageList = win.imageList;
+                    currentIndex = win.currentIndex || 0;
+                }
+            } catch (e) {}
+
+            // 隐藏原有的返回按钮
+            doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back, .nav-back, .module-header .back-btn')
+                .forEach(el => {
+                    el.style.display = 'none';
+                    el.style.pointerEvents = 'none';
+                });
+            doc.querySelectorAll('button, a').forEach(btn => {
+                const txt = btn.textContent.trim();
+                if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back' || txt === '✕' || txt === '×') {
+                    btn.style.display = 'none';
+                    btn.style.pointerEvents = 'none';
+                }
+            });
+
+            if (!imageList || imageList.length === 0) {
+                const placeholder = doc.createElement('div');
+                placeholder.style.cssText =
+                    'display:flex;align-items:center;justify-content:center;height:100vh;font-size:18px;color:#999;flex-direction:column;';
+                placeholder.innerHTML = `
+                    <div style="font-size:48px;margin-bottom:12px;">🖼️</div>
+                    <div>暂无实景图片</div>
+                    <div style="font-size:14px;margin-top:8px;color:#bbb;">请上传或检查图片数据</div>
+                `;
+                doc.body.innerHTML = '';
+                doc.body.appendChild(placeholder);
+                return;
+            }
+
+            if (doc.getElementById('gallery-thumb-container')) return;
+
+            const container = doc.createElement('div');
+            container.id = 'gallery-thumb-container';
+            container.style.cssText =
+                'padding:14px 12px 18px;background:rgba(0,0,0,0.02);border-top:1px solid rgba(0,0,0,0.06);margin-top:18px;';
+
+            const header = doc.createElement('div');
+            header.style.cssText =
+                'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;';
+            header.innerHTML = `
+                <span style="font-size:15px;font-weight:500;color:#333;">📷 实景图片 (${imageList.length}张)</span>
+                <button id="viewGalleryBtn" style="padding:5px 16px;border-radius:20px;border:1px solid #7fc1c5;background:transparent;color:#3a7a78;font-size:14px;cursor:pointer;touch-action:manipulation;">查看全部</button>
+            `;
+            container.appendChild(header);
+
+            const thumbWrap = doc.createElement('div');
+            thumbWrap.style.cssText =
+                'display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;';
+            imageList.forEach((src, idx) => {
+                const thumb = doc.createElement('div');
+                thumb.style.cssText =
+                    `flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid ${idx === currentIndex ? '#7fc1c5' : 'transparent'};background:#f0f0f0;display:flex;align-items:center;justify-content:center;touch-action:manipulation;`;
+                const img = doc.createElement('img');
+                img.src = src;
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+                img.alt = `实景图片 ${idx+1}`;
+                img.loading = 'lazy';
+                // 加载失败兜底
+                img.onerror = function() { this.src = 'shanqiu_logo.png'; };
+                thumb.appendChild(img);
+                thumb.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openFullGallery(doc, imageList, idx);
+                });
+                thumbWrap.appendChild(thumb);
+            });
+            container.appendChild(thumbWrap);
+            doc.body.appendChild(container);
+
+            const btn = doc.getElementById('viewGalleryBtn');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openFullGallery(doc, imageList, currentIndex);
+                });
+            }
+
+            function openFullGallery(doc, images, startIdx) {
+                if (doc.getElementById('gallery-full-overlay')) return;
+
+                const overlay = doc.createElement('div');
+                overlay.id = 'gallery-full-overlay';
+                overlay.style.cssText = `
+                    position: fixed; inset: 0; width: 100vw; height: 100vh;
+                    background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    z-index: 99999; padding: 0; margin: 0;
+                    touch-action: pan-y;
+                `;
+
+                const closeBtn = doc.createElement('button');
+                closeBtn.textContent = '✕';
+                closeBtn.style.cssText = `
+                    position: absolute; top: 16px; right: 16px; z-index: 20;
+                    width: 44px; height: 44px; border-radius: 50%;
+                    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+                    color: #fff; font-size: 24px; cursor: pointer;
+                    display: flex; align-items: center; justify-content: center;
+                    touch-action: manipulation;
+                `;
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                });
+                closeBtn.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                }, { passive: false });
+                overlay.appendChild(closeBtn);
+
+                const counter = doc.createElement('div');
+                counter.style.cssText = `
+                    position: absolute; top: 20px; left: 20px; z-index: 20;
+                    color: rgba(255,255,255,0.5); font-size: 14px;
+                    background: rgba(0,0,0,0.2); padding: 4px 14px; border-radius: 30px;
+                `;
+                counter.textContent = `${startIdx+1} / ${images.length}`;
+                overlay.appendChild(counter);
+
+                const trackContainer = doc.createElement('div');
+                trackContainer.style.cssText = `
+                    width: 100vw; height: 100vh; max-width: 100%; max-height: 100%;
+                    overflow: hidden; position: relative; touch-action: pan-y;
+                    display: flex; align-items: center; justify-content: center;
+                `;
+
+                const track = doc.createElement('div');
+                track.style.cssText = `
+                    display: flex; height: 100%; width: 100%;
+                    transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+                    will-change: transform;
+                `;
+
+                // 使用 img 标签替代 background-image，便于处理加载失败
+                images.forEach((src) => {
+                    const slide = doc.createElement('div');
+                    slide.style.cssText = `
+                        flex: 0 0 100%; height: 100%;
+                        display: flex; align-items: center; justify-content: center;
+                        background-color: #f0f0f0;
+                    `;
+                    const img = doc.createElement('img');
+                    img.src = src;
+                    img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;display:block;';
+                    img.alt = '实景图片';
+                    img.onerror = function() { this.src = 'shanqiu_logo.png'; };
+                    slide.appendChild(img);
+                    track.appendChild(slide);
+                });
+
+                trackContainer.appendChild(track);
+
+                const nav = doc.createElement('div');
+                nav.style.cssText = `
+                    position: absolute; top: 50%; left: 0; right: 0;
+                    transform: translateY(-50%); display: flex;
+                    justify-content: space-between; padding: 0 10px;
+                    z-index: 15; pointer-events: none;
+                `;
+
+                const prevBtn = doc.createElement('button');
+                prevBtn.textContent = '‹';
+                prevBtn.disabled = (startIdx === 0);
+                prevBtn.style.cssText = `
+                    pointer-events: auto; background: rgba(0,0,0,0.25);
+                    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
+                    width: 44px; height: 44px; font-size: 22px; color: #fff;
+                    cursor: pointer; display: flex; align-items: center; justify-content: center;
+                    touch-action: manipulation;
+                `;
+
+                const nextBtn = doc.createElement('button');
+                nextBtn.textContent = '›';
+                nextBtn.disabled = (startIdx === images.length - 1);
+                nextBtn.style.cssText = `
+                    pointer-events: auto; background: rgba(0,0,0,0.25);
+                    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
+                    width: 44px; height: 44px; font-size: 22px; color: #fff;
+                    cursor: pointer; display: flex; align-items: center; justify-content: center;
+                    touch-action: manipulation;
+                `;
+
+                let current = startIdx;
+                const updateGallery = () => {
+                    track.style.transform = `translateX(-${current * 100}%)`;
+                    counter.textContent = `${current+1} / ${images.length}`;
+                    prevBtn.disabled = (current === 0);
+                    nextBtn.disabled = (current === images.length - 1);
+                    const thumbs = doc.querySelectorAll('#gallery-thumb-container img');
+                    thumbs.forEach((img, idx) => {
+                        const parent = img.parentElement;
+                        if (parent) {
+                            parent.style.borderColor = (idx === current) ? '#7fc1c5' : 'transparent';
+                        }
+                    });
+                };
+
+                prevBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (current > 0) { current--; updateGallery(); }
+                });
+                nextBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (current < images.length - 1) { current++; updateGallery(); }
+                });
+
+                let touchStartX = 0;
+                let isDragging = false;
+                trackContainer.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    isDragging = true;
+                }, { passive: true });
+                trackContainer.addEventListener('touchmove', function(e) {
+                    if (!isDragging) return;
+                    const dx = e.touches[0].clientX - touchStartX;
+                    if (Math.abs(dx) > 30) {
+                        if (dx > 0 && current > 0) {
+                            current--;
+                            updateGallery();
+                            isDragging = false;
+                        } else if (dx < 0 && current < images.length - 1) {
+                            current++;
+                            updateGallery();
+                            isDragging = false;
+                        }
+                        touchStartX = e.touches[0].clientX;
+                    }
+                }, { passive: true });
+                trackContainer.addEventListener('touchend', function() {
+                    isDragging = false;
+                }, { passive: true });
+
+                nav.appendChild(prevBtn);
+                nav.appendChild(nextBtn);
+
+                overlay.appendChild(trackContainer);
+                overlay.appendChild(nav);
+
+                const dotsContainer = doc.createElement('div');
+                dotsContainer.style.cssText = `
+                    position: absolute; bottom: 24px; left: 50%;
+                    transform: translateX(-50%); display: flex; gap: 10px; z-index: 15;
+                `;
+                images.forEach((_, idx) => {
+                    const dot = doc.createElement('span');
+                    dot.style.cssText = `
+                        width: 10px; height: 10px; border-radius: 50%;
+                        background: ${idx === current ? '#7fc1c5' : 'rgba(255,255,255,0.15)'};
+                        transition: background 0.3s;
+                    `;
+                    dotsContainer.appendChild(dot);
+                });
+                overlay.appendChild(dotsContainer);
+
+                doc.body.appendChild(overlay);
+            }
+        }
+
+        // ================================================================
+        //  Part1: 课程
+        // ================================================================
         function renderPart1() {
             moduleScroll.classList.remove('file-mode');
             if (path.length === 0) {
@@ -1580,271 +1905,7 @@
         }
 
         // ================================================================
-        //  ★★★ 品种详情页画廊注入（缩略图模式） ★★★
-        // ================================================================
-        function buildGalleryInject(doc) {
-            let imageList = [];
-            let currentIndex = 0;
-            try {
-                const win = doc.defaultView || doc.parentWindow;
-                if (win && win.imageList && Array.isArray(win.imageList) && win.imageList.length > 0) {
-                    imageList = win.imageList;
-                    currentIndex = win.currentIndex || 0;
-                }
-            } catch (e) {}
-
-            // 隐藏原有的返回按钮
-            doc.querySelectorAll('.back-btn, [data-back], .back-link, .detail-back, .nav-back, .module-header .back-btn')
-                .forEach(el => {
-                    el.style.display = 'none';
-                    el.style.pointerEvents = 'none';
-                });
-            doc.querySelectorAll('button, a').forEach(btn => {
-                const txt = btn.textContent.trim();
-                if (txt === '‹' || txt === '←' || txt === '返回' || txt === 'Back' || txt === '✕' || txt === '×') {
-                    btn.style.display = 'none';
-                    btn.style.pointerEvents = 'none';
-                }
-            });
-
-            if (!imageList || imageList.length === 0) {
-                const placeholder = doc.createElement('div');
-                placeholder.style.cssText =
-                    'display:flex;align-items:center;justify-content:center;height:100vh;font-size:18px;color:#999;flex-direction:column;';
-                placeholder.innerHTML = `
-                    <div style="font-size:48px;margin-bottom:12px;">🖼️</div>
-                    <div>暂无实景图片</div>
-                    <div style="font-size:14px;margin-top:8px;color:#bbb;">请上传或检查图片数据</div>
-                `;
-                doc.body.innerHTML = '';
-                doc.body.appendChild(placeholder);
-                return;
-            }
-
-            if (doc.getElementById('gallery-thumb-container')) return;
-
-            const container = doc.createElement('div');
-            container.id = 'gallery-thumb-container';
-            container.style.cssText =
-                'padding:14px 12px 18px;background:rgba(0,0,0,0.02);border-top:1px solid rgba(0,0,0,0.06);margin-top:18px;';
-
-            const header = doc.createElement('div');
-            header.style.cssText =
-                'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;';
-            header.innerHTML = `
-                <span style="font-size:15px;font-weight:500;color:#333;">📷 实景图片 (${imageList.length}张)</span>
-                <button id="viewGalleryBtn" style="padding:5px 16px;border-radius:20px;border:1px solid #7fc1c5;background:transparent;color:#3a7a78;font-size:14px;cursor:pointer;touch-action:manipulation;">查看全部</button>
-            `;
-            container.appendChild(header);
-
-            const thumbWrap = doc.createElement('div');
-            thumbWrap.style.cssText =
-                'display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;';
-            imageList.forEach((src, idx) => {
-                const thumb = doc.createElement('div');
-                thumb.style.cssText =
-                    `flex:0 0 80px;height:80px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid ${idx === currentIndex ? '#7fc1c5' : 'transparent'};background:#f0f0f0;display:flex;align-items:center;justify-content:center;touch-action:manipulation;`;
-                const img = doc.createElement('img');
-                img.src = src;
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-                img.alt = `实景图片 ${idx+1}`;
-                img.loading = 'lazy';
-                thumb.appendChild(img);
-                thumb.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openFullGallery(doc, imageList, idx);
-                });
-                thumbWrap.appendChild(thumb);
-            });
-            container.appendChild(thumbWrap);
-            doc.body.appendChild(container);
-
-            const btn = doc.getElementById('viewGalleryBtn');
-            if (btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openFullGallery(doc, imageList, currentIndex);
-                });
-            }
-
-            function openFullGallery(doc, images, startIdx) {
-                if (doc.getElementById('gallery-full-overlay')) return;
-
-                const overlay = doc.createElement('div');
-                overlay.id = 'gallery-full-overlay';
-                overlay.style.cssText = `
-                    position: fixed; inset: 0; width: 100vw; height: 100vh;
-                    background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
-                    display: flex; flex-direction: column; align-items: center; justify-content: center;
-                    z-index: 99999; padding: 0; margin: 0;
-                    touch-action: pan-y;
-                `;
-
-                const closeBtn = doc.createElement('button');
-                closeBtn.textContent = '✕';
-                closeBtn.style.cssText = `
-                    position: absolute; top: 16px; right: 16px; z-index: 20;
-                    width: 44px; height: 44px; border-radius: 50%;
-                    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-                    color: #fff; font-size: 24px; cursor: pointer;
-                    display: flex; align-items: center; justify-content: center;
-                    touch-action: manipulation;
-                `;
-                closeBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-                });
-                closeBtn.addEventListener('touchstart', function(e) {
-                    e.stopPropagation();
-                    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-                }, { passive: false });
-                overlay.appendChild(closeBtn);
-
-                const counter = doc.createElement('div');
-                counter.style.cssText = `
-                    position: absolute; top: 20px; left: 20px; z-index: 20;
-                    color: rgba(255,255,255,0.5); font-size: 14px;
-                    background: rgba(0,0,0,0.2); padding: 4px 14px; border-radius: 30px;
-                `;
-                counter.textContent = `${startIdx+1} / ${images.length}`;
-                overlay.appendChild(counter);
-
-                const trackContainer = doc.createElement('div');
-                trackContainer.style.cssText = `
-                    width: 100vw; height: 100vh; max-width: 100%; max-height: 100%;
-                    overflow: hidden; position: relative; touch-action: pan-y;
-                    display: flex; align-items: center; justify-content: center;
-                `;
-
-                const track = doc.createElement('div');
-                track.style.cssText = `
-                    display: flex; height: 100%; width: 100%;
-                    transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
-                    will-change: transform;
-                `;
-
-                images.forEach((src) => {
-                    const slide = doc.createElement('div');
-                    slide.style.cssText = `
-                        flex: 0 0 100%; height: 100%;
-                        background-size: contain; background-repeat: no-repeat;
-                        background-position: center; background-color: transparent;
-                        display: flex; align-items: center; justify-content: center;
-                    `;
-                    slide.style.backgroundImage = `url(${src})`;
-                    track.appendChild(slide);
-                });
-
-                trackContainer.appendChild(track);
-
-                const nav = doc.createElement('div');
-                nav.style.cssText = `
-                    position: absolute; top: 50%; left: 0; right: 0;
-                    transform: translateY(-50%); display: flex;
-                    justify-content: space-between; padding: 0 10px;
-                    z-index: 15; pointer-events: none;
-                `;
-
-                const prevBtn = doc.createElement('button');
-                prevBtn.textContent = '‹';
-                prevBtn.disabled = (startIdx === 0);
-                prevBtn.style.cssText = `
-                    pointer-events: auto; background: rgba(0,0,0,0.25);
-                    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
-                    width: 44px; height: 44px; font-size: 22px; color: #fff;
-                    cursor: pointer; display: flex; align-items: center; justify-content: center;
-                    touch-action: manipulation;
-                `;
-
-                const nextBtn = doc.createElement('button');
-                nextBtn.textContent = '›';
-                nextBtn.disabled = (startIdx === images.length - 1);
-                nextBtn.style.cssText = `
-                    pointer-events: auto; background: rgba(0,0,0,0.25);
-                    border: 1px solid rgba(255,255,255,0.08); border-radius: 50%;
-                    width: 44px; height: 44px; font-size: 22px; color: #fff;
-                    cursor: pointer; display: flex; align-items: center; justify-content: center;
-                    touch-action: manipulation;
-                `;
-
-                let current = startIdx;
-                const updateGallery = () => {
-                    track.style.transform = `translateX(-${current * 100}%)`;
-                    counter.textContent = `${current+1} / ${images.length}`;
-                    prevBtn.disabled = (current === 0);
-                    nextBtn.disabled = (current === images.length - 1);
-                    const thumbs = doc.querySelectorAll('#gallery-thumb-container img');
-                    thumbs.forEach((img, idx) => {
-                        const parent = img.parentElement;
-                        if (parent) {
-                            parent.style.borderColor = (idx === current) ? '#7fc1c5' : 'transparent';
-                        }
-                    });
-                };
-
-                prevBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (current > 0) { current--; updateGallery(); }
-                });
-                nextBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (current < images.length - 1) { current++; updateGallery(); }
-                });
-
-                let touchStartX = 0;
-                let isDragging = false;
-                trackContainer.addEventListener('touchstart', function(e) {
-                    touchStartX = e.touches[0].clientX;
-                    isDragging = true;
-                }, { passive: true });
-                trackContainer.addEventListener('touchmove', function(e) {
-                    if (!isDragging) return;
-                    const dx = e.touches[0].clientX - touchStartX;
-                    if (Math.abs(dx) > 30) {
-                        if (dx > 0 && current > 0) {
-                            current--;
-                            updateGallery();
-                            isDragging = false;
-                        } else if (dx < 0 && current < images.length - 1) {
-                            current++;
-                            updateGallery();
-                            isDragging = false;
-                        }
-                        touchStartX = e.touches[0].clientX;
-                    }
-                }, { passive: true });
-                trackContainer.addEventListener('touchend', function() {
-                    isDragging = false;
-                }, { passive: true });
-
-                nav.appendChild(prevBtn);
-                nav.appendChild(nextBtn);
-
-                overlay.appendChild(trackContainer);
-                overlay.appendChild(nav);
-
-                const dotsContainer = doc.createElement('div');
-                dotsContainer.style.cssText = `
-                    position: absolute; bottom: 24px; left: 50%;
-                    transform: translateX(-50%); display: flex; gap: 10px; z-index: 15;
-                `;
-                images.forEach((_, idx) => {
-                    const dot = doc.createElement('span');
-                    dot.style.cssText = `
-                        width: 10px; height: 10px; border-radius: 50%;
-                        background: ${idx === current ? '#7fc1c5' : 'rgba(255,255,255,0.15)'};
-                        transition: background 0.3s;
-                    `;
-                    dotsContainer.appendChild(dot);
-                });
-                overlay.appendChild(dotsContainer);
-
-                doc.body.appendChild(overlay);
-            }
-        }
-
-        // ================================================================
-        //  ★★★ Part5: 品种速查（动态事件绑定，彻底修复移动端点击） ★★★
+        //  Part5: 品种速查（动态事件绑定）
         // ================================================================
         function renderPart5() {
             moduleScroll.classList.remove('file-mode');
@@ -1857,7 +1918,6 @@
             }
 
             if (path.length === 1) {
-                // 生成品种网格，不带内联事件
                 let html = `<div style="margin-bottom:6px;font-size:14px;color:rgba(0,0,0,0.25);">共 ${VARIETIES.length} 个品种，点击进入详情</div>`;
                 html += `<div class="variety-grid" id="varietyGrid">`;
                 VARIETIES.forEach(v => {
@@ -1873,18 +1933,15 @@
                 // 动态绑定事件
                 const grid = document.getElementById('varietyGrid');
                 if (grid) {
-                    // 使用事件委托，兼容 click 和 touchstart
                     const handler = function(e) {
-                        // 获取实际点击的目标元素（可能是 .name 或 .variety-item）
                         let target = e.target.closest('.variety-item');
                         if (!target) return;
                         const id = target.dataset.id;
                         if (id) {
-                            e.preventDefault(); // 阻止可能的默认行为
+                            e.preventDefault();
                             openVariety(id);
                         }
                     };
-                    // 同时绑定 click 和 touchstart，确保移动端响应
                     grid.addEventListener('click', handler);
                     grid.addEventListener('touchstart', handler, { passive: false });
                 }
@@ -1901,6 +1958,7 @@
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
+                // 打开品种详情，传入 buildGalleryInject 作为 extraInject
                 openFileView(displayName, variety.file, '品种详情', false, buildGalleryInject);
             }
         }
@@ -1950,7 +2008,12 @@
                     goBackTo(1);
                     return;
                 }
-                openFileView(item.name, item.file, '', false);
+                // 针对枫树专用肥，传入 fixFertilizerLayout 修复布局
+                let extra = null;
+                if (item.id === 'p6_3') {
+                    extra = fixFertilizerLayout;
+                }
+                openFileView(item.name, item.file, '', false, extra);
                 updateModuleHeaderVisibility();
             }
         }
@@ -2089,8 +2152,8 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (移动端点击最终修复)');
-        console.log('📱 品种列表使用动态事件绑定 (click + touchstart)');
+        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (移动端双问题修复)');
+        console.log('📦 模块六专用肥图片同行等高显示，模块五图片加载兜底');
     </script>
 
 </body>

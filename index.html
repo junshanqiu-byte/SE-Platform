@@ -1183,7 +1183,7 @@
             updateModuleHeaderVisibility();
         }
 
-        // -------- 通用：打开文件（iframe） --------
+        // -------- 通用：打开文件（iframe）--------
         function openFileView(title, file, sub, keepBackBtn = false, extraInject = null) {
             if (path.length === 0 || path[path.length - 1] !== title) {
                 path.push(title);
@@ -1207,7 +1207,7 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 基础样式清理
+                            // 仅做基础清理，不干预内容显示
                             if (!keepBackBtn) {
                                 doc.querySelectorAll('.back-btn, [data-back], .module-header .back-btn, .back-link, .top-mini .back-link, .detail-back, button.back-btn, a.back-link')
                                     .forEach(el => {
@@ -1226,7 +1226,7 @@
                                     el.style.pointerEvents = 'none';
                                 });
                             }
-                            // 隐藏上传相关
+                            // 隐藏上传相关控件
                             doc.querySelectorAll('input[type="file"]').forEach(el => { el.style.display = 'none'; });
                             doc.querySelectorAll('button, a, input[type="button"], input[type="submit"]')
                                 .forEach(el => {
@@ -1236,7 +1236,7 @@
                                 });
                             doc.querySelectorAll('.upload-area, .upload-btn, .file-upload, .upload-container, .upload-wrapper')
                                 .forEach(el => { el.style.display = 'none'; });
-                            // 为所有图片添加 onerror 占位
+                            // 为所有图片添加 onerror 占位，防止破碎图
                             doc.querySelectorAll('img').forEach(img => {
                                 if (!img.hasAttribute('data-error-handled')) {
                                     img.setAttribute('data-error-handled', '1');
@@ -1245,7 +1245,7 @@
                                     };
                                 }
                             });
-                            // 执行额外注入（如专用肥布局修复）
+                            // 执行额外注入（如肥料布局修复）
                             if (typeof extraInject === 'function') {
                                 extraInject(doc);
                             }
@@ -1263,7 +1263,7 @@
                         </div>
                     `;
                 };
-                // 延迟再次执行，确保图片占位生效
+                // 延迟再次确保图片占位
                 setTimeout(() => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -1290,7 +1290,6 @@
         //  专用修复：枫树专用肥 - 图片同行等高完整显示
         // ================================================================
         function fixFertilizerLayout(doc) {
-            // 强制将所有 img 的父容器（block级）进行 flex 布局处理
             const allImgs = doc.querySelectorAll('img');
             if (allImgs.length < 2) return;
 
@@ -1311,7 +1310,6 @@
 
             groups.forEach((imgs, container) => {
                 if (imgs.length >= 2) {
-                    // 强制 Flex 行布局，并添加 !important 防止被覆盖
                     container.style.setProperty('display', 'flex', 'important');
                     container.style.setProperty('flex-wrap', 'nowrap', 'important');
                     container.style.setProperty('justify-content', 'center', 'important');
@@ -1327,7 +1325,6 @@
                         img.style.setProperty('min-height', '0', 'important');
                         img.style.setProperty('display', 'block', 'important');
                     });
-                    // 移除可能存在的换行元素
                     container.querySelectorAll('br, .break, .clearfix').forEach(el => el.style.display = 'none');
                 }
             });
@@ -1613,7 +1610,7 @@
         }
 
         // ================================================================
-        //  Part5: 品种速查（动态事件绑定）
+        //  Part5: 品种速查（动态事件绑定，无额外注入）
         // ================================================================
         function renderPart5() {
             moduleScroll.classList.remove('file-mode');
@@ -1665,7 +1662,7 @@
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
-                // 品种详情不注入任何额外函数，只靠 openFileView 中的图片占位保护
+                // 直接加载品种详情页，不注入任何额外函数
                 openFileView(displayName, variety.file, '品种详情');
             }
         }
@@ -1859,7 +1856,7 @@
         window.navigateBack = navigateBack;
 
         console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (最终修复)');
-        console.log('📦 模块六专用肥图片同行等高，模块五保留原生详情页');
+        console.log('📦 模块六专用肥图片同行等高，模块五品种详情原生加载');
     </script>
 
 </body>

@@ -296,16 +296,15 @@
             transition: transform 0.2s ease;
             display: flex;
             flex-direction: column;
-        }
-        .bag-gallery .bag-item:hover {
-            transform: scale(1.01);
+            align-items: center;
+            justify-content: center;
         }
         .bag-gallery .bag-item img {
             width: 100%;
             height: 220px;
-            /* 统一高度 */
-            object-fit: cover;
-            /* 保持比例裁剪 */
+            /* 统一高度，桌面端 */
+            object-fit: contain;
+            /* 保持完整图像，不裁剪 */
             border-radius: 10px;
             display: block;
             background: rgba(255, 255, 255, 0.10);
@@ -430,13 +429,19 @@
             .feature-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* ★★★ 核心修改：移动端保持两列，等高度，图片完整显示 ★★★ */
             .bag-gallery {
-                grid-template-columns: 1fr;
-                gap: 16px;
+                grid-template-columns: 1fr 1fr;  /* 保持两列 */
+                gap: 12px;
             }
-            /* 移动端图片高度略减 */
             .bag-gallery .bag-item img {
-                height: 180px;
+                height: 160px;  /* 移动端合适高度 */
+                object-fit: contain; /* 确保完整显示 */
+                background: rgba(255, 255, 255, 0.15);
+            }
+            .bag-gallery .bag-item .bag-label {
+                font-size: 12px;
             }
         }
         @media (min-width: 800px) {
@@ -452,7 +457,6 @@
             p {
                 font-size: 17px;
             }
-            /* 大屏图片高度略增 */
             .bag-gallery .bag-item img {
                 height: 260px;
             }
@@ -482,7 +486,6 @@
             margin-right: 8px;
         }
 
-        /* 施肥用量表格内强调 */
         .dose-highlight {
             background: rgba(127, 193, 197, 0.08);
             font-weight: 600;

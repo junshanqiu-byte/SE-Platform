@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
+        /* ===== 全局重置 & 基础 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         html, body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -1207,7 +1208,7 @@
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow?.document;
                         if (doc) {
-                            // 基础清理
+                            // 基础清理（隐藏不需要的按钮）
                             if (!keepBackBtn) {
                                 doc.querySelectorAll('.back-btn, [data-back], .module-header .back-btn, .back-link, .top-mini .back-link, .detail-back, button.back-btn, a.back-link')
                                     .forEach(el => {
@@ -1244,7 +1245,11 @@
                                     };
                                 }
                             });
-                            // 执行额外注入
+
+                            // ★★★ 注入图片全屏查看器（仅作用于该iframe文档）★★★
+                            injectImageViewer(doc);
+
+                            // 执行额外注入（如专用肥布局修复）
                             if (typeof extraInject === 'function') {
                                 extraInject(doc);
                             }
@@ -1268,8 +1273,9 @@
                     setTimeout(() => {
                         try {
                             const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                            if (doc && typeof extraInject === 'function') {
-                                extraInject(doc);
+                            if (doc) {
+                                injectImageViewer(doc);
+                                if (typeof extraInject === 'function') extraInject(doc);
                             }
                         } catch (e) {}
                     }, delay);
@@ -1322,33 +1328,13 @@
         }
 
         // ================================================================
-        //  ★★★ 全屏图片查看器（品种详情页专用，带重试机制）★★★
+        //  ★★★ 全屏图片查看器（事件委托版，仅作用于传入的doc）★★★
         // ================================================================
         function injectImageViewer(doc) {
             if (!doc || !doc.body) return;
-            // 避免重复注入
             if (doc.getElementById('custom-image-viewer')) return;
 
-            // 查找所有图片
-            let images = doc.querySelectorAll('img');
-            if (images.length === 0) {
-                // 如果还没图片，用 MutationObserver 监听
-                const observer = new MutationObserver(() => {
-                    const newImgs = doc.querySelectorAll('img');
-                    if (newImgs.length > 0) {
-                        observer.disconnect();
-                        initViewer(doc, newImgs);
-                    }
-                });
-                observer.observe(doc.body, { childList: true, subtree: true });
-                return;
-            }
-            initViewer(doc, images);
-        }
-
-        function initViewer(doc, images) {
-            if (!images || images.length === 0) return;
-            // 创建遮罩
+            // ----- 创建遮罩结构 -----
             const overlay = doc.createElement('div');
             overlay.id = 'custom-image-viewer';
             overlay.style.cssText = `
@@ -1363,9 +1349,9 @@
                 align-items: center;
                 justify-content: center;
                 touch-action: none;
-                cursor: zoom-out;
                 user-select: none;
                 -webkit-user-select: none;
+                flex-direction: column;
             `;
 
             const imgContainer = doc.createElement('div');
@@ -1377,6 +1363,7 @@
                 justify-content: center;
                 overflow: hidden;
                 touch-action: none;
+                flex: 1;
             `;
             const imgEl = doc.createElement('img');
             imgEl.style.cssText = `
@@ -1390,6 +1377,7 @@
             imgContainer.appendChild(imgEl);
             overlay.appendChild(imgContainer);
 
+            // 关闭按钮
             const closeBtn = doc.createElement('button');
             closeBtn.textContent = '✕';
             closeBtn.style.cssText = `
@@ -1400,20 +1388,227 @@
                 height: 44px;
                 border: none;
                 border-radius: 50%;
-                background: rgba(255,255,255,0.15);
+                background: rgba(255,255,255,0.2);
                 color: #fff;
                 font-size: 24px;
                 cursor: pointer;
-                z-index: 10;
+                z-index: 30;
                 touch-action: manipulation;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255,255,255,0.1);
             `;
             overlay.appendChild(closeBtn);
 
+            // 底部控制栏
+            const controlBar = doc.createElement('div');
+            controlBar.style.cssText = `
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                background: rgba(0,0,0,0.6);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-radius: 50px;
+                padding: 10px 24px;
+                z-index: 30;
+                touch-action: manipulation;
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            `;
+
+            const btnStyle = `
+                width: 40px;
+                height: 40px;
+                border: none;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.12);
+                color: #fff;
+                font-size: 22px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                touch-action: manipulation;
+                transition: background 0.2s;
+                font-weight: 400;
+            `;
+
+            const zoomOutBtn = doc.createElement('button');
+            zoomOutBtn.textContent = '−';
+            zoomOutBtn.style.cssText = btnStyle;
+            zoomOutBtn.addEventListener('mouseenter', () => zoomOutBtn.style.background = 'rgba(255,255,255,0.25)');
+            zoomOutBtn.addEventListener('mouseleave', () => zoomOutBtn.style.background = 'rgba(255,255,255,0.12)');
+
+            const zoomResetBtn = doc.createElement('button');
+            zoomResetBtn.textContent = '⟲';
+            zoomResetBtn.style.cssText = btnStyle;
+            zoomResetBtn.style.fontSize = '20px';
+            zoomResetBtn.addEventListener('mouseenter', () => zoomResetBtn.style.background = 'rgba(255,255,255,0.25)');
+            zoomResetBtn.addEventListener('mouseleave', () => zoomResetBtn.style.background = 'rgba(255,255,255,0.12)');
+
+            const zoomInBtn = doc.createElement('button');
+            zoomInBtn.textContent = '+';
+            zoomInBtn.style.cssText = btnStyle;
+            zoomInBtn.addEventListener('mouseenter', () => zoomInBtn.style.background = 'rgba(255,255,255,0.25)');
+            zoomInBtn.addEventListener('mouseleave', () => zoomInBtn.style.background = 'rgba(255,255,255,0.12)');
+
+            const helpBtn = doc.createElement('button');
+            helpBtn.textContent = '?';
+            helpBtn.style.cssText = btnStyle;
+            helpBtn.style.fontSize = '20px';
+            helpBtn.style.fontWeight = '600';
+            helpBtn.addEventListener('mouseenter', () => helpBtn.style.background = 'rgba(255,255,255,0.25)');
+            helpBtn.addEventListener('mouseleave', () => helpBtn.style.background = 'rgba(255,255,255,0.12)');
+
+            const scaleDisplay = doc.createElement('span');
+            scaleDisplay.classList.add('scale-display');
+            scaleDisplay.textContent = '100%';
+            scaleDisplay.style.cssText = `
+                color: #fff;
+                font-size: 15px;
+                min-width: 52px;
+                text-align: center;
+                font-weight: 500;
+                letter-spacing: 0.5px;
+                font-variant-numeric: tabular-nums;
+            `;
+
+            controlBar.appendChild(zoomOutBtn);
+            controlBar.appendChild(scaleDisplay);
+            controlBar.appendChild(zoomResetBtn);
+            controlBar.appendChild(zoomInBtn);
+            controlBar.appendChild(helpBtn);
+            overlay.appendChild(controlBar);
+
+            // ---- 帮助弹窗 ----
+            const helpOverlay = doc.createElement('div');
+            helpOverlay.id = 'help-overlay';
+            helpOverlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                z-index: 40;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                touch-action: manipulation;
+                padding: 20px;
+            `;
+
+            const helpCard = doc.createElement('div');
+            helpCard.style.cssText = `
+                background: rgba(20,20,30,0.92);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 24px;
+                max-width: 540px;
+                width: 100%;
+                max-height: 80vh;
+                overflow-y: auto;
+                padding: 28px 32px 32px;
+                border: 1px solid rgba(255,255,255,0.08);
+                box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+                color: #f0f0f0;
+                font-family: inherit;
+                position: relative;
+                touch-action: auto;
+            `;
+            helpCard.style.scrollbarWidth = 'thin';
+            helpCard.style.scrollbarColor = 'rgba(255,255,255,0.15) transparent';
+
+            const helpClose = doc.createElement('button');
+            helpClose.textContent = '✕';
+            helpClose.style.cssText = `
+                position: sticky;
+                top: 0;
+                float: right;
+                width: 36px;
+                height: 36px;
+                border: none;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.08);
+                color: #aaa;
+                font-size: 18px;
+                cursor: pointer;
+                touch-action: manipulation;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+                margin-bottom: 8px;
+                flex-shrink: 0;
+            `;
+            helpClose.addEventListener('mouseenter', () => helpClose.style.background = 'rgba(255,255,255,0.18)');
+            helpClose.addEventListener('mouseleave', () => helpClose.style.background = 'rgba(255,255,255,0.08)');
+
+            const helpTitle = doc.createElement('div');
+            helpTitle.textContent = '📸 操作说明';
+            helpTitle.style.cssText = `
+                font-size: 22px;
+                font-weight: 600;
+                margin-bottom: 16px;
+                color: #fff;
+                letter-spacing: -0.3px;
+                clear: both;
+            `;
+
+            const helpContent = doc.createElement('div');
+            helpContent.style.cssText = `
+                font-size: 15px;
+                line-height: 1.7;
+                color: #d0d0d0;
+            `;
+            helpContent.innerHTML = `
+                <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #00ccff;">
+                    <strong style="color:#fff;">点击图片</strong><br />
+                    点击任意图片进入全屏查看模式。
+                </div>
+                <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #a78bfa;">
+                    <strong style="color:#fff;">缩放控制</strong><br />
+                    <span style="display:inline-block;background:rgba(255,255,255,0.06);padding:2px 10px;border-radius:6px;font-weight:500;margin:2px 0;">＋</span> 放大 &nbsp;·&nbsp; <span style="display:inline-block;background:rgba(255,255,255,0.06);padding:2px 10px;border-radius:6px;font-weight:500;margin:2px 0;">−</span> 缩小 &nbsp;·&nbsp; <span style="display:inline-block;background:rgba(255,255,255,0.06);padding:2px 10px;border-radius:6px;font-weight:500;margin:2px 0;">⟲</span> 重置，<br />缩放比例实时显示。
+                </div>
+                <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #fbbf24;">
+                    <strong style="color:#fff;">鼠标滚轮</strong><br />
+                    在图片上滚动滚轮可快速缩放（桌面端）。
+                </div>
+                <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #34d399;">
+                    <strong style="color:#fff;">双指捏合</strong><br />
+                    移动端支持双指缩放。
+                </div>
+                <div style="margin-bottom:14px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #f472b6;">
+                    <strong style="color:#fff;">拖动查看</strong><br />
+                    放大后按住图片单指拖拽平移。
+                </div>
+                <div style="margin-bottom:6px;padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;border-left:3px solid #f87171;">
+                    <strong style="color:#fff;">关闭</strong><br />
+                    点击右上角 <strong style="color:#fff;">✕</strong> 或点击遮罩背景（非图片区域）退出。
+                </div>
+                <div style="margin-top:18px;padding:12px 16px;background:rgba(0,204,255,0.06);border-radius:12px;text-align:center;font-size:14px;color:rgba(255,255,255,0.6);">
+                    ✦ 所有操作均流畅适配移动端和桌面端 ✦
+                </div>
+            `;
+
+            helpCard.appendChild(helpClose);
+            helpCard.appendChild(helpTitle);
+            helpCard.appendChild(helpContent);
+            helpOverlay.appendChild(helpCard);
+            overlay.appendChild(helpOverlay);
+
             doc.body.appendChild(overlay);
 
+            // ---- 缩放及交互逻辑 ----
             let scale = 1;
             let translateX = 0, translateY = 0;
             let startX = 0, startY = 0;
@@ -1422,6 +1617,11 @@
             let pinchStartScale = 1;
             let isPinching = false;
 
+            function updateTransform() {
+                imgEl.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+                scaleDisplay.textContent = Math.round(scale * 100) + '%';
+            }
+
             function openViewer(src) {
                 imgEl.src = src;
                 scale = 1;
@@ -1429,40 +1629,75 @@
                 translateY = 0;
                 updateTransform();
                 overlay.style.display = 'flex';
+                if (helpVisible) {
+                    helpVisible = false;
+                    helpOverlay.style.display = 'none';
+                }
             }
 
             function closeViewer() {
                 overlay.style.display = 'none';
+                helpVisible = false;
+                helpOverlay.style.display = 'none';
             }
 
-            function updateTransform() {
-                imgEl.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
-            }
-
-            // 为每个图片绑定点击事件
-            images.forEach(img => {
-                img.style.cursor = 'pointer';
-                img.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openViewer(this.src);
-                });
+            // 按钮事件
+            zoomInBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                let newScale = Math.min(scale + 0.2, 5);
+                scale = newScale;
+                if (scale === 1) { translateX = 0; translateY = 0; }
+                updateTransform();
+            });
+            zoomOutBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                let newScale = Math.max(scale - 0.2, 0.5);
+                scale = newScale;
+                if (scale === 1) { translateX = 0; translateY = 0; }
+                updateTransform();
+            });
+            zoomResetBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                updateTransform();
             });
 
-            // 关闭事件
+            let helpVisible = false;
+            helpBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                helpVisible = !helpVisible;
+                helpOverlay.style.display = helpVisible ? 'flex' : 'none';
+            });
+            helpOverlay.addEventListener('click', function(e) {
+                if (e.target === helpOverlay) {
+                    helpVisible = false;
+                    helpOverlay.style.display = 'none';
+                }
+            });
+            helpClose.addEventListener('click', function(e) {
+                e.stopPropagation();
+                helpVisible = false;
+                helpOverlay.style.display = 'none';
+            });
+
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeViewer();
+            });
             overlay.addEventListener('click', function(e) {
                 if (e.target === overlay || e.target === imgContainer) {
                     closeViewer();
                 }
             });
-            closeBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                closeViewer();
-            });
             doc.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeViewer();
+                if (e.key === 'Escape' && overlay.style.display === 'flex') {
+                    closeViewer();
+                }
             });
 
-            // 触摸事件
+            // ---- 触摸事件（移动端双指缩放、单指拖动） ----
             let lastTouchX = 0, lastTouchY = 0;
             imgContainer.addEventListener('touchstart', function(e) {
                 const touches = e.touches;
@@ -1492,10 +1727,7 @@
                     let newScale = pinchStartScale * delta;
                     newScale = Math.min(Math.max(newScale, 0.5), 5);
                     scale = newScale;
-                    if (scale === 1) {
-                        translateX = 0;
-                        translateY = 0;
-                    }
+                    if (scale === 1) { translateX = 0; translateY = 0; }
                     updateTransform();
                 } else if (touches.length === 1 && isDragging) {
                     const dx = touches[0].clientX - startX;
@@ -1509,26 +1741,37 @@
             imgContainer.addEventListener('touchend', function(e) {
                 isDragging = false;
                 isPinching = false;
-                if (scale === 1) {
-                    translateX = 0;
-                    translateY = 0;
-                    updateTransform();
-                }
+                if (scale === 1) { translateX = 0; translateY = 0; updateTransform(); }
             }, { passive: true });
 
-            // 滚轮缩放
+            // 鼠标滚轮（桌面端）
             imgContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? 0.9 : 1.1;
                 let newScale = scale * delta;
                 newScale = Math.min(Math.max(newScale, 0.5), 5);
                 scale = newScale;
-                if (scale === 1) {
-                    translateX = 0;
-                    translateY = 0;
-                }
+                if (scale === 1) { translateX = 0; translateY = 0; }
                 updateTransform();
             }, { passive: false });
+
+            // ---- 事件委托：点击任意图片打开查看器（仅限本doc） ----
+            doc.addEventListener('click', function(e) {
+                const img = e.target.closest('img');
+                if (!img) return;
+                // 避免点击查看器内部的图片（如缩略图）触发重新加载
+                if (overlay.contains(img)) return;
+                // 如果查看器已显示，更新图片
+                if (overlay.style.display === 'flex') {
+                    imgEl.src = img.src;
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                    updateTransform();
+                } else {
+                    openViewer(img.src);
+                }
+            });
         }
 
         // ================================================================
@@ -1810,9 +2053,7 @@
             openFileView(script.name, script.file, script.desc);
         }
 
-        // ================================================================
-        //  ★★★ Part5: 品种速查（仅使用 click 事件，避免滑动误触）★★★
-        // ================================================================
+        // -------- Part5: 品种速查 --------
         function renderPart5() {
             moduleScroll.classList.remove('file-mode');
             if (path.length === 0) {
@@ -1861,8 +2102,7 @@
                 if (path[path.length - 1] !== displayName) {
                     path[path.length - 1] = displayName;
                 }
-                // 传入图片查看器注入
-                openFileView(displayName, variety.file, '品种详情', false, injectImageViewer);
+                openFileView(displayName, variety.file, '品种详情', false);
             }
         }
 
@@ -1988,7 +2228,7 @@
                                 moduleBreadcrumb.innerHTML = renderBreadcrumb();
                                 updateHeaderFromPath();
                                 updateModuleHeaderVisibility();
-                                pushHistoryState(path[path.length-1]);
+                                pushHistoryState(path[path.length - 1]);
                                 return;
                             }
                         }
@@ -2012,7 +2252,7 @@
         });
 
         // ================================================================
-        //  事件绑定
+        //  事件绑定（主界面卡片点击）
         // ================================================================
         document.querySelectorAll('.card-item').forEach(card => {
             card.addEventListener('click', () => {
@@ -2054,9 +2294,7 @@
         window.goBackTo = goBackTo;
         window.navigateBack = navigateBack;
 
-        console.log('🌳 山秋枫树园 · 庭院美学顾问赋能平台 (全屏图片查看器-重试版)');
-        console.log('📸 点击品种详情中的任意图片即可全屏缩放查看');
+        console.log('🌳 山秋枫树园 · 主界面显示已修复，实景图片全屏查看已增强');
     </script>
-
 </body>
 </html>
